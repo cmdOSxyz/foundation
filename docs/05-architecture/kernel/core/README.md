@@ -1,136 +1,49 @@
-# cmdOS Kernel RFC
+# cmdOS Kernel Core
 
-## Kernel Infrastructure
+## Core Architecture Overview
 
-Version: 1.0
+Kernel Core is the fundamental execution layer inside cmdOS Kernel.
 
-Status: Active
+## Core Principles
 
----
+-   Intent First
+-   State Awareness
+-   Controlled Execution
+-   Observable Actions
+-   Modular Architecture
 
-# Overview
+## Execution Model
 
-This directory contains the complete Kernel Infrastructure specification for cmdOS.
+Intent ↓ Object Creation ↓ Semantic Validation ↓ Planning ↓ Execution ↓
+Result
 
-The Kernel is the deterministic execution core of cmdOS.
+## Core Modules
 
-Every executable request flows through the Kernel before reaching any runtime.
+-   05.01 Object Manager
+-   05.02 State Manager
+-   05.03 Command Manager
+-   05.04 Semantic Validation Engine
+-   05.05 AI Cognition Layer
+-   05.06 Kernel Intent API
+-   05.07 Execution Planner
+-   05.08 Execution Engine
+-   ...
+-   05.54 Kernel Architecture Summary
 
-The Kernel owns canonical execution authority.
+## Security Boundary
 
----
+Request ↓ Validation ↓ Permission Check ↓ Execution ↓ Audit
 
-# Philosophy
+## Extension Model
 
-The Kernel does not think.
+Supports:
 
-The Kernel executes.
+-   New execution engines
+-   AI providers
+-   Runtime systems
+-   Automation capabilities
 
-AI interprets intent.
+## Summary
 
-The Kernel validates, plans, secures and executes.
-
----
-
-# Documentation Order
-
-## Core Managers
-
-- 10.35.01 — Object Manager
-- 10.35.02 — State Manager
-- 10.35.03 — Command Manager
-- 10.35.04 — Semantic Validation Engine
-- 10.35.05 — AI Cognition Layer
-- 10.35.06 — Kernel Command Manager
-- 10.35.07 — Execution Planner
-- 10.35.08 — Consistency Manager
-- 10.35.09 — State Manager
-- 10.35.10 — Lock Manager
-- 10.35.11 — Memory Manager
-- 10.35.12 — Cache Manager
-
----
-
-## Infrastructure Services
-
-- 10.35.13 — Time Service
-- 10.35.14 — Event Bus
-- 10.35.15 — Event Store
-- 10.35.16 — Checkpoint Manager
-- 10.35.17 — Snapshot Manager
-- 10.35.18 — Resource Manager
-- 10.35.19 — Dependency Manager
-- 10.35.20 — Registry Manager
-- 10.35.21 — Configuration Manager
-- 10.35.22 — Feature Flag Service
-- 10.35.23 — Serialization Framework
-- 10.35.24 — Schema & Migration Manager
-
----
-
-## Infrastructure Support
-
-- 10.35.25 — Recovery
-- 10.35.26 — Security
-- 10.35.27 — Observability
-- 10.35.28 — Integration Contracts
-- 10.35.29 — Bootstrap
-- 10.35.30 — Shutdown
-- 10.35.31 — Infrastructure Invariants
-- 10.35.32 — Conformance
-- 10.35.33 — Summary
-
----
-
-# Canonical Execution Flow
-
-```text
-Intent
-    ↓
-Kernel Boundary
-    ↓
-Command
-    ↓
-Execution Plan
-    ↓
-Transaction
-    ↓
-Execution Engine
-    ↓
-Runtime
-    ↓
-Observed Result
-    ↓
-Consistency
-    ↓
-State Update
-```
-
----
-
-# Development Rules
-
-- RFC before implementation.
-- Documentation first.
-- Every subsystem owns a single responsibility.
-- No component bypasses Kernel contracts.
-- Every mutation is observable.
-- Every execution is recoverable.
-
----
-
-# Reading Order
-
-1. Architecture Overview
-2. Kernel README
-3. This document
-4. RFC 10.35.01
-5. Continue sequentially through the remaining RFCs.
-
----
-
-# Next Document
-
-**10.35.01 — Object Manager**
-
-This RFC defines the canonical object model used throughout cmdOS.
+Kernel Core provides the primitives that allow cmdOS to transform AI
+intelligence into reliable execution.
