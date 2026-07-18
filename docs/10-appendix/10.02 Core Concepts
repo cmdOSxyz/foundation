@@ -1,0 +1,490 @@
+# 10.02 Core Concepts
+
+## Overview
+
+The Core Concepts document defines the fundamental ideas behind cmdOS.
+
+These concepts explain the principles that make cmdOS different from traditional operating systems, AI assistants, and automation platforms.
+
+The purpose is to establish a common understanding of how cmdOS works at the conceptual level.
+
+Core principle:
+
+Human Intent
+
+↓
+
+AI Understanding
+
+↓
+
+Intelligent Planning
+
+↓
+
+Capability Selection
+
+↓
+
+Execution
+
+↓
+
+Result
+
+---
+
+# 1. Intent-Driven Computing
+
+## Definition
+
+Intent-Driven Computing is the core interaction model of cmdOS.
+
+Instead of users controlling applications directly, users communicate desired outcomes.
+
+Traditional computing:
+
+User
+
+↓
+
+Application
+
+↓
+
+Manual Action
+
+↓
+
+Result
+
+
+cmdOS computing:
+
+User
+
+↓
+
+Intent
+
+↓
+
+AI System
+
+↓
+
+Execution
+
+↓
+
+Result
+
+---
+
+# 2. Intent To Execution Model
+
+The fundamental operating model of cmdOS.
+
+A user's intention is transformed into real-world execution.
+
+Process:
+
+## Step 1 — Intent Input
+
+User describes what they want.
+
+Example:
+
+"Prepare a sales report."
+
+---
+
+## Step 2 — Intent Understanding
+
+AI analyzes:
+
+- Goal
+- Context
+- Requirements
+- Constraints
+
+---
+
+## Step 3 — Planning
+
+AI creates an execution strategy.
+
+Example:
+
+1. Collect data
+2. Analyze information
+3. Generate report
+4. Deliver result
+
+---
+
+## Step 4 — Execution
+
+Agents perform required actions.
+
+---
+
+## Step 5 — Result
+
+The system returns completed outcomes.
+
+---
+
+# 3. AI Execution Layer
+
+## Definition
+
+The AI Execution Layer is the central layer that connects human intent with digital environments.
+
+It operates between:
+
+Human
+
+and:
+
+Applications, Services, Systems
+
+Architecture:
+
+Human Intent
+
+↓
+
+AI Execution Layer
+
+↓
+
+Agents
+
+↓
+
+Capabilities
+
+↓
+
+Digital Environment
+
+---
+
+# 4. Agent-Based Computing
+
+## Definition
+
+Agent-Based Computing is the model where autonomous AI entities perform specialized tasks.
+
+An Agent can:
+
+- Understand goals
+- Plan actions
+- Use tools
+- Execute workflows
+- Learn from feedback
+
+---
+
+# 5. Agent Architecture
+
+A cmdOS Agent consists of several components.
+
+---
+
+## Intelligence
+
+Responsible for:
+
+- Understanding
+- Reasoning
+- Decision making
+
+---
+
+## Memory
+
+Responsible for:
+
+- Context storage
+- User preferences
+- Previous experiences
+
+---
+
+## Planning
+
+Responsible for:
+
+- Task decomposition
+- Strategy creation
+
+---
+
+## Execution
+
+Responsible for:
+
+- Using capabilities
+- Performing actions
+
+---
+
+# 6. Capability-Based Computing
+
+## Definition
+
+Capabilities are the building blocks that allow Agents to perform actions.
+
+Instead of directly controlling every system, Agents use available capabilities.
+
+Example:
+
+Agent:
+
+"Send email."
+
+↓
+
+Email Capability
+
+↓
+
+Email Service
+
+↓
+
+Completed Action
+
+---
+
+# 7. Execution Object Model
+
+## Definition
+
+Execution Object Model represents tasks, actions, and workflows as structured objects that AI systems can understand and manage.
+
+Purpose:
+
+- Improve reliability
+- Enable monitoring
+- Support recovery
+- Create predictable execution
+
+---
+
+# 8. Permission-Based Execution
+
+## Definition
+
+cmdOS follows a human-controlled execution model.
+
+AI can plan actions.
+
+Users maintain authority over important operations.
+
+Flow:
+
+AI Plan
+
+↓
+
+Permission Request
+
+↓
+
+User Approval
+
+↓
+
+Execution
+
+---
+
+# 9. Multi-Agent Collaboration
+
+## Definition
+
+Multiple Agents can collaborate to complete complex objectives.
+
+Example:
+
+Business Goal:
+
+"Launch a product campaign."
+
+Agent Network:
+
+Research Agent
+
+↓
+
+Marketing Agent
+
+↓
+
+Content Agent
+
+↓
+
+Analytics Agent
+
+↓
+
+Optimization Agent
+
+---
+
+# 10. Context-Aware Computing
+
+## Definition
+
+cmdOS understands tasks based on surrounding context.
+
+Context includes:
+
+- User preferences
+- Current environment
+- Previous tasks
+- Available resources
+
+Purpose:
+
+Create more accurate execution.
+
+---
+
+# 11. Adaptive AI Environment
+
+## Definition
+
+cmdOS improves through continuous interaction.
+
+Learning loop:
+
+Execution
+
+↓
+
+Feedback
+
+↓
+
+Optimization
+
+↓
+
+Improved Execution
+
+---
+
+# 12. AI-Native Application Model
+
+## Definition
+
+In traditional systems, applications are the main interface.
+
+In cmdOS:
+
+Applications become capabilities.
+
+Traditional:
+
+Open application
+
+↓
+
+Perform actions
+
+
+AI Native:
+
+Express goal
+
+↓
+
+AI selects capabilities
+
+↓
+
+Task completed
+
+---
+
+# 13. Digital Environment Abstraction
+
+## Definition
+
+cmdOS abstracts different digital environments into a unified execution layer.
+
+Supported environments:
+
+- Desktop
+- Mobile
+- Cloud
+- Enterprise systems
+
+The user does not need to understand system differences.
+
+---
+
+# 14. AI Operating System Concept
+
+## Definition
+
+An AI Operating System is a system where AI becomes the primary interaction and execution layer.
+
+Characteristics:
+
+- Intent-based interaction
+- Autonomous Agents
+- Capability ecosystem
+- Intelligent execution
+
+---
+
+# 15. AI Execution Economy
+
+## Definition
+
+The AI Execution Economy is the ecosystem where:
+
+- Users consume AI services
+- Developers create capabilities
+- Businesses automate operations
+- Enterprises deploy AI workers
+
+Economic flow:
+
+Creation
+
+↓
+
+Distribution
+
+↓
+
+Usage
+
+↓
+
+Value Exchange
+
+---
+
+# Summary
+
+The Core Concepts define the fundamental principles behind cmdOS.
+
+The system introduces a new computing model:
+
+Traditional:
+
+User → Application → Action
+
+cmdOS:
+
+User Intent → AI Understanding → Agent Planning → Execution → Result
+
+These concepts form the foundation for building the AI Execution Operating System.

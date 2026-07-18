@@ -9,9 +9,13 @@
 
 ## Vision
 
-cmdOS is building a deterministic execution operating system for AI.
+cmdOS is a deterministic execution operating system for AI. Instead of only generating
+text, it turns human intent into secure, observable, deterministic execution across
+applications, devices, cloud infrastructure, and autonomous agents.
 
-Instead of simply generating text, cmdOS transforms human intent into secure, observable and deterministic execution across applications, devices, cloud infrastructure and autonomous agents.
+cmdOS is a standalone **desktop** application — not a chatbot, web app, DApp, or SaaS
+dashboard. The experience is *"an AI system operating my computer,"* not *"chatting with
+an assistant."*
 
 ---
 
@@ -19,135 +23,131 @@ Instead of simply generating text, cmdOS transforms human intent into secure, ob
 
 - Intent → Command → Execution Plan → Execution
 - Deterministic by design
-- Security first
-- Event-driven architecture
-- Observable execution
+- Security first; authorization precedes every action
+- Human authority is never removed
+- Event-driven and observable
 - Capability-based permissions
-- Provider agnostic
-- AI model agnostic
+- Provider-agnostic and AI-model-agnostic
+- Local-first execution
 
 ---
 
-# Architecture
+## Architecture
 
 ```text
                 User Intent
                      │
                      ▼
-           Interaction Layer
+             Interaction Layer          (Control Center + command input)
                      │
                      ▼
-              AI Cognition
+            Intelligence Layer           (AI cognition, reasoning, AI Router)
                      │
                      ▼
-          Intent Interpretation
+                Agent Layer              (autonomous workers)
                      │
                      ▼
-           Semantic Validation
+             Capability Layer            (executable abilities)
                      │
                      ▼
-             Kernel Intent API
+           Communication Layer           (messages, events, coordination)
                      │
+                     ▼
+              Runtime Layer              (execution environment)
+                     │
+   ┌─────────────────┴─────────────────┐
+   │        Security (cross-cutting)    │  identity · permission · policy
+   │                                    │  isolation · monitoring · audit
+   └─────────────────┬─────────────────┘
+                     ▼
 ────────────────────────────────────────
                  cmdOS Kernel
 ────────────────────────────────────────
-Object Manager
-State Manager
-Command Manager
-Execution Planner
-Transaction Manager
-Consistency Manager
-Lock Manager
-Memory Manager
-Cache Manager
-Execution Engine
-Scheduler
-Runtime
-Persistence
-Recovery
-Security
-Observability
+Object · State · Command · Validation · Cognition · Execution Planner
+Execution Engine · Transactions · Scheduler · Agent Orchestrator
+Memory · Knowledge · Security · Events · Recovery · Observability
 ────────────────────────────────────────
                      │
                      ▼
-          Capability System
-                     │
-                     ▼
-Applications • Devices • APIs • Cloud
+        Applications · Devices · APIs · Cloud
 ```
+
+The Kernel is the single deterministic execution authority — no execution bypasses it.
+Agents invoke Capabilities; they never mutate canonical state directly.
 
 ---
 
-# Repository Structure
+## Repository Structure
 
 ```text
 cmdOS/
-├── README.md
-├── CLAUDE.md
-├── ROADMAP.md
-├── CHANGELOG.md
-├── LICENSE
-├── docs/
-├── kernel/
-├── specs/
-├── schemas/
-├── sdk/
-├── runtime/
-├── providers/
-├── capabilities/
-├── tests/
-├── tools/
-└── scripts/
+├── docs/            # Specification (RFCs). Single source of truth for architecture.
+├── apps/            # desktop/ (primary), mobile/, cli/, web/ (non-primary)
+├── kernel/          # core/ scheduler/ memory/ security/ resources/ interfaces/
+├── runtime/         # execution/ workflow/ scheduler/ process/ monitoring/
+├── ai/              # router/ models/ reasoning/ context/ memory/ inference/
+├── agents/          # core/ lifecycle/ planning/ memory/ communication/ templates/
+├── capabilities/    # core/ registry/ built-in/ external/ examples/
+├── plugins/         # loader/ manifest/ signing/ validation/ registry/
+├── providers/       # AI provider adapters + external service integrations
+├── sdk/             # agent-sdk/ capability-sdk/ plugin-sdk/ api/
+├── services/        # identity/ sync/ marketplace/ billing/ analytics/
+├── schemas/         # canonical data schemas / IDL (interface contracts)
+├── infrastructure/  # cloud/ deployment/ containers/ monitoring/ automation/
+├── tools/           # build/ generators/ debugging/ scripts/
+└── tests/           # unit/ integration/ system/ security/ performance/
 ```
 
 ---
 
-# Documentation
+## Capability and Plugin
 
-The complete architecture is documented as RFC specifications under `docs/`.
+A **Capability** is the core execution primitive — a versioned interface contract plus an
+implementation, held in the Capability Registry, and the only thing an Agent invokes at
+runtime.
 
----
-
-# Long-Term Roadmap
-
-1. Architecture & RFC
-2. Kernel
-3. Execution Engine
-4. Runtime
-5. Capability System
-6. Desktop Agent
-7. Distributed cmdOS
-8. Developer SDK
-9. Enterprise Platform
+A **Plugin** is a signed, versioned distribution package. On install, after security
+validation, it registers its Capabilities (and optionally Agents) into the Registry.
+There is one **Marketplace**, and it distributes Plugins.
 
 ---
 
-# Design Philosophy
+## Roadmap
 
-Every action follows:
+The canonical roadmap lives in `docs/09-roadmap`, organized as five product Stages.
+Engineering workstreams ("Phases") map into these Stages — see `ROADMAP.md`.
+
+- **Stage 0 — Foundation** — architecture, standards, repository, initial AI infrastructure
+- **Stage 1 — MVP** — first end-to-end execution loop
+- **Stage 2 — Agent Platform** — SDK, plugins, marketplace, developer ecosystem
+- **Stage 3 — Execution OS** — desktop/mobile agents, cross-platform execution
+- **Stage 4 — AI-Native OS** — autonomous agents, enterprise, ecosystem
+
+---
+
+## Design Philosophy
 
 ```text
-Intent
-  ↓
-Command
-  ↓
-Execution Plan
-  ↓
-Runtime
-  ↓
-Verification
-  ↓
-Observed Result
+Intent → Command → Execution Plan → Runtime → Verification → Observed Result
 ```
 
----
-
-# License
-
-MIT License
+Documentation first. RFC before implementation. Every feature contributes to the AI
+Execution Operating System.
 
 ---
 
-# cmdOS
+## Documentation
 
-**The AI Execution Operating System**
+The complete architecture is documented as RFC specifications under `docs/`. Start with
+`docs/01-vision`, then `docs/05-architecture`. Contribution rules are in `CONTRIBUTING.md`;
+security policy is in `SECURITY.md`.
+
+---
+
+## License
+
+MIT License.
+
+---
+
+**cmdOS — The AI Execution Operating System.**
