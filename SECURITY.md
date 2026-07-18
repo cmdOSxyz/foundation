@@ -1,10 +1,11 @@
 # SECURITY
 
-# Security Policy
+Thank you for helping keep cmdOS secure.
 
-Thank you for helping improve the security of cmdOS.
-
-Security is a core design principle of the project.
+**Scope of this file:** vulnerability reporting, supported versions, and disclosure
+policy. The security *architecture* and model are defined in
+`docs/05-architecture/6-security` (canonical). This file intentionally contains no
+architecture.
 
 ---
 
@@ -22,8 +23,6 @@ Security is a core design principle of the project.
 
 Please do **not** disclose security vulnerabilities publicly.
 
-Instead:
-
 1. Contact the maintainers privately.
 2. Provide reproduction steps.
 3. Include logs if available.
@@ -31,76 +30,22 @@ Instead:
 
 ---
 
-## Security Principles
+## Disclosure Policy
 
-cmdOS follows:
-
-- Least Privilege
-- Capability-Based Security
-- Deterministic Execution
-- Immutable Audit Events
-- Zero Hidden State
-- Secure Defaults
-- Explicit Permissions
+- We acknowledge reports as quickly as we can and keep reporters informed.
+- We aim to fix confirmed issues before coordinated public disclosure.
+- Credit is given to reporters who wish to be named.
 
 ---
 
-## Security Architecture
+## Where the model is defined
 
-Every execution passes through:
+For the security architecture — identity, permissions, policy, sandboxing, monitoring,
+and audit — see the canonical specification:
 
-Intent
-
-↓
-
-Validation
-
-↓
-
-Authorization
-
-↓
-
-Execution Plan
-
-↓
-
-Permission Check
-
-↓
-
-Runtime
-
-↓
-
-Verification
-
-↓
-
-Audit
-
----
-
-## Scope
-
-Security applies to:
-
-- Kernel
-- Runtime
-- Capability System
-- Provider Integrations
-- Desktop Agent
-- SDKs
-
----
-
-## Goals
-
-- Prevent privilege escalation
-- Prevent unauthorized execution
-- Protect secrets
-- Ensure auditability
-- Maintain deterministic behavior
+- `docs/05-architecture/6-security` — security architecture (canonical)
+- `docs/04-terminology/04.10-security-model.md` — security terminology
+- `docs/10-appendix/10.04-security-reference.md` — quick reference
 
 ---
 
