@@ -1,7 +1,9 @@
 // Visibility: private
 // apps/desktop/main.js
 // Electron main process. Creates the cmdOS application window.
+// Load the compiled core (built into dist/ by `npm run build`).
 
+const { runFilesystemStep, verifyFilesystemStep } = require("../../dist/capabilities/filesystem.js");
 const path = require("node:path");
 const { app, BrowserWindow, ipcMain } = require("electron");
 
@@ -24,6 +26,17 @@ function createWindow() {
 }
 ipcMain.handle("cmdos:ping", async (event, message) => {
   return "pong: " + message + " (from main process)";
+});
+
+// Run one approved filesystem step, then verify it.
+ipcMain.handle("cmdos:runStep", async (event, step) => {
+  try {
+    const result = await runFilesystemStep(step);
+    const check = await verifyFilesystemStep(step);
+    return { ok: check.ok, message: result.message + " | " + check.message };
+  } catch (err) {
+    return { ok: false, message: "FAILED: " + (err && err.message ? err.message : String(err)) };
+  }
 });
 
 app.whenReady().then(() => {

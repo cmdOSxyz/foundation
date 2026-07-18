@@ -1,11 +1,11 @@
 // Visibility: private
 // apps/desktop/preload.cjs
-// The secure bridge. It exposes a small, explicit API to the renderer.
-// The UI can ONLY call what we list here — it has no direct system access.
+// The secure bridge. Exposes only these explicit functions to the UI.
 
 const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("cmdos", {
-  // Test call: renderer asks main to echo a message back.
   ping: (message) => ipcRenderer.invoke("cmdos:ping", message),
+  // Ask main to run one approved filesystem step. Returns { ok, message }.
+  runStep: (step) => ipcRenderer.invoke("cmdos:runStep", step),
 });

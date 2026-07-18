@@ -24,8 +24,10 @@ function mockPlan(intentText) {
   return {
     summary: "Plan for: " + intentText,
     steps: [
-      { description: "List files in the folder", capability: "filesystem", action: "list", requiresPermission: false },
-      { description: "Rename the first file", capability: "filesystem", action: "rename", requiresPermission: true },
+      { description: "List the sandbox folder", capability: "filesystem", action: "list",
+        parameters: { path: "sandbox" }, requiresPermission: false },
+      { description: "Rename report.txt to report-2026.txt", capability: "filesystem", action: "rename",
+        parameters: { from: "sandbox/report.txt", to: "report-2026.txt" }, requiresPermission: true },
     ],
   };
 }
@@ -51,8 +53,21 @@ async function runIntent(text) {
         return;
       }
     }
-    await wait(350);
-    cm.innerHTML += '<div class="trace">&#10003; ' + step.capability + "." + step.action + " &middot; " + step.description + "</div>";
+    // Real execution: send the approved step to main.
+    const res = await window.cmdos.runStep({
+      id: "s-" + Math.random().toString(36).slice(2, 6),
+      description: step.description,
+      capability: "filesystem",
+      action: step.action,
+      parameters: step.parameters || {},
+      dependsOn: [],
+      requiresPermission: step.requiresPermission,
+      status: "pending",
+    });
+    const mark = res.ok ? "&#10003;" : "&#10007;";
+    const color = res.ok ? "" : ' style="color:#f87171;"';
+    cm.innerHTML += '<div class="trace"' + color + ">" + mark + " " + res.message + "</div>";
+    if (!res.ok) return;
   }
 
   cm.innerHTML += '<div class="trace">&#10003; completed &middot; audit trail written</div>';
