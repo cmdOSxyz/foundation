@@ -3,9 +3,11 @@
 // Electron main process. Creates the cmdOS application window.
 // Load the compiled core (built into dist/ by `npm run build`).
 
+const { planWithClaude } = require("./anthropic-planner.cjs");
 const { runFilesystemStep, verifyFilesystemStep } = require("../../dist/capabilities/filesystem.js");
 const path = require("node:path");
 const { app, BrowserWindow, ipcMain } = require("electron");
+const keyStore = require("./key-store.cjs");
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -36,6 +38,29 @@ ipcMain.handle("cmdos:runStep", async (event, step) => {
     return { ok: check.ok, message: result.message + " | " + check.message };
   } catch (err) {
     return { ok: false, message: "FAILED: " + (err && err.message ? err.message : String(err)) };
+  }
+});
+
+// Save the user's API key (BYOK). Never logged, never sent anywhere.
+ipcMain.handle("cmdos:setKey", async (event, provider, key) => {
+  keyStore.setKey(provider, key);
+  return { ok: true };
+});
+
+// Report whether a provider key is present (does NOT return the key).
+ipcMain.handle("cmdos:hasKey", async (event, provider) => {
+  return { ok: true, hasKey: keyStore.hasKey(provider) };
+});
+
+// Ask Claude to plan an intent, using the stored user key.
+ipcMain.handle("cmdos:plan", async (event, intentText) => {
+  const apiKey = keyStore.getKey("anthropic");
+  if (!apiKey) return { ok: false, message: "No Claude API key set" };
+  try {
+    const plan = await planWithClaude(apiKey, intentText);
+    return { ok: true, plan };
+  } catch (err) {
+    return { ok: false, message: err && err.message ? err.message : String(err) };
   }
 });
 

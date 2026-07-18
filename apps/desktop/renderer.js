@@ -109,3 +109,38 @@ async function testBridge() {
   console.log("Bridge reply:", reply);
 }
 testBridge();
+// --- API key setup (BYOK) ---
+async function setupKeyUI() {
+  const status = await window.cmdos.hasKey("anthropic");
+  if (status.hasKey) {
+    console.log("Anthropic key: present");
+    return; // already set, nothing to show
+  }
+  // Prompt for a key using a simple bar at the top of the workspace.
+  const bar = document.createElement("div");
+  bar.className = "approval";
+  bar.innerHTML =
+    '<div class="label">CONNECT YOUR CLAUDE API KEY (stored locally)</div>' +
+    '<input id="keyInput" type="password" placeholder="sk-ant-..." ' +
+    'style="width:100%; padding:8px; margin-bottom:8px; background:var(--panel); ' +
+    'border:1px solid var(--border); border-radius:6px; color:var(--text); font-family:inherit;" />' +
+    '<button class="btn approve" id="saveKey">Save key</button>';
+  workspace.prepend(bar);
+
+  document.getElementById("saveKey").onclick = async () => {
+    const key = document.getElementById("keyInput").value.trim();
+    if (!key) return;
+    await window.cmdos.setKey("anthropic", key);
+    bar.innerHTML = '<div class="label" style="color:var(--accent);">✓ Claude key saved locally</div>';
+  };
+}
+setupKeyUI();
+// TEMP test: ask Claude to plan something, log the result.
+async function testPlan() {
+  const has = await window.cmdos.hasKey("anthropic");
+  if (!has.hasKey) { console.log("No key"); return; }
+  console.log("Asking Claude to plan...");
+  const res = await window.cmdos.plan("list the files in my sandbox folder");
+  console.log("Claude plan:", JSON.stringify(res, null, 2));
+}
+testPlan();
