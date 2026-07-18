@@ -1,0 +1,550 @@
+# 06.04 SDK Development
+
+## Overview
+
+The SDK Development Architecture defines how developers build, extend, and integrate new capabilities into cmdOS.
+
+The SDK provides the foundation for the cmdOS developer ecosystem by allowing external developers, partners, and internal teams to create:
+
+- Agents
+- Plugins
+- Capabilities
+- Integrations
+- Applications
+- Automation workflows
+
+Core principle:
+
+Developer Intent
+
+↓
+
+SDK Interface
+
+↓
+
+Extension Development
+
+↓
+
+cmdOS Integration
+
+↓
+
+Execution
+
+---
+
+# 1. SDK Development Purpose
+
+The purpose of SDK Development is to provide a standardized development framework for extending cmdOS.
+
+It enables:
+
+- External developer participation
+- Faster ecosystem growth
+- Standardized integrations
+- Safe extension development
+- Simplified application building
+
+---
+
+# 2. SDK Architecture Position
+
+SDK belongs to the Development and Extension layers of cmdOS.
+
+Architecture relationship:
+
+Developer
+
+↓
+
+SDK
+
+↓
+
+Plugin System
+
+↓
+
+Capability System
+
+↓
+
+Agent System
+
+↓
+
+Runtime
+
+↓
+
+Kernel
+
+↓
+
+Execution
+
+---
+
+# 3. SDK Philosophy
+
+cmdOS SDK follows an AI-native development philosophy.
+
+Traditional development:
+
+Developer
+
+↓
+
+Code
+
+↓
+
+Application
+
+↓
+
+Action
+
+
+cmdOS development:
+
+Developer
+
+↓
+
+Intent
+
+↓
+
+SDK
+
+↓
+
+Agent / Capability / Plugin
+
+↓
+
+Execution
+
+---
+
+# 4. SDK Components
+
+The cmdOS SDK consists of multiple development packages.
+
+Main components:
+
+- Agent SDK
+- Plugin SDK
+- Capability SDK
+- API SDK
+- Application SDK
+- Developer Tools
+
+---
+
+# 5. Agent SDK
+
+## Purpose
+
+The Agent SDK allows developers to create autonomous AI Agents.
+
+Developers can build Agents capable of:
+
+- Understanding goals
+- Planning tasks
+- Using capabilities
+- Managing context
+- Communicating with other Agents
+
+---
+
+## Agent SDK Components
+
+Includes:
+
+- Agent Framework
+- Agent Lifecycle API
+- Memory API
+- Planning API
+- Communication API
+
+---
+
+## Agent Development Flow
+
+Developer
+
+↓
+
+Agent Definition
+
+↓
+
+Agent Configuration
+
+↓
+
+Capability Connection
+
+↓
+
+Testing
+
+↓
+
+Deployment
+
+---
+
+# 6. Plugin SDK
+
+## Purpose
+
+The Plugin SDK allows developers to extend cmdOS functionality.
+
+Plugins can provide:
+
+- External integrations
+- New capabilities
+- Custom workflows
+- Specialized tools
+
+---
+
+## Plugin SDK Components
+
+Includes:
+
+- Plugin Interface
+- Plugin Manifest
+- Permission System
+- Lifecycle Management
+- Security Validation
+
+---
+
+## Plugin Development Flow
+
+Developer
+
+↓
+
+Plugin Creation
+
+↓
+
+SDK Validation
+
+↓
+
+Security Check
+
+↓
+
+Marketplace Submission
+
+↓
+
+User Installation
+
+---
+
+# 7. Capability SDK
+
+## Purpose
+
+The Capability SDK allows developers to create executable abilities for Agents.
+
+Capabilities represent actions that cmdOS can perform.
+
+Examples:
+
+- Send email
+- Analyze data
+- Control applications
+- Execute workflows
+- Connect external services
+
+---
+
+## Capability SDK Components
+
+Includes:
+
+- Capability Definition
+- Input Schema
+- Output Schema
+- Execution Interface
+- Permission Rules
+
+---
+
+## Capability Development Flow
+
+Developer
+
+↓
+
+Capability Definition
+
+↓
+
+Implementation
+
+↓
+
+Testing
+
+↓
+
+Registration
+
+↓
+
+Agent Usage
+
+---
+
+# 8. API SDK
+
+## Purpose
+
+The API SDK provides programmatic access to cmdOS services.
+
+Developers can interact with:
+
+- Agents
+- Capabilities
+- Plugins
+- Users
+- Execution systems
+
+---
+
+## API SDK Features
+
+Includes:
+
+- Authentication
+- Request handling
+- Response handling
+- Error management
+- Version control
+
+---
+
+# 9. Application SDK
+
+## Purpose
+
+The Application SDK allows developers to build applications on top of cmdOS.
+
+Supported applications:
+
+- Desktop applications
+- Mobile applications
+- Web applications
+- Enterprise applications
+
+---
+
+## Application SDK Components
+
+Includes:
+
+- UI components
+- cmdOS APIs
+- Agent interfaces
+- Execution interfaces
+
+---
+
+# 10. SDK Development Environment
+
+The SDK provides developer tools.
+
+Includes:
+
+- CLI tools
+- Testing tools
+- Debugging tools
+- Documentation tools
+- Development templates
+
+---
+
+# 11. SDK Security Model
+
+SDK extensions must follow cmdOS security requirements.
+
+Security controls:
+
+- Identity verification
+- Permission management
+- Sandbox execution
+- API restrictions
+- Audit logging
+
+---
+
+# 12. SDK Version Management
+
+SDK versions must remain compatible with cmdOS releases.
+
+Versioning includes:
+
+- API versions
+- SDK versions
+- Compatibility rules
+- Migration guides
+
+Example:
+
+SDK v1
+
+↓
+
+cmdOS Core v1
+
+---
+
+# 13. SDK Testing Requirements
+
+Every SDK component requires testing.
+
+Testing includes:
+
+## Unit Testing
+
+Tests individual functions.
+
+---
+
+## Integration Testing
+
+Tests SDK interaction with cmdOS.
+
+---
+
+## Security Testing
+
+Validates permissions and isolation.
+
+---
+
+## Performance Testing
+
+Measures execution efficiency.
+
+---
+
+# 14. Developer Experience
+
+cmdOS SDK focuses on simple developer experience.
+
+Requirements:
+
+- Clear documentation
+- Easy installation
+- Examples
+- Templates
+- Debugging support
+
+Goal:
+
+Developers should build extensions without understanding internal system complexity.
+
+---
+
+# 15. SDK Marketplace Integration
+
+SDK connects directly with the Plugin Marketplace.
+
+Flow:
+
+Developer
+
+↓
+
+SDK
+
+↓
+
+Plugin Creation
+
+↓
+
+Marketplace Review
+
+↓
+
+Distribution
+
+↓
+
+User Installation
+
+---
+
+# 16. Future SDK Expansion
+
+Future capabilities:
+
+- AI-assisted development
+- Automatic Agent generation
+- Natural language SDK creation
+- AI debugging assistants
+- Autonomous extension development
+
+---
+
+# 17. Design Principles
+
+## Simple
+
+Developers can build easily.
+
+---
+
+## Flexible
+
+Supports different extension types.
+
+---
+
+## Secure
+
+Extensions operate safely.
+
+---
+
+## Scalable
+
+Supports a global developer ecosystem.
+
+---
+
+## Open
+
+Encourages external innovation.
+
+---
+
+# Summary
+
+SDK Development provides the foundation for the cmdOS developer ecosystem.
+
+Agent SDK creates intelligent Agents.
+
+Plugin SDK expands functionality.
+
+Capability SDK provides executable actions.
+
+API SDK connects external systems.
+
+Application SDK enables user experiences.
+
+Together they allow developers to build the future ecosystem of the AI Execution Operating System.
