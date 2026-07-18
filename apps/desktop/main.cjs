@@ -4,7 +4,7 @@
 // Load the compiled core (built into dist/ by `npm run build`).
 
 const { planWithClaude } = require("./anthropic-planner.cjs");
-const { runFilesystemStep, verifyFilesystemStep } = require("../../dist/capabilities/filesystem.js");
+const { runFilesystemStep, verifyFilesystemStep, inspectPath } = require("../../dist/capabilities/filesystem.js");
 const path = require("node:path");
 const { app, BrowserWindow, ipcMain } = require("electron");
 const keyStore = require("./key-store.cjs");
@@ -52,13 +52,14 @@ ipcMain.handle("cmdos:hasKey", async (event, provider) => {
   return { ok: true, hasKey: keyStore.hasKey(provider) };
 });
 
-// Ask Claude to plan an intent, using the stored user key.
+// Two-pass planning: first find out what to inspect, gather real facts,
+// then ask the agent to reply and plan based on those facts.
 ipcMain.handle("cmdos:plan", async (event, intentText) => {
   const apiKey = keyStore.getKey("anthropic");
   if (!apiKey) return { ok: false, message: "No Claude API key set" };
   try {
-    const plan = await planWithClaude(apiKey, intentText);
-    return { ok: true, plan };
+    const result = await planWithClaude(apiKey, intentText, inspectPath);
+    return { ok: true, plan: result };
   } catch (err) {
     return { ok: false, message: err && err.message ? err.message : String(err) };
   }

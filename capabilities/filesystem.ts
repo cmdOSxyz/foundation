@@ -135,3 +135,34 @@ export function undoForFilesystemStep(step: PlanStep): UndoFn | null {
       return null;
   }
 }
+
+// --- Inspection (context gathering) -----------------------------------------
+// Returns real facts about a path so the agent can describe it accurately
+// instead of guessing. Read-only: never modifies anything.
+
+import { stat as statPath } from "node:fs/promises";
+import { resolve } from "node:path";
+
+export interface PathInfo {
+  exists: boolean;
+  fullPath: string;
+  type?: "file" | "folder";
+  sizeBytes?: number;
+  modified?: string;
+}
+
+export async function inspectPath(p: string): Promise<PathInfo> {
+  const fullPath = resolve(p);
+  try {
+    const s = await statPath(fullPath);
+    return {
+      exists: true,
+      fullPath,
+      type: s.isDirectory() ? "folder" : "file",
+      sizeBytes: s.size,
+      modified: s.mtime.toISOString(),
+    };
+  } catch {
+    return { exists: false, fullPath };
+  }
+}
