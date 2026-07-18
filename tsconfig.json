@@ -41,7 +41,8 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
     "noEmit": true
-  }
-    ,
-    "include": ["schemas/**/*.ts", "kernel/**/*.ts", "capabilities/**/*.ts", "apps/**/*.ts"]
+  },
+  
+    "include": ["schemas/**/*.ts", "kernel/**/*.ts", "capabilities/**/*.ts", "apps/**/*.ts"],
+    "exclude": ["**/*.demo.ts"]
 }
