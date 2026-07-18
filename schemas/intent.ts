@@ -1,4 +1,4 @@
-// Visibility: public
+﻿// Visibility: public
 // schemas/intent.ts
 // The Intent is the first artifact in the canonical loop:
 // Intent -> Understanding -> Command -> Execution Plan -> Permission -> Runtime -> Verification -> Result

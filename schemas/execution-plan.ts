@@ -1,11 +1,11 @@
-// Visibility: public
+﻿// Visibility: public
 // schemas/execution-plan.ts
 // The ExecutionPlan is produced from an Intent during the Planning stage:
 // Intent -> Understanding -> Command -> [Execution Plan] -> Permission -> Runtime -> Verification -> Result
 // It is an ordered graph of steps the runtime executes. The AI proposes it; the kernel executes it.
-// The AI never executes directly — it only produces this plan.
+// The AI never executes directly â€” it only produces this plan.
 
-import type { Id, Timestamp } from "./intent";
+import type { Id, Timestamp } from "./intent.js";
 
 /** Lifecycle status of a whole plan. */
 export type PlanStatus =
@@ -27,7 +27,7 @@ export type StepStatus =
 
 /**
  * One unit of work in a plan. A step invokes exactly one capability action.
- * Steps never mutate system state directly — they call a capability, which the
+ * Steps never mutate system state directly â€” they call a capability, which the
  * runtime executes under permission control.
  */
 export interface PlanStep {

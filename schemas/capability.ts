@@ -1,11 +1,11 @@
-// Visibility: public
+﻿// Visibility: public
 // schemas/capability.ts
 // A Capability is the core execution primitive: a versioned contract plus (elsewhere)
-// an implementation. Agents invoke Capabilities — never Plugins — and only the runtime
+// an implementation. Agents invoke Capabilities â€” never Plugins â€” and only the runtime
 // executes them, under permission control. This file defines the CONTRACT shape only;
 // concrete implementations (e.g. filesystem) live under capabilities/ in the private core.
 
-import type { Id } from "./intent";
+import type { Id } from "./intent.js";
 
 /** How risky an action is, used to decide whether it needs user approval. */
 export type RiskLevel =

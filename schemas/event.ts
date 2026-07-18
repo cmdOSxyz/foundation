@@ -1,10 +1,10 @@
-// Visibility: public
+﻿// Visibility: public
 // schemas/event.ts
 // An Event is an immutable record of something that happened in cmdOS.
 // Events form an append-only log: they are never modified or deleted, only added.
-// This is the foundation of observability and audit — every meaningful action is traceable.
+// This is the foundation of observability and audit â€” every meaningful action is traceable.
 
-import type { Id, Timestamp } from "./intent";
+import type { Id, Timestamp } from "./intent.js";
 
 /** The kind of thing that happened. */
 export type EventType =

@@ -1,12 +1,12 @@
-// Visibility: public
+﻿// Visibility: public
 // schemas/permission-request.ts
 // A PermissionRequest is raised before a sensitive step runs. The runtime pauses,
 // shows the user exactly what will happen, and waits for Approve or Deny.
 // This enforces the repo rule: sensitive actions require explicit user approval,
 // and human authority is never removed.
 
-import type { Id, Timestamp } from "./intent";
-import type { RiskLevel } from "./capability";
+import type { Id, Timestamp } from "./intent.js";
+import type { RiskLevel } from "./capability.js";
 
 /** The user's decision on a permission request. */
 export type PermissionDecision =
