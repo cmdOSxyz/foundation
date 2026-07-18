@@ -5,6 +5,36 @@
 const workspace = document.getElementById("workspace");
 const input = document.getElementById("cmdInput");
 
+// Inject a tiny CSS animation for the loading dots and cursor.
+const style = document.createElement("style");
+style.textContent =
+  "@keyframes blink { 0%,100%{opacity:.2} 50%{opacity:1} }" +
+  ".loading span { animation: blink 1.2s infinite; }" +
+  ".loading span:nth-child(2){ animation-delay:.2s }" +
+  ".loading span:nth-child(3){ animation-delay:.4s }" +
+  ".typing::after { content:'▋'; animation: blink 1s infinite; color: var(--accent); }";
+document.head.appendChild(style);
+
+// Typewriter: reveal text gradually inside an element.
+function typeText(el, text, speed) {
+  return new Promise((resolve) => {
+    el.classList.add("typing");
+    let i = 0;
+    const tick = () => {
+      if (i <= text.length) {
+        el.textContent = text.slice(0, i);
+        i++;
+        workspace.scrollTop = workspace.scrollHeight;
+        setTimeout(tick, speed || 12);
+      } else {
+        el.classList.remove("typing");
+        resolve();
+      }
+    };
+    tick();
+  });
+}
+
 // Append an element to the workspace and scroll to the bottom.
 function add(html, className) {
   const div = document.createElement("div");
@@ -42,10 +72,15 @@ function askApproval(container, step) {
 async function runIntent(text) {
   add('<div class="who">You</div><div>' + escapeHtml(text) + "</div>", "msg you");
 
-  const cm = add('<div class="who">cmdOS</div>', "msg");
-  cm.innerHTML += '<div class="comment">// thinking…</div>';
+ const cm = add('<div class="who">cmdOS</div>', "msg");
+  // Animated loading indicator while the agent thinks.
+  const loader = document.createElement("div");
+  loader.className = "comment loading";
+  loader.innerHTML = "// thinking<span>.</span><span>.</span><span>.</span>";
+  cm.appendChild(loader);
 
   const result = await window.cmdos.plan(text);
+  loader.remove(); // stop the loading animation
   if (!result.ok) {
     cm.innerHTML += '<div class="trace" style="color:#f87171;">&#10007; ' + escapeHtml(result.message) + "</div>";
     return;
@@ -53,9 +88,12 @@ async function runIntent(text) {
 
   const agent = result.plan; // { reply, mode, plan }
 
-  // 1) Always show the agent's spoken reply.
+  // 1) Always show the agent's spoken reply — typed out gradually.
   if (agent.reply) {
-    cm.innerHTML += '<div style="margin:6px 0;">' + escapeHtml(agent.reply) + "</div>";
+    const replyEl = document.createElement("div");
+    replyEl.style.margin = "6px 0";
+    cm.appendChild(replyEl);
+    await typeText(replyEl, agent.reply, 30);
   }
 
   // 2) chat / ask => nothing to execute.
