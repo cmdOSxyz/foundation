@@ -1,0 +1,439 @@
+# 07.01 Product Overview
+
+## Overview
+
+The Product Overview defines the core product vision, structure, and user value of cmdOS.
+
+cmdOS transforms the traditional relationship between humans and computers by introducing an AI-native execution layer.
+
+Instead of users manually operating applications, cmdOS allows users to express goals and enables AI Agents to execute tasks across digital environments.
+
+Core principle:
+
+Human Intent
+
+↓
+
+AI Understanding
+
+↓
+
+Autonomous Planning
+
+↓
+
+Execution
+
+↓
+
+Real-World Result
+
+---
+
+# 1. Product Vision
+
+The vision of cmdOS is to create the first AI Execution Operating System.
+
+A system where users do not interact with computers through applications first.
+
+Instead:
+
+Users express intent.
+
+cmdOS understands the objective.
+
+AI creates the execution plan.
+
+Agents perform actions.
+
+The system returns results.
+
+---
+
+# 2. Product Mission
+
+The mission of cmdOS is to simplify digital interaction by removing unnecessary technical complexity.
+
+cmdOS aims to allow anyone to:
+
+- Automate tasks
+- Control applications
+- Manage workflows
+- Access digital services
+- Create AI-powered processes
+
+without requiring:
+
+- Programming knowledge
+- Complex configurations
+- Manual application workflows
+
+---
+
+# 3. Product Core Concept
+
+The fundamental product concept is:
+
+Intent To Execution.
+
+Traditional operating systems:
+
+User
+
+↓
+
+Application
+
+↓
+
+Manual Action
+
+
+cmdOS:
+
+User
+
+↓
+
+Intent
+
+↓
+
+AI Agent
+
+↓
+
+Capability Selection
+
+↓
+
+Execution
+
+↓
+
+Result
+
+---
+
+# 4. Product Architecture
+
+The cmdOS product consists of several major layers.
+
+---
+
+# User Experience Layer
+
+## Purpose
+
+Provides the interaction interface between users and cmdOS.
+
+Includes:
+
+- CMD interface
+- Desktop interface
+- Mobile interface
+- Voice interaction
+- Visual controls
+
+---
+
+# AI Intelligence Layer
+
+## Purpose
+
+Provides understanding and reasoning.
+
+Includes:
+
+- Intent recognition
+- Context understanding
+- Planning
+- Decision making
+
+---
+
+# Agent Layer
+
+## Purpose
+
+Provides autonomous task execution.
+
+Includes:
+
+- Personal agents
+- Specialized agents
+- Workflow agents
+
+---
+
+# Capability Layer
+
+## Purpose
+
+Provides executable actions.
+
+Includes:
+
+- Applications
+- APIs
+- Plugins
+- External services
+
+---
+
+# Execution Layer
+
+## Purpose
+
+Transforms AI decisions into real-world actions.
+
+Includes:
+
+- Desktop automation
+- Application interaction
+- System operations
+- External execution
+
+---
+
+# 5. Main Product Components
+
+cmdOS consists of multiple products working together.
+
+---
+
+# cmdOS Core
+
+## Purpose
+
+The foundation operating environment.
+
+Responsibilities:
+
+- AI coordination
+- Agent management
+- Execution control
+- System communication
+
+---
+
+# cmdOS Agent
+
+## Purpose
+
+The intelligent execution entity.
+
+Responsibilities:
+
+- Understand goals
+- Create plans
+- Use capabilities
+- Complete tasks
+
+---
+
+# cmdOS Desktop
+
+## Purpose
+
+Provides AI control over desktop environments.
+
+Capabilities:
+
+- Application control
+- File management
+- Workflow automation
+- System interaction
+
+---
+
+# cmdOS Mobile
+
+## Purpose
+
+Provides mobile AI execution.
+
+Capabilities:
+
+- Personal assistant
+- Remote execution
+- Notifications
+- Mobile automation
+
+---
+
+# cmdOS Developer Platform
+
+## Purpose
+
+Allows developers to extend cmdOS.
+
+Includes:
+
+- Agent SDK
+- Plugin SDK
+- Capability SDK
+- APIs
+
+---
+
+# 6. Target Users
+
+cmdOS serves multiple user groups.
+
+---
+
+# Individual Users
+
+Needs:
+
+- Personal productivity
+- Task automation
+- Digital assistance
+
+Examples:
+
+- Manage emails
+- Schedule meetings
+- Organize information
+
+---
+
+# Developers
+
+Needs:
+
+- AI development tools
+- Automation framework
+- Extension platform
+
+Examples:
+
+- Build agents
+- Create plugins
+- Develop capabilities
+
+---
+
+# Businesses
+
+Needs:
+
+- Workflow automation
+- AI employees
+- Operational efficiency
+
+Examples:
+
+- Customer support
+- Data processing
+- Internal automation
+
+---
+
+# Enterprises
+
+Needs:
+
+- Secure AI infrastructure
+- Private deployment
+- Large-scale automation
+
+---
+
+# 7. Product Differentiation
+
+cmdOS differs from existing AI assistants.
+
+Traditional AI assistants:
+
+- Answer questions
+- Generate content
+- Provide recommendations
+
+cmdOS:
+
+- Understands objectives
+- Creates execution plans
+- Controls tools
+- Performs actions
+- Completes workflows
+
+---
+
+# 8. Product Value Proposition
+
+cmdOS provides:
+
+## Simplicity
+
+Users describe what they want naturally.
+
+---
+
+## Automation
+
+AI performs repetitive tasks.
+
+---
+
+## Intelligence
+
+The system understands context.
+
+---
+
+## Execution
+
+AI does real actions instead of only providing information.
+
+---
+
+## Extensibility
+
+Developers can expand capabilities.
+
+---
+
+# 9. Product Evolution Path
+
+cmdOS evolves through stages.
+
+Stage 1:
+
+AI Assistant
+
+↓
+
+Stage 2:
+
+AI Agent Platform
+
+↓
+
+Stage 3:
+
+Execution Platform
+
+↓
+
+Stage 4:
+
+AI Operating System
+
+---
+
+# Summary
+
+Product Overview defines how cmdOS becomes a real user-facing platform.
+
+cmdOS combines:
+
+- AI intelligence
+- Autonomous agents
+- Execution capabilities
+- Developer ecosystem
+
+to create a new computing model where humans express intent and AI performs execution.
+
+This is the foundation of the AI Execution Operating System.
