@@ -40,9 +40,19 @@ async function runIntent(text) {
   await wait(300);
   cm.innerHTML += '<div class="trace"><span class="diamond">&#9671;</span> understanding &middot; ' + text + "</div>";
 
-  const plan = mockPlan(text);
-  await wait(400);
-  cm.innerHTML += '<div class="comment">// planned ' + plan.steps.length + " steps</div>";
+  // Ask Claude for a real plan.
+  cm.innerHTML += '<div class="comment">// asking Claude to plan…</div>';
+  const planResult = await window.cmdos.plan(text);
+  if (!planResult.ok) {
+    cm.innerHTML += '<div class="trace" style="color:#f87171;">&#10007; ' + planResult.message + "</div>";
+    return;
+  }
+  const plan = planResult.plan;
+  if (!plan.steps || plan.steps.length === 0) {
+    cm.innerHTML += '<div class="comment">' + (plan.summary || "No actionable steps") + "</div>";
+    return;
+  }
+  cm.innerHTML += '<div class="comment">// ' + plan.summary + " (" + plan.steps.length + " steps)</div>";
 
   // Run each step. Sensitive steps pause for approval.
   for (const step of plan.steps) {
@@ -143,4 +153,3 @@ async function testPlan() {
   const res = await window.cmdos.plan("list the files in my sandbox folder");
   console.log("Claude plan:", JSON.stringify(res, null, 2));
 }
-testPlan();
