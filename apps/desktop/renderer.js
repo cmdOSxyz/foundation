@@ -84,3 +84,13 @@ input.addEventListener("keydown", (e) => {
     runIntent(text);
   }
 });
+// --- 3B: test the bridge ---
+async function testBridge() {
+  if (!window.cmdos) {
+    console.error("Bridge NOT available");
+    return;
+  }
+  const reply = await window.cmdos.ping("hello");
+  console.log("Bridge reply:", reply);
+}
+testBridge();

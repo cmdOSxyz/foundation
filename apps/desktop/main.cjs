@@ -2,8 +2,8 @@
 // apps/desktop/main.js
 // Electron main process. Creates the cmdOS application window.
 
-const { app, BrowserWindow } = require("electron");
 const path = require("node:path");
+const { app, BrowserWindow, ipcMain } = require("electron");
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -15,12 +15,16 @@ function createWindow() {
       // Security defaults: no direct Node access from the UI yet.
       contextIsolation: true,
       nodeIntegration: false,
+      preload: path.join(__dirname, "preload.cjs"),
     },
   });
 
   // Load the UI. For now, a simple local HTML file.
   win.loadFile(path.join(__dirname, "index.html"));
 }
+ipcMain.handle("cmdos:ping", async (event, message) => {
+  return "pong: " + message + " (from main process)";
+});
 
 app.whenReady().then(() => {
   createWindow();
