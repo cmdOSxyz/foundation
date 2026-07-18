@@ -57,3 +57,51 @@ export async function runFilesystemStep(step: PlanStep): Promise<FsResult> {
       throw new Error("filesystem: unknown action '" + step.action + "'");
   }
 }
+// --- Verification -----------------------------------------------------------
+// After a step runs, confirm the real filesystem state matches what was intended.
+// Returns { ok, message }. ok=false means the action did not achieve its goal.
+
+import { access } from "node:fs/promises";
+
+/** True if a path exists, false otherwise. */
+async function exists(path: string): Promise<boolean> {
+  try {
+    await access(path);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Verify that a completed step actually did what it claimed. */
+export async function verifyFilesystemStep(step: PlanStep): Promise<FsResult> {
+  const p = step.parameters;
+
+  switch (step.action) {
+    case "rename": {
+      const from = String(p.from ?? "");
+      const to = String(p.to ?? "");
+      const target =
+        to.includes("/") || to.includes("\\") ? to : join(dirname(from), to);
+
+      const newExists = await exists(target);
+      const oldGone = !(await exists(from));
+
+      if (newExists && oldGone) {
+        return { ok: true, message: "Verified: rename succeeded" };
+      }
+      return {
+        ok: false,
+        message:
+          "Verification FAILED: newExists=" + newExists + " oldGone=" + oldGone,
+      };
+    }
+
+    case "list":
+      // Read-only: nothing to verify.
+      return { ok: true, message: "Verified: read-only action" };
+
+    default:
+      return { ok: true, message: "No verification for action " + step.action };
+  }
+}
