@@ -105,3 +105,33 @@ export async function verifyFilesystemStep(step: PlanStep): Promise<FsResult> {
       return { ok: true, message: "No verification for action " + step.action };
   }
 }
+// --- Rollback ---------------------------------------------------------------
+// For reversible actions, return a function that undoes the step. The runtime
+// collects these and runs them in reverse order if a later step fails.
+// Returns null for actions that need no undo (e.g. read-only).
+
+export type UndoFn = () => Promise<void>;
+
+/** Produce an undo function for a step that already succeeded, or null. */
+export function undoForFilesystemStep(step: PlanStep): UndoFn | null {
+  const p = step.parameters;
+
+  switch (step.action) {
+    case "rename": {
+      const from = String(p.from ?? "");
+      const to = String(p.to ?? "");
+      const target =
+        to.includes("/") || to.includes("\\") ? to : join(dirname(from), to);
+      // Undo = rename back: target -> from.
+      return async () => {
+        await fsRename(target, from);
+      };
+    }
+
+    case "list":
+      return null; // read-only, nothing to undo
+
+    default:
+      return null;
+  }
+}
