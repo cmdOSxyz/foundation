@@ -9,3 +9,5 @@ tokenomics/
 *.key
 *.pem
 secrets/
+
+sandbox/
