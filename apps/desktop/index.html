@@ -1,0 +1,205 @@
+<!-- Visibility: private -->
+<!-- apps/desktop/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>cmdOS</title>
+    <style>
+      :root {
+        --bg: #0a0a0f;
+        --panel: #12121a;
+        --panel-2: #16161f;
+        --border: #23232e;
+        --text: #e6e6ee;
+        --muted: #8a8a9a;
+        --dim: #55555f;
+        --accent: #4ade80;
+        --accent-dim: #2a7d4c;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Consolas", "SF Mono", "Courier New", monospace;
+        font-size: 13px;
+        overflow: hidden;
+      }
+
+      /* Top bar */
+      .topbar {
+        height: 48px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 0 16px;
+        border-bottom: 1px solid var(--border);
+        background: var(--panel);
+      }
+      .logo { font-weight: 700; letter-spacing: 1px; }
+      .logo .os { color: var(--accent); }
+      .badge {
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 2px 8px;
+        color: var(--accent);
+        font-size: 11px;
+      }
+      .crumb { color: var(--muted); }
+      .topbar .right { margin-left: auto; display: flex; gap: 16px; color: var(--muted); font-size: 12px; }
+      .topbar .right b { color: var(--text); }
+      .online { color: var(--accent); }
+
+      /* Main grid: nav | agent | workspace | history */
+      .layout {
+        display: grid;
+        grid-template-columns: 190px 250px 1fr 260px;
+        height: calc(100vh - 48px);
+      }
+      .col { border-right: 1px solid var(--border); overflow-y: auto; padding: 14px; }
+      .col:last-child { border-right: none; }
+
+      /* Nav */
+      .nav-item {
+        display: flex; align-items: center; gap: 8px;
+        padding: 8px 10px; border-radius: 8px; color: var(--muted);
+        cursor: pointer; margin-bottom: 2px;
+      }
+      .nav-item:hover { background: var(--panel-2); }
+      .nav-item.active { background: var(--panel-2); color: var(--text); }
+      .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+      .dot.red { background: #f87171; }
+      .dot.blue { background: #60a5fa; }
+
+      /* Panels */
+      .panel { border: 1px solid var(--border); border-radius: 10px; background: var(--panel); padding: 14px; margin-bottom: 14px; }
+      .panel h4 { margin: 0 0 10px; color: var(--dim); font-size: 10px; letter-spacing: 1px; font-weight: 600; }
+
+      /* Workspace */
+      .msg { margin-bottom: 18px; }
+      .msg .who { color: var(--accent); font-weight: 700; margin-bottom: 4px; }
+      .msg.you .who { color: var(--text); }
+      .trace { color: var(--accent); margin: 6px 0; }
+      .trace .diamond { opacity: 0.8; }
+      .comment { color: var(--dim); }
+
+      .approval {
+        border: 1px solid var(--accent-dim);
+        border-radius: 10px;
+        padding: 14px;
+        margin: 14px 0;
+        background: rgba(74, 222, 128, 0.04);
+      }
+      .approval .label { color: var(--accent); font-size: 10px; letter-spacing: 1px; margin-bottom: 8px; }
+      .approval .cmd { font-weight: 700; margin-bottom: 10px; }
+      .btn { border: none; border-radius: 6px; padding: 7px 14px; cursor: pointer; font-family: inherit; font-size: 12px; }
+      .btn.approve { background: var(--accent); color: #06210f; font-weight: 700; }
+      .btn.deny { background: transparent; color: var(--muted); border: 1px solid var(--border); margin-left: 8px; }
+
+      /* History */
+      .task { border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-bottom: 8px; }
+      .task .t { margin-bottom: 4px; }
+      .task .s { color: var(--muted); font-size: 11px; }
+      .task .s.done { color: var(--accent); }
+      .task .s.blocked { color: #f87171; }
+
+      /* Command input */
+      .cmdbar {
+        border-top: 1px solid var(--border);
+        padding: 12px;
+        display: flex;
+        gap: 8px;
+        grid-column: 3 / 4;
+      }
+      .cmdbar input {
+        flex: 1; background: var(--panel); border: 1px solid var(--border);
+        border-radius: 10px; padding: 12px 14px; color: var(--text);
+        font-family: inherit; font-size: 13px; outline: none;
+      }
+      .cmdbar input::placeholder { color: var(--dim); }
+    </style>
+  </head>
+  <body>
+    <!-- Top bar -->
+    <div class="topbar">
+      <span class="logo">cmd<span class="os">OS</span></span>
+      <span class="badge">agent runtime</span>
+      <span class="crumb">~/workspace &middot; /command</span>
+      <div class="right">
+        <span>model <b>Claude Opus 4.8</b></span>
+        <span><b>42m</b> left</span>
+        <span>3 tasks</span>
+        <span>240ms</span>
+        <span class="online">&bull; online</span>
+      </div>
+    </div>
+
+    <!-- Layout -->
+    <div class="layout">
+      <!-- Nav -->
+      <div class="col">
+        <div class="nav-item active"><span class="dot"></span> Command</div>
+        <div class="nav-item"><span class="dot"></span> Home</div>
+        <div class="nav-item"><span class="dot blue"></span> AI Router</div>
+        <div class="nav-item"><span class="dot"></span> API Connections</div>
+        <div class="nav-item"><span class="dot"></span> Executions</div>
+        <div class="nav-item"><span class="dot blue"></span> Memory</div>
+        <div class="nav-item"><span class="dot"></span> Marketplace</div>
+        <div class="nav-item"><span class="dot red"></span> Security</div>
+        <div class="nav-item"><span class="dot"></span> Settings</div>
+      </div>
+
+      <!-- Agent + Model -->
+      <div class="col">
+        <div class="panel">
+          <h4>AGENT</h4>
+          <div style="text-align:center; padding: 12px 0;">
+            <div style="font-size:40px;">&#128421;</div>
+            <div style="color: var(--accent); margin-top: 8px;">&bull; online</div>
+          </div>
+        </div>
+        <div class="panel">
+          <h4>MODEL</h4>
+          <div style="font-weight:700; margin-bottom:6px;">Claude Opus 4.8</div>
+          <div style="color: var(--muted); font-size:11px;">context 200K &middot; session</div>
+          <div style="color: var(--accent); font-size:11px; margin-top:6px;">42 min left</div>
+        </div>
+      </div>
+
+      <!-- Workspace -->
+      <div class="col">
+        <div class="msg you">
+          <div class="who">You</div>
+          <div>Hey cmdOS, email Anna a summary of this week's progress.</div>
+        </div>
+        <div class="msg">
+          <div class="who">cmdOS</div>
+          <div>Happy to. I'll gather this week's activity, then write something Anna can skim in ten seconds.</div>
+          <div class="trace"><span class="diamond">&#9671;</span> understanding &middot; a warm, skimmable weekly update</div>
+          <div class="comment">// reading commits &middot; closed tasks &middot; standup notes</div>
+          <div class="trace"><span class="diamond">&#9672;</span> evaluating &middot; 3 shipped, 2 in progress, 1 blocked</div>
+
+          <div class="approval">
+            <div class="label">CMDOS WANTS YOUR APPROVAL</div>
+            <div class="cmd">Gmail.Send &rarr; anna@team.com</div>
+            <button class="btn approve">Approve</button>
+            <button class="btn deny">Deny</button>
+          </div>
+
+          <div class="trace">&#10003; sent &middot; delivered &middot; audit trail written</div>
+        </div>
+      </div>
+
+      <!-- History -->
+      <div class="col">
+        <h4 style="color: var(--dim); font-size:10px; letter-spacing:1px;">TASK HISTORY</h4>
+        <div class="task"><div class="t">Email Anna &middot; weekly summary</div><div class="s done">done &middot; 2m</div></div>
+        <div class="task"><div class="t">Debounce util + 4 tests</div><div class="s done">done &middot; 5m</div></div>
+        <div class="task"><div class="t">Deploy staging build</div><div class="s done">done &middot; 12m</div></div>
+        <div class="task"><div class="t">Vendor API call</div><div class="s blocked">blocked &middot; 1h</div></div>
+        <div class="task"><div class="t">Summarize inbox</div><div class="s">queued &middot; &mdash;</div></div>
+      </div>
+    </div>
+  </body>
+</html>
