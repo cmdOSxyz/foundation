@@ -29,3 +29,5 @@ export type {
   EventSeverity,
   Event,
 } from "./event.js";
+
+export type { Planner } from "./planner.js";
