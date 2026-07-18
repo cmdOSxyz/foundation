@@ -39,7 +39,6 @@ for (const e of log.all()) {
 // Prove immutability: try to change a stored event — it must NOT change.
 const stored = log.all()[0];
 try {
-  // @ts-expect-error - intentionally attempting a forbidden mutation
   stored.message = "HACKED";
 } catch {
   // frozen objects throw in strict mode; that's fine
