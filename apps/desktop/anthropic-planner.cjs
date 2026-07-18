@@ -1,33 +1,38 @@
 // Visibility: private
 // apps/desktop/anthropic-planner.cjs
-// Uses the user's Claude key to turn a natural-language intent into an ExecutionPlan.
-// Claude only PROPOSES a plan (JSON). cmdOS validates, asks permission, and executes.
+// The agent brain. It ALWAYS speaks first (a human-readable reply), and only
+// proposes an execution plan when the user actually asked for an action.
 
 const Anthropic = require("@anthropic-ai/sdk");
 
-const SYSTEM_PROMPT = `You are the planning engine of cmdOS, an AI execution operating system.
-Convert the user's request into a JSON execution plan. Respond with ONLY valid JSON, no prose.
+const SYSTEM_PROMPT = `You are cmdOS — an AI agent that works on the user's computer like a capable employee.
 
-The plan format:
+For every message, respond with ONLY valid JSON in this shape:
 {
-  "summary": "<one short sentence>",
-  "steps": [
-    { "description": "<what this step does>",
-      "capability": "filesystem",
-      "action": "list" | "rename",
-      "parameters": { },
-      "requiresPermission": false }
-  ]
+  "reply": "<what you say to the user, in their language, natural and clear>",
+  "mode": "chat" | "ask" | "plan",
+  "plan": null OR {
+    "summary": "<one short sentence describing what you will do>",
+    "steps": [
+      { "description": "<step>", "capability": "filesystem",
+        "action": "list" | "rename",
+        "parameters": { },
+        "requiresPermission": false }
+    ]
+  }
 }
 
-Supported actions ONLY:
-- filesystem.list   params: { "path": "<folder>" }
-- filesystem.rename params: { "from": "<path>", "to": "<new name>" }
+How to choose "mode":
+- "chat": the user is greeting, asking a question, or chatting. Just reply. plan = null.
+- "ask": the user wants an action but details are unclear. Ask a clarifying question in "reply". plan = null.
+- "plan": the user clearly asked for an action you can do. In "reply", EXPLAIN in plain language what you intend to do and that you will ask for approval. Then fill "plan".
 
 Rules:
-- Use ONLY the actions above. If the request needs something else, return a plan with an empty steps array and explain in summary.
-- rename always has requiresPermission true. list always false.
-- Keep plans minimal.`;
+- ALWAYS write a helpful "reply". Never leave it empty.
+- Never produce a plan for a greeting like "hey". That is "chat".
+- Supported actions ONLY: filesystem.list { "path" }, filesystem.rename { "from", "to" }.
+- rename => requiresPermission true. list => false.
+- Reply in the same language the user used.`;
 
 async function planWithClaude(apiKey, intentText) {
   const client = new Anthropic({ apiKey });
@@ -40,8 +45,8 @@ async function planWithClaude(apiKey, intentText) {
   });
 
   const text = response.content
-    .filter((block) => block.type === "text")
-    .map((block) => block.text)
+    .filter((b) => b.type === "text")
+    .map((b) => b.text)
     .join("");
 
   const clean = text.replace(/```json/g, "").replace(/```/g, "").trim();
@@ -50,12 +55,12 @@ async function planWithClaude(apiKey, intentText) {
   try {
     parsed = JSON.parse(clean);
   } catch (err) {
-    throw new Error("Claude did not return valid JSON: " + text.slice(0, 200));
+    // If the model didn't return JSON, treat the whole thing as a chat reply.
+    return { reply: text.trim() || "…", mode: "chat", plan: null };
   }
 
-  if (!parsed.steps || !Array.isArray(parsed.steps)) {
-    throw new Error("Plan has no steps array");
-  }
+  if (!parsed.reply) parsed.reply = "";
+  if (!parsed.mode) parsed.mode = parsed.plan ? "plan" : "chat";
   return parsed;
 }
 
