@@ -5,6 +5,9 @@
 const workspace = document.getElementById("workspace");
 const input = document.getElementById("cmdInput");
 
+// Conversation memory for this session (sent to the agent each turn).
+const conversation = [];
+
 // Inject a tiny CSS animation for the loading dots and cursor.
 const style = document.createElement("style");
 style.textContent =
@@ -79,7 +82,7 @@ async function runIntent(text) {
   loader.innerHTML = "// thinking<span>.</span><span>.</span><span>.</span>";
   cm.appendChild(loader);
 
-  const result = await window.cmdos.plan(text);
+  const result = await window.cmdos.plan(text, conversation);
   loader.remove(); // stop the loading animation
   if (!result.ok) {
     cm.innerHTML += '<div class="trace" style="color:#f87171;">&#10007; ' + escapeHtml(result.message) + "</div>";
@@ -95,6 +98,12 @@ async function runIntent(text) {
     cm.appendChild(replyEl);
     await typeText(replyEl, agent.reply, 30);
   }
+
+  // Remember this turn so the agent keeps context next time.
+  conversation.push({ role: "user", content: text });
+  conversation.push({ role: "assistant", content: agent.reply || "" });
+  // Keep only the last ~20 messages to stay light.
+  if (conversation.length > 20) conversation.splice(0, conversation.length - 20);
 
   // 2) chat / ask => nothing to execute.
   if (agent.mode !== "plan" || !agent.plan || !agent.plan.steps || agent.plan.steps.length === 0) {

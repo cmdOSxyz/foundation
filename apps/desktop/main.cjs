@@ -54,11 +54,11 @@ ipcMain.handle("cmdos:hasKey", async (event, provider) => {
 
 // Two-pass planning: first find out what to inspect, gather real facts,
 // then ask the agent to reply and plan based on those facts.
-ipcMain.handle("cmdos:plan", async (event, intentText) => {
+ipcMain.handle("cmdos:plan", async (event, intentText, history) => {
   const apiKey = keyStore.getKey("anthropic");
   if (!apiKey) return { ok: false, message: "No Claude API key set" };
   try {
-    const result = await planWithClaude(apiKey, intentText, inspectPath);
+    const result = await planWithClaude(apiKey, intentText, inspectPath, history);
     return { ok: true, plan: result };
   } catch (err) {
     return { ok: false, message: err && err.message ? err.message : String(err) };

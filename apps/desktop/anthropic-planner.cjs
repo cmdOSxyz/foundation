@@ -33,19 +33,19 @@ LENGTH depends on the situation:
 
 Rules: filesystem.list { "path" }, filesystem.rename { "from","to" }. rename => requiresPermission true. If a target file does NOT exist, use mode "ask" and gently tell them, including the full path you checked. Reply in the user's language.`;
 
-async function callClaude(client, system, userContent) {
+async function callClaude(client, system, userContent, history) {
+  const priorMessages = Array.isArray(history) ? history : [];
   const res = await client.messages.create({
     model: "claude-sonnet-4-5",
     max_tokens: 1024,
     system,
-    messages: [{ role: "user", content: userContent }],
+    messages: [...priorMessages, { role: "user", content: userContent }],
   });
   const text = res.content.filter((b) => b.type === "text").map((b) => b.text).join("");
   return text.replace(/```json/g, "").replace(/```/g, "").trim();
 }
 
-async function planWithClaude(apiKey, intentText, inspectPath) {
-  const client = new Anthropic({ apiKey });
+async function planWithClaude(apiKey, intentText, inspectPath, history) {  const client = new Anthropic({ apiKey });
 
   // Pass 1: which paths to inspect?
   let toInspect = [];
@@ -72,8 +72,7 @@ async function planWithClaude(apiKey, intentText, inspectPath) {
     "User message:\n" + intentText +
     "\n\nReal filesystem facts (JSON):\n" + JSON.stringify(facts, null, 2);
 
-  const p2 = await callClaude(client, PASS2_PROMPT, userContent);
-  let parsed;
+const p2 = await callClaude(client, PASS2_PROMPT, userContent, history);  let parsed;
   try {
     parsed = JSON.parse(p2);
   } catch {
