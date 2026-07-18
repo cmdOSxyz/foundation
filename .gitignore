@@ -1,3 +1,11 @@
 ﻿node_modules/
 dist/
 *.log
+
+# private-by-default (open-core, RFC-0003)
+tokenomics/
+**/token-economics*
+.env
+*.key
+*.pem
+secrets/
