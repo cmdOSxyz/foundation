@@ -82,22 +82,21 @@ Applications • Devices • APIs • Cloud
 
 ```text
 cmdOS/
-├── README.md
-├── CLAUDE.md
-├── ROADMAP.md
-├── CHANGELOG.md
-├── LICENSE
-├── docs/
-├── kernel/
-├── specs/
-├── schemas/
-├── sdk/
-├── runtime/
-├── providers/
-├── capabilities/
-├── tests/
-├── tools/
-└── scripts/
+├── docs/            # Specification (RFCs). Single source of truth for architecture.
+├── apps/            # User-facing applications
+│   ├── desktop/     #   Primary product (Windows / macOS / Linux)
+│   ├── mobile/      #   Companion product
+│   └── cli/         #   Command-line surface
+├── kernel/          # Kernel core (objects, state, commands, planner, engine, ...)
+├── runtime/         # Runtime environments (desktop, browser, containers)
+├── capabilities/    # Capability system + first-party capabilities
+├── providers/       # AI provider adapters + external service integrations
+├── sdk/             # agent-sdk / capability-sdk / plugin-sdk / api
+├── services/        # Supporting cloud services: identity, sync, marketplace, billing
+├── schemas/         # Canonical data schemas / IDL (interface contracts)
+├── infrastructure/  # Deployment, containers, monitoring, automation
+├── tools/           # Build, generators, debugging, scripts
+└── tests/           # unit / integration / system / security / performance
 ```
 
 ---
@@ -110,15 +109,15 @@ The complete architecture is documented as RFC specifications under `docs/`.
 
 # Long-Term Roadmap
 
-1. Architecture & RFC
-2. Kernel
-3. Execution Engine
-4. Runtime
-5. Capability System
-6. Desktop Agent
-7. Distributed cmdOS
-8. Developer SDK
-9. Enterprise Platform
+The canonical roadmap lives in `docs/09-roadmap`. It is organized as five product
+Stages (0–4). Engineering workstreams ("Phases") map into these Stages — see the
+mapping table in `ROADMAP.md`.
+
+- Stage 0 — Foundation
+- Stage 1 — MVP (first end-to-end execution loop)
+- Stage 2 — Agent Platform (SDK, plugins, marketplace)
+- Stage 3 — Execution OS (desktop/mobile agents, cross-platform execution)
+- Stage 4 — AI-Native OS (autonomous agents, enterprise, ecosystem)
 
 ---
 
