@@ -4,7 +4,7 @@
 // Each action is small, verifiable, and (for writes) reversible where possible.
 // The runtime decides WHEN to run these; this file only defines HOW.
 
-import { readdir, rename as fsRename, stat } from "node:fs/promises";
+import { readdir, rename as fsRename, stat, readFile, mkdir, rm } from "node:fs/promises";
 import { join, dirname, basename } from "node:path";
 import type { PlanStep } from "../schemas/index.js";
 
@@ -51,6 +51,38 @@ export async function runFilesystemStep(step: PlanStep): Promise<FsResult> {
         message: "Renamed " + basename(from) + " to " + basename(target),
         data: { from, to: target },
       };
+    }
+
+    case "read": {
+      const path = String(p.path ?? "");
+      if (!path) throw new Error("read requires a 'path' parameter");
+      const content = await readFile(path, "utf-8");
+      const preview = content.length > 500 ? content.slice(0, 500) + "…" : content;
+      return { ok: true, message: "Read " + content.length + " chars from " + path, data: preview };
+    }
+
+    case "mkdir": {
+      const path = String(p.path ?? "");
+      if (!path) throw new Error("mkdir requires a 'path' parameter");
+      await mkdir(path, { recursive: true });
+      return { ok: true, message: "Created folder " + path, data: { path } };
+    }
+
+    case "move": {
+      const from = String(p.from ?? "");
+      const to = String(p.to ?? "");
+      if (!from || !to) throw new Error("move requires 'from' and 'to' parameters");
+      await stat(from); // ensure source exists
+      await fsRename(from, to);
+      return { ok: true, message: "Moved " + from + " to " + to, data: { from, to } };
+    }
+
+    case "delete": {
+      const path = String(p.path ?? "");
+      if (!path) throw new Error("delete requires a 'path' parameter");
+      await stat(path); // ensure it exists before deleting
+      await rm(path, { recursive: false });
+      return { ok: true, message: "Deleted " + path, data: { path } };
     }
 
     default:
@@ -149,19 +181,33 @@ export interface PathInfo {
   type?: "file" | "folder";
   sizeBytes?: number;
   modified?: string;
+  content?: string;
 }
 
 export async function inspectPath(p: string): Promise<PathInfo> {
   const fullPath = resolve(p);
   try {
     const s = await statPath(fullPath);
-    return {
+    const info: PathInfo = {
       exists: true,
       fullPath,
       type: s.isDirectory() ? "folder" : "file",
       sizeBytes: s.size,
       modified: s.mtime.toISOString(),
     };
+
+    // If it's a small text-ish file, include its content so the agent can read it.
+    if (!s.isDirectory() && s.size <= 20000) {
+      const textExt = /\.(txt|md|json|csv|log|js|ts|html|css|xml|yml|yaml|ini)$/i;
+      if (textExt.test(fullPath)) {
+        try {
+          info.content = await readFile(fullPath, "utf-8");
+        } catch {
+          // binary or unreadable; skip content
+        }
+      }
+    }
+    return info;
   } catch {
     return { exists: false, fullPath };
   }
