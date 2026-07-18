@@ -1,810 +1,213 @@
 # CLAUDE.md
 
-# Project
+Working agreement for anyone — human or AI — building cmdOS. This file is authoritative
+for product identity, architecture rules, and engineering conventions. When it conflicts
+with an older document, this file and the RFCs under `docs/` win.
 
-cmdOS — The AI Execution Operating System
+---
 
+## Project
 
-# Mission
+**cmdOS — The AI Execution Operating System.**
 
-Build a deterministic AI execution operating system.
+## Mission
 
-cmdOS transforms human intent into real-world execution through AI Agents.
+Build a deterministic AI execution operating system. cmdOS turns human intent into
+real-world execution through AI Agents.
 
+---
 
-# Product Identity
+## Product Identity
 
-cmdOS is a standalone AI-native desktop operating system application.
+cmdOS is a standalone, AI-native **desktop** operating system application. The primary
+product is the **cmdOS Desktop Application**.
 
-The primary product is:
+cmdOS is an execution environment where users delegate work to AI Agents. It is **not**:
 
-cmdOS Desktop Application
+- a chatbot or conversational assistant
+- a web application or browser-based AI wrapper
+- a DApp, Web3 app, or blockchain interface
+- a SaaS dashboard or collection of admin panels
 
+The user should feel: *"I have an AI system operating my computer,"* never *"I am
+chatting with an assistant."*
 
-cmdOS is NOT:
+---
 
-- A DApp
-- A Web3 application
-- A blockchain interface
-- A browser-based AI wrapper
-- A chatbot application
-- A SaaS dashboard
-
-
-cmdOS is an AI execution environment where users delegate work to AI Agents.
-
-
-# Product Architecture
-
-The core product architecture:
+## Product Architecture
 
 ```
 User
-
-↓
-
-cmdOS Desktop Interface
-
-↓
-
-Admin Runtime
-
-↓
-
+  ↓
+cmdOS Desktop Interface (Control Center)
+  ↓
 Agent Runtime
-
-↓
-
+  ↓
 Execution Engine
-
-↓
-
+  ↓
 Operating System Environment
 ```
 
+The **Control Center** is the management surface (agents, models, connections,
+permissions, memory, execution logs, security). It is a surface within the Interaction
+Layer — not a separate runtime layer.
 
-cmdOS is designed as an AI control center that allows users to:
+---
 
-- Create intents
-- Manage Agents
-- Approve actions
-- Monitor executions
-- Control AI operations
+## Canonical Stack
 
+```
+Interaction Layer → Intelligence Layer → Agent Layer → Capability Layer
+→ Communication Layer → Runtime Layer → [Security: cross-cutting] → Kernel
+```
 
-# Desktop First Principle
+- **Interaction Layer** — captures user requests (Control Center + command input).
+- **Intelligence Layer** — AI cognition, reasoning, and model routing (AI Router).
+- **Agent Layer** — autonomous workers that plan and drive execution.
+- **Capability Layer** — executable abilities an Agent invokes to act on the world.
+- **Communication Layer** — messages, events, and agent-to-agent coordination.
+- **Runtime Layer** — the environment where approved operations execute.
+- **Security** — cross-cutting: identity, permission, policy, isolation, monitoring, audit.
+- **Kernel** — the single deterministic execution authority. No execution bypasses it.
 
-cmdOS must be built as a desktop application first.
+---
 
-Do not begin with:
+## Desktop-First Principle
 
-- Web application
-- Browser interface
-- DApp interface
+Build the desktop application first. Do not begin with a web, browser, or DApp interface.
 
-
-Development priority:
+Build order (this is the Stage 1 / MVP component sequence):
 
 1. Desktop Application Shell
-2. Admin Control Center
+2. Control Center
 3. Agent Runtime
 4. Execution Engine
 5. Capability System
 6. AI Router
 7. Memory System
 
+---
 
-# Admin Desktop
+## Execution Model
 
-Admin Desktop is the management and control layer of cmdOS.
+Every cmdOS task follows one pipeline:
 
-It is responsible for:
+```
+Intent → Understanding → Command → Execution Plan → Permission → Runtime → Verification → Result
+```
 
-- Agent lifecycle management
-- Permission management
-- AI model configuration
-- API connections
-- Memory management
-- Execution monitoring
-- Security controls
-- System configuration
-
-
-## cmdOS User Interface Direction
-
-The cmdOS interface represents an AI Execution Runtime.
-
-It is not a chat application.
-
-It is not a traditional dashboard.
-
-It is a command center where users delegate tasks and monitor AI Agent execution.
-
-The UI must communicate:
-
-- AI is active
-- Agents are working
-- Tasks are being executed
-- Permissions are controlled
-- Results are verifiable
-
-
-# Interface Concept
-
-The core experience:
-
-User Intent
-
-↓
-
-Agent Understanding
-
-↓
-
-Execution Planning
-
-↓
-
-Permission Approval
-
-↓
-
-Task Execution
-
-↓
-
-Completed Result
-
-
-The interface should make every step visible.
+The kernel-level expansion adds context assembly, reasoning, transaction, observation,
+and memory consolidation, but the contract above is the invariant every feature supports.
 
 ---
 
-# Main Layout
+## Agent Model
 
-The cmdOS Desktop interface consists of four major areas:
+AI Agents are the primary execution units. Each Agent has identity, memory, planning,
+capability access, execution control, and state.
 
 ```
-------------------------------------------------
-
-Top System Bar
-
-------------------------------------------------
-
-Left Navigation
-
-| Agent Panel | Execution Workspace | Task History |
-
-------------------------------------------------
-
-Command Input
-
-------------------------------------------------
+Agent → Capability → Execution Runtime → Result
 ```
+
+Rules:
+
+- Agents **invoke Capabilities, never Plugins**.
+- Agents **never mutate canonical state directly**. All actions pass through the
+  Capability Layer → Permission System → Execution Runtime.
+- Agents **cannot expand their own permissions**.
+- Multi-agent work is coordinated by the kernel Agent Orchestrator; agents never modify
+  another agent's execution state.
 
 ---
 
-# 1. Top System Bar
+## Capability and Plugin
 
-Purpose:
+- **Capability** — the core execution primitive: a versioned interface contract plus an
+  implementation, held in the Capability Registry. The only thing an Agent invokes at
+  runtime.
+- **Plugin** — a signed, versioned distribution package. On install, after security
+  validation, it registers its Capabilities (and optionally Agents) into the Registry.
+  Packaging and provenance, not a runtime concept.
 
-Provide system-level information.
-
-Displays:
-
-- cmdOS identity
-- Current runtime status
-- Active workspace
-- Active AI model
-- Resource status
-- Connection status
-
-
-Example:
-
-```
-cmdOS
-
-agent runtime
-
-/workspace
-
-model: Claude Opus
-
-online
-```
-
-The top bar represents the operating system state.
+There is **one Marketplace**, and it distributes Plugins.
 
 ---
 
-# 2. Left Navigation Panel
+## Local-First Architecture
 
-Purpose:
-
-Access cmdOS system modules.
-
-Required modules:
-
-- Command
-- Home
-- AI Router
-- API Connections
-- Executions
-- Memory
-- Marketplace
-- Security
-- Settings
-
-
-The navigation represents OS-level capabilities.
-
-It is not application navigation.
+Core components run on the user's machine whenever possible: Agent Runtime, Execution
+Engine, Permission System, Memory Layer. Cloud is supporting infrastructure only (model
+access, sync, marketplace, updates).
 
 ---
 
-# 3. Agent Runtime Panel
+## Security by Default
 
-Purpose:
+Security is built into every layer, never added afterward. Required everywhere: identity,
+permission control, policy evaluation, sandbox isolation, audit, and transparent actions.
 
-Display the currently active Agent.
-
-The Agent panel shows:
-
-- Agent identity
-- Agent status
-- Runtime state
-- Control actions
-
-
-Agent states:
-
-- Online
-- Thinking
-- Planning
-- Executing
-- Waiting approval
-- Completed
-- Failed
-
-
-Example:
-
-```
-AGENT
-
-cmdOS Agent
-
-● online
-
-[Turn off]
-```
+Sensitive operations require explicit user approval before execution — for example
+sending messages, deleting files, financial actions, and external communication. The
+canonical security model lives in `docs/05-architecture/6-security`.
 
 ---
 
-# 4. AI Model Panel
+## Observability
 
-Purpose:
-
-Display AI intelligence configuration.
-
-Shows:
-
-- Current model
-- Available models
-- Context usage
-- Session information
-
-
-Example:
-
-```
-MODEL
-
-Claude Opus
-
-context 200K
-
-ALL MODELS
-
-Claude Opus
-Claude Sonnet
-GPT
-Gemini
-Llama
-```
-
-The user should understand that cmdOS can route between multiple AI models.
+Everything meaningful is observable. Every important operation has status, history, logs,
+and a recovery path. Track agent actions, execution states, permissions, errors, and
+system events.
 
 ---
 
-# 5. Execution Workspace
+## Core Rules
 
-Purpose:
-
-The central area where Agent execution happens.
-
-This is the core of cmdOS.
-
-It displays:
-
-- User intent
-- AI understanding
-- Execution planning
-- Actions
-- Results
-
-
-Example:
-
-User:
-
-"Book a 30-minute sync tomorrow afternoon."
-
-
-cmdOS displays:
-
-```
-understanding
-
-find free 30-minute slot
-
-
-planning
-
-checking calendars
-
-evaluating availability
-
-
-permission required
-
-Calendar.CreateEvent
-
-Approve / Deny
-
-
-execution
-
-event created
-```
+- Documentation first; RFC before implementation.
+- State is authoritative. Cache is never authoritative. Memory is temporary. Events are
+  immutable.
+- Everything observable. Everything versioned. Secure by default.
+- Define interfaces before implementation.
+- Never bypass kernel contracts, modify canonical state directly, create hidden execution
+  paths, or break architecture boundaries.
+- Architectural changes update documentation before code.
 
 ---
 
-# 6. Permission Gate
+## UI Direction
 
-Purpose:
+The interface is an AI execution runtime, not a chat app and not a traditional dashboard.
+It is a command center where users delegate tasks and watch Agents execute.
 
-Protect user control.
+Main layout: Top System Bar · Left Navigation · (Agent Panel | Execution Workspace |
+Task History) · Command Input. The command input is an intent interface, not a chat box.
+Every step of execution must be visible.
 
-Sensitive actions require approval.
-
-The permission UI must clearly show:
-
-- Action
-- Target
-- Details
-- Risk
-
-
-Example:
-
-```
-cmdOS wants your approval
-
-Calendar.CreateEvent
-
-Team Sync
-
-15:00
-
-Room A
-
-
-Approve     Deny
-```
+Visual language: dark, terminal-inspired, premium developer-tool feel; monospace type,
+glass panels, subtle glow, status indicators, smooth transitions. Avoid chat bubbles,
+social-messaging style, SaaS cards, and generic admin dashboards.
 
 ---
 
-# 7. Task History Panel
+## Development Philosophy
 
-Purpose:
-
-Provide execution observability.
-
-Displays:
-
-- Previous tasks
-- Status
-- Time
-- Result
-
-
-Task states:
-
-- Completed
-- Running
-- Scheduled
-- Failed
-- Blocked
-- Queued
-
-
-Example:
+Build in dependency order; never build isolated features:
 
 ```
-Email Anna
-
-weekly summary
-
-done
-
-2m
+Foundation → Runtime → Agents → Capabilities → Execution → Product → Ecosystem
 ```
+
+Every feature must contribute to the AI Execution Operating System. The roadmap is
+defined as five product Stages in `docs/09-roadmap`; engineering workstreams ("Phases")
+map into those Stages via `ROADMAP.md`.
 
 ---
 
-# 8. Command Input
-
-Purpose:
-
-Primary user interaction.
-
-Users communicate through intent.
-
-Example:
+## Final Goal
 
 ```
-Tell cmdOS what to do next...
+Human Intent → cmdOS Desktop → AI Agents → Computer Execution → Completed Work
 ```
 
-The input is not a chat box.
-
-It is an intent command interface.
-
----
-
-# Visual Design Language
-
-The interface should follow:
-
-- Dark operating system aesthetic
-- Terminal-inspired design
-- Premium developer tool feeling
-- Minimal interface
-- High information density
-- Real-time updates
-
-
-Use:
-
-- Monospace typography
-- Glass panels
-- Subtle glow
-- Status indicators
-- Smooth transitions
-
-
-Avoid:
-
-- Chat bubbles
-- Social messaging style
-- SaaS cards
-- Generic admin dashboards
-
-
----
-
-# Product Feeling
-
-The final experience should feel like:
-
-An operating system for AI Agents.
-
-A combination of:
-
-- Terminal
-- Task manager
-- AI command center
-- Developer runtime
-- Personal AI assistant
-
-
-The user should feel:
-
-"I give instructions. My AI system executes."
-
-```
-
-
-The user experience should feel like:
-
-"I have an AI system operating my computer."
-
-
-Not:
-
-"I am chatting with an AI assistant."
-
-
-# Core Rules
-
-- Documentation first
-- RFC before implementation
-- Intent → Command → Execution Plan → Runtime
-- State is authoritative
-- Cache is never authoritative
-- Memory is temporary
-- Events are immutable
-- Security by default
-- Everything observable
-- Everything versioned
-
-
-# Architecture Principles
-
-cmdOS architecture must follow:
-
-- Deterministic execution
-- Explicit system boundaries
-- Modular architecture
-- Clear contracts
-- Observable behavior
-- Secure execution
-
-
-Never:
-
-- Bypass kernel contracts
-- Modify canonical state directly
-- Create hidden execution paths
-- Break architecture boundaries
-
-
-Always:
-
-- Keep architecture consistent
-- Update documentation with architectural changes
-- Define interfaces before implementation
-
-
-# Execution Model
-
-Every cmdOS task follows:
-
-```
-Intent
-
-↓
-
-Understanding
-
-↓
-
-Command
-
-↓
-
-Execution Plan
-
-↓
-
-Permission
-
-↓
-
-Runtime
-
-↓
-
-Verification
-
-↓
-
-Result
-```
-
-
-# Agent Model
-
-AI Agents are the primary execution units of cmdOS.
-
-Each Agent contains:
-
-- Identity
-- Memory
-- Planning
-- Capability access
-- Execution control
-- State management
-
-
-Agent execution model:
-
-```
-Agent
-
-↓
-
-Capability
-
-↓
-
-Execution Runtime
-
-↓
-
-Result
-```
-
-
-Agents must never directly manipulate system state.
-
-All actions must pass through:
-
-- Capability Layer
-- Permission System
-- Execution Runtime
-
-
-# Local First Architecture
-
-cmdOS follows a local-first execution philosophy.
-
-Core components should run on the user's machine whenever possible.
-
-Local components:
-
-- Agent Runtime
-- Execution Engine
-- Permission System
-- Memory Layer
-
-
-Cloud services are supporting infrastructure only.
-
-Cloud may provide:
-
-- AI model access
-- Synchronization
-- Marketplace
-- Updates
-
-
-# Security Principles
-
-Security is built into every layer.
-
-Required:
-
-- Permission control
-- User approval
-- Execution audit
-- Data protection
-- Transparent actions
-
-
-Sensitive operations require explicit approval.
-
-Examples:
-
-- Sending messages
-- File deletion
-- Financial actions
-- External communication
-
-
-# Observability
-
-Everything in cmdOS must be observable.
-
-Track:
-
-- Agent actions
-- Execution states
-- Permissions
-- Errors
-- System events
-
-
-Every important operation must have:
-
-- Status
-- History
-- Logs
-- Recovery path
-
-
-# Documentation
-
-Documentation is part of development.
-
-Every RFC must include:
-
-- Purpose
-- Responsibilities
-- Design Principles
-- Architecture
-- Security
-- Recovery
-- Observability
-- Summary
-
-
-Architectural changes must update documentation before implementation.
-
-
-# Development Philosophy
-
-Build in this order:
-
-Foundation
-
-↓
-
-Runtime
-
-↓
-
-Agents
-
-↓
-
-Capabilities
-
-↓
-
-Execution
-
-↓
-
-Product
-
-↓
-
-Ecosystem
-
-
-Do not build isolated features.
-
-Every feature must contribute to:
-
-The AI Execution Operating System.
-
-
-# Final Goal
-
-Build cmdOS into a universal AI Execution Operating System.
-
-The final computing model:
-
-```
-Human Intent
-
-↓
-
-cmdOS Desktop
-
-↓
-
-AI Agents
-
-↓
-
-Computer Execution
-
-↓
-
-Completed Work
-```
-
-
-The objective:
-
-Humans express what they want.
-
-AI understands the goal.
-
-Agents execute the work.
-
+Humans express what they want. AI understands the goal. Agents execute the work.
 Computers become intelligent execution partners.
