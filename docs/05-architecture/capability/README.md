@@ -4,6 +4,7 @@
 
 ## Overview
 
+
 The Capability Architecture defines how cmdOS provides abilities that allow AI Agents to interact with applications, services, devices, and external systems.
 
 Capabilities are the execution abilities of cmdOS.
@@ -44,6 +45,14 @@ Real World Execution
 
 
 ---
+
+## Plugin and Capability
+
+A Capability is the core execution primitive: a versioned interface contract plus an
+implementation, held in the Capability Registry, and the only thing an Agent invokes at
+runtime. A Plugin is a signed, versioned distribution package that, on install and after
+security validation, registers its Capabilities (and optionally Agents) into the Registry.
+Agents invoke Capabilities, never Plugins. There is one Marketplace, and it distributes Plugins.
 
 # 1. Capability Definition
 
