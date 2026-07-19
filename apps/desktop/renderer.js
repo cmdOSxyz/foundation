@@ -172,3 +172,32 @@ async function setupKeyUI() {
   };
 }
 setupKeyUI();
+
+// --- Workspace setup ---
+async function setupWorkspaceUI() {
+  const ws = await window.cmdos.getWorkspace();
+  const bar = document.createElement("div");
+  bar.className = "panel";
+  bar.style.margin = "0 14px 14px";
+
+  function render(path) {
+    if (path) {
+      bar.innerHTML =
+        '<h4>WORKSPACE</h4><div style="color:var(--accent); font-size:12px; word-break:break-all;">📁 ' +
+        escapeHtml(path) + '</div>' +
+        '<button class="btn deny" id="changeWs" style="margin-top:8px;">Change folder</button>';
+    } else {
+      bar.innerHTML =
+        '<h4>WORKSPACE</h4><div style="color:var(--muted); font-size:12px;">No workspace selected.</div>' +
+        '<button class="btn approve" id="pickWs" style="margin-top:8px;">Select workspace</button>';
+    }
+    const pick = bar.querySelector("#pickWs") || bar.querySelector("#changeWs");
+    pick.onclick = async () => {
+      const res = await window.cmdos.pickWorkspace();
+      if (res.ok) render(res.path);
+    };
+  }
+  render(ws.path);
+  workspace.prepend(bar);
+}
+setupWorkspaceUI();

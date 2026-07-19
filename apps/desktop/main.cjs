@@ -6,7 +6,7 @@
 const { planWithClaude } = require("./anthropic-planner.cjs");
 const { runFilesystemStep, verifyFilesystemStep, inspectPath } = require("../../dist/capabilities/filesystem.js");
 const path = require("node:path");
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const keyStore = require("./key-store.cjs");
 
 function createWindow() {
@@ -63,6 +63,23 @@ ipcMain.handle("cmdos:plan", async (event, intentText, history) => {
   } catch (err) {
     return { ok: false, message: err && err.message ? err.message : String(err) };
   }
+});
+
+// Let the user pick a workspace folder.
+ipcMain.handle("cmdos:pickWorkspace", async () => {
+  const result = await dialog.showOpenDialog({
+    title: "Select a workspace folder for Alios",
+    properties: ["openDirectory"],
+  });
+  if (result.canceled || !result.filePaths[0]) return { ok: false };
+  const dir = result.filePaths[0];
+  keyStore.setKey("workspace", dir); // reuse key-store to persist it
+  return { ok: true, path: dir };
+});
+
+// Return the current workspace path (or null).
+ipcMain.handle("cmdos:getWorkspace", async () => {
+  return { ok: true, path: keyStore.getKey("workspace") };
 });
 
 app.whenReady().then(() => {
