@@ -20,7 +20,7 @@ Rules:
    behavior as the reference specification where applicable.
 
 Planned technical RFCs (continuing the existing sequence):
-- 0004 cmdKernel object model (seeds: `schemas/*.ts`; adds Transaction, Mandate, Budget)
+- 0004 cmdKernel object model — ACCEPTED, implemented in kernel/cmd-types (9 tests green)
 - 0005 Shadow World Engine (accepted-draft; seed: prototype filesystem dry-run/verify/undo)
 - 0006 cmdOS Machine & Agent Supervision (accepted-draft)
 - 0005 Transaction Engine (seed: `prototype/capabilities/filesystem.ts` dry-run/verify/undo)

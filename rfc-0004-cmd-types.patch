@@ -1,0 +1,1003 @@
+diff --git a/docs/rfcs/0000-rfc-process.md b/docs/rfcs/0000-rfc-process.md
+index fbbf89f..b070b3b 100644
+--- a/docs/rfcs/0000-rfc-process.md
++++ b/docs/rfcs/0000-rfc-process.md
+@@ -20,7 +20,7 @@ Rules:
+    behavior as the reference specification where applicable.
+ 
+ Planned technical RFCs (continuing the existing sequence):
+-- 0004 cmdKernel object model (seeds: `schemas/*.ts`; adds Transaction, Mandate, Budget)
++- 0004 cmdKernel object model — ACCEPTED, implemented in kernel/cmd-types (9 tests green)
+ - 0005 Shadow World Engine (accepted-draft; seed: prototype filesystem dry-run/verify/undo)
+ - 0006 cmdOS Machine & Agent Supervision (accepted-draft)
+ - 0005 Transaction Engine (seed: `prototype/capabilities/filesystem.ts` dry-run/verify/undo)
+diff --git a/docs/rfcs/0004-cmdkernel-object-model.md b/docs/rfcs/0004-cmdkernel-object-model.md
+new file mode 100644
+index 0000000..9b24ce4
+--- /dev/null
++++ b/docs/rfcs/0004-cmdkernel-object-model.md
+@@ -0,0 +1,93 @@
++# RFC-0004: cmdKernel Object Model (cmd-types)
++
++Version: 1.0
++Status: Accepted
++Category: Architecture
++Author: Lead Architect
++Implemented by: `kernel/cmd-types`
++
++---
++
++# 1. Summary
++
++Defines the shared object model of cmdOS — the "nouns" every other crate depends
++on. It ports the prototype's TypeScript `schemas/` into typed Rust and adds the
++three Strategy-v2 primitives that have no prototype equivalent: **Transaction**,
++**Mandate**, and **Budget**, plus the canonical **RiskClass** (R0–R3) and the
++two-tier **Agent** model.
++
++# 2. Motivation
++
++Everything above the object model (scheduler, transactions, policy, ledger,
++agent, shell) references these types. Fixing them once, correctly, prevents
++churn later. The prototype `schemas/` proved the core shapes in production; this
++RFC promotes them to the kernel language (Rust) and extends them for the v2
++architecture.
++
++# 3. Design
++
++Modules in `cmd-types`:
++
++- `common` — `Id` (UUID newtype), `Timestamp` (UTC), and **`RiskClass`**:
++  `R0ReadOnly`, `R1Reversible`, `R2Compensable`, `R3Irreversible`.
++  `may_be_autonomous()` returns false for R3 (load-bearing rule);
++  `is_reversible()` true for R0/R1.
++- `intent` — `Intent`, `IntentSource`, `IntentStatus`, `Objective`.
++- `plan` — `ExecutionPlan`, `PlanStep`, `PlanStatus`, `StepStatus`;
++  `ready_steps()` returns pending steps whose deps are satisfied.
++- `capability` — `Capability`, `CapabilityAction` (contract shape only).
++- `authority` — **`Budget`** (kernel-enforced money/action/time limits) and
++  **`Mandate`** (signable grant of authority; AP2-compatible in spirit).
++- `transaction` — **`Transaction`** and `TransactionPhase`
++  (simulated → snapshotted → executed → verified → committed | rolled_back).
++- `agent` — **`Agent`** with `AgentKind` (`User` | `Supervisor`), `TrustLevel`,
++  and `PermissionRequest` / `PermissionDecision`.
++- `event` — `Event`, `EventType` for the append-only ledger.
++
++All types derive `Serialize`/`Deserialize`. Maps use `BTreeMap` for
++deterministic serialization (stable hashing into the ledger).
++
++# 4. Mapping: prototype schemas → cmd-types
++
++| Prototype (`schemas/*.ts`) | cmd-types |
++|---|---|
++| `intent.ts` Intent/Source/Status | `intent` module |
++| `execution-plan.ts` ExecutionPlan/PlanStep | `plan` module |
++| `capability.ts` Capability/Action | `capability` module |
++| `capability.ts` `RiskLevel` (read_only/reversible/destructive/external) | `common::RiskClass` (R0/R1/R2/R3) |
++| `permission-request.ts` | `agent::PermissionRequest` |
++| `event.ts` | `event` module |
++| — (new) | `authority::Budget`, `authority::Mandate` |
++| — (new) | `transaction::Transaction` |
++| — (new) | `agent::Agent` (two-tier) |
++
++# 5. Mapping: archived kernel managers → cmd-types + downstream
++
++| Old kernel manager (archived roadmap) | New home |
++|---|---|
++| Object Manager | `cmd-types` object model + `cmd-kernel` registry |
++| State Manager | `cmd-kernel` (uses these types) |
++| Command Manager | `cmd-kernel` (semantic syscall dispatch) |
++| Execution Planner | `agent/alios` + `cmd-kernel` |
++| Transaction Manager | `cmd-transaction` (drives `Transaction`) |
++| Consistency Manager | `cmd-transaction` verify phase |
++| Lock Manager | `cmd-kernel` resource leases |
++| Memory Manager | `agent/alios` + `services/semfs` |
++| Cache Manager | deferred (H2) |
++
++# 6. Testing
++
++`cmd-types` ships 9 unit tests covering: R3-never-autonomous, budget ceilings
++(including the no-money-authority case), mandate active/revoked, transaction
++rollback requiring a snapshot, supervisor-vs-user distinction, plan dependency
++readiness, and JSON round-trip. `cargo test -p cmd-types` is green.
++
++# 7. Reversibility Impact
++
++This RFC introduces no side effects; it defines the types through which all
++reversibility (R0–R3, Transaction) is later expressed.
++
++# 8. Next
++
++`cmd-ledger` (consumes `Event`) then `cmd-transaction` (drives `Transaction`),
++each validated against the prototype behavior contracts.
+diff --git a/kernel/cmd-types/Cargo.toml b/kernel/cmd-types/Cargo.toml
+index 2395e8f..852b969 100644
+--- a/kernel/cmd-types/Cargo.toml
++++ b/kernel/cmd-types/Cargo.toml
+@@ -5,6 +5,8 @@ version.workspace = true
+ edition.workspace = true
+ license.workspace = true
+ 
+-# No dependencies in the skeleton. Add them from [workspace.dependencies]
+-# only when this crate's RFC is accepted (RFC-first rule, see CLAUDE.md).
+ [dependencies]
++serde.workspace = true
++serde_json.workspace = true
++uuid.workspace = true
++chrono.workspace = true
+diff --git a/kernel/cmd-types/src/agent.rs b/kernel/cmd-types/src/agent.rs
+new file mode 100644
+index 0000000..599575b
+--- /dev/null
++++ b/kernel/cmd-types/src/agent.rs
+@@ -0,0 +1,105 @@
++//! Agents and permission requests.
++//!
++//! The two-tier model from RFC-0006: a **User Agent** (owned by the user, does
++//! the work, untrusted by default) and **Alios** (the cmdOS-owned supervisor).
++//! `PermissionRequest` mirrors `schemas/permission-request.ts`.
++
++use crate::common::{Id, RiskClass, Timestamp};
++use serde::{Deserialize, Serialize};
++
++/// Which tier an agent belongs to. These are never collapsed.
++#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
++#[serde(rename_all = "snake_case")]
++pub enum AgentKind {
++    /// Created and owned by the user; does the work; untrusted by default.
++    User,
++    /// The cmdOS-owned supervisor. Exactly one per Machine. Cannot be disabled
++    /// by a user agent.
++    Supervisor,
++}
++
++/// Alios's running trust assessment of a user agent. Drives how tightly the
++/// supervisor gates that agent's actions.
++#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
++#[serde(rename_all = "snake_case")]
++pub enum TrustLevel {
++    /// Behaving within its role; normal gating.
++    Calm,
++    /// Some anomaly signals; tighter gating.
++    Cautious,
++    /// Suspended pending human review.
++    Quarantined,
++}
++
++/// An agent: a User Agent or the Alios supervisor.
++#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
++pub struct Agent {
++    pub id: Id,
++    pub kind: AgentKind,
++    /// Display name. For user agents this is user-chosen (e.g. "Nova").
++    pub name: String,
++    /// Avatar asset reference (e.g. "nova"). Optional for the supervisor.
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    pub avatar: Option<String>,
++    /// Free-text role/personality. Shapes tone ONLY — never authority.
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    pub role: Option<String>,
++    /// Supervisor's current trust assessment. `Calm` for a fresh agent;
++    /// not meaningful for the supervisor itself.
++    pub trust: TrustLevel,
++    pub created_at: Timestamp,
++}
++
++impl Agent {
++    /// Create a new user-owned agent with default (calm) trust.
++    pub fn new_user(name: impl Into<String>) -> Self {
++        Agent {
++            id: Id::new(),
++            kind: AgentKind::User,
++            name: name.into(),
++            avatar: None,
++            role: None,
++            trust: TrustLevel::Calm,
++            created_at: crate::common::now(),
++        }
++    }
++
++    /// Whether this agent is the supervisor (and therefore governs others).
++    pub fn is_supervisor(&self) -> bool {
++        matches!(self.kind, AgentKind::Supervisor)
++    }
++}
++
++/// The user's decision on a permission request.
++#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
++#[serde(rename_all = "snake_case")]
++pub enum PermissionDecision {
++    Pending,
++    Approved,
++    Denied,
++    Expired,
++}
++
++/// A request for the user to authorize one sensitive step before it runs.
++/// Raised by Alios; R3 actions ALWAYS produce one of these. Mirrors
++/// `schemas/permission-request.ts`.
++#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
++pub struct PermissionRequest {
++    pub id: Id,
++    pub plan_id: Id,
++    pub step_id: Id,
++    /// The agent whose action is being gated.
++    pub agent_id: Id,
++    /// The capability being invoked, e.g. `"filesystem"`.
++    pub capability: String,
++    /// The action being invoked, e.g. `"delete"`.
++    pub action: String,
++    /// Risk class that triggered the request.
++    pub risk: RiskClass,
++    /// Human-readable explanation of exactly what will happen.
++    pub explanation: String,
++    pub decision: PermissionDecision,
++    pub requested_at: Timestamp,
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    pub decided_at: Option<Timestamp>,
++}
+diff --git a/kernel/cmd-types/src/authority.rs b/kernel/cmd-types/src/authority.rs
+new file mode 100644
+index 0000000..b2548a8
+--- /dev/null
++++ b/kernel/cmd-types/src/authority.rs
+@@ -0,0 +1,105 @@
++//! Authority primitives introduced in Strategy v2: **Budget** and **Mandate**.
++//!
++//! These have no equivalent in the original TypeScript schemas. They exist so
++//! that authority sits *below* the agent, enforced by the kernel, where prompt
++//! injection cannot reach it. An agent holds only what it was granted.
++
++use crate::common::{Id, RiskClass, Timestamp};
++use serde::{Deserialize, Serialize};
++
++/// A hard, kernel-enforced spending/usage limit on an agent. Exhaustion pauses
++/// the agent and forces it to request renewal — it can never overspend.
++#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
++pub struct Budget {
++    pub id: Id,
++    /// The agent this budget constrains.
++    pub agent_id: Id,
++    /// Money ceiling in the smallest currency unit (e.g. cents), if any.
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    pub money_ceiling: Option<u64>,
++    /// Money already spent, same unit.
++    #[serde(default)]
++    pub money_spent: u64,
++    /// Currency code, e.g. `"USD"`. Only meaningful with a money ceiling.
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    pub currency: Option<String>,
++    /// Maximum number of actions this budget authorizes, if any.
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    pub action_ceiling: Option<u64>,
++    /// Actions already taken against this budget.
++    #[serde(default)]
++    pub actions_taken: u64,
++    /// When this budget stops being valid.
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    pub expires_at: Option<Timestamp>,
++}
++
++impl Budget {
++    /// Whether spending `amount` more would stay within the money ceiling.
++    /// `None` ceiling means "no money authority" -> always false for spending.
++    pub fn can_spend(&self, amount: u64) -> bool {
++        match self.money_ceiling {
++            Some(ceiling) => self.money_spent.saturating_add(amount) <= ceiling,
++            None => false,
++        }
++    }
++
++    /// Whether at least one more action is authorized.
++    pub fn has_action_headroom(&self) -> bool {
++        match self.action_ceiling {
++            Some(ceiling) => self.actions_taken < ceiling,
++            None => true, // no action cap set
++        }
++    }
++
++    /// Whether the budget is expired as of `at`.
++    pub fn is_expired(&self, at: Timestamp) -> bool {
++        matches!(self.expires_at, Some(exp) if at >= exp)
++    }
++}
++
++/// A cryptographically-signable grant of authority from the user to an agent to
++/// perform a *class* of actions within limits. AP2-compatible in spirit: it is
++/// the proof that an agent was permitted to act (especially to spend).
++///
++/// The signature itself is added by `cmd-policy`/`cmdpay`; this type is the
++/// signable content.
++#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
++pub struct Mandate {
++    pub id: Id,
++    /// The agent granted this mandate.
++    pub agent_id: Id,
++    /// Human-readable scope, e.g. `"research subscriptions"`.
++    pub scope: String,
++    /// The capability names this mandate authorizes, e.g. `["cmdpay", "browser"]`.
++    #[serde(default)]
++    pub capabilities: Vec<String>,
++    /// The highest risk class this mandate authorizes to run autonomously.
++    /// A mandate can never authorize autonomous R3 (enforced by policy), but the
++    /// field is kept explicit for auditing.
++    pub max_autonomous_risk: RiskClass,
++    /// Optional budget bound to this mandate.
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    pub budget_id: Option<Id>,
++    pub granted_at: Timestamp,
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    pub expires_at: Option<Timestamp>,
++    /// Set when the user revokes the mandate; revoked mandates authorize nothing.
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    pub revoked_at: Option<Timestamp>,
++}
++
++impl Mandate {
++    /// Whether this mandate is currently active (granted, not expired, not revoked).
++    pub fn is_active(&self, at: Timestamp) -> bool {
++        if self.revoked_at.is_some() {
++            return false;
++        }
++        !matches!(self.expires_at, Some(exp) if at >= exp)
++    }
++
++    /// Whether this mandate authorizes the named capability.
++    pub fn authorizes_capability(&self, capability: &str) -> bool {
++        self.capabilities.iter().any(|c| c == capability)
++    }
++}
+diff --git a/kernel/cmd-types/src/capability.rs b/kernel/cmd-types/src/capability.rs
+new file mode 100644
+index 0000000..563c503
+--- /dev/null
++++ b/kernel/cmd-types/src/capability.rs
+@@ -0,0 +1,44 @@
++//! Capabilities: the core execution primitive.
++//!
++//! An agent invokes a Capability action; only the runtime executes it, under
++//! permission control. This file defines the CONTRACT shape only — concrete
++//! implementations live under `capabilities/` and are exposed as MCP servers.
++//!
++//! Mirrors `schemas/capability.ts`, with `RiskLevel` replaced by the canonical
++//! [`RiskClass`](crate::common::RiskClass).
++
++use crate::common::{Id, RiskClass};
++use serde::{Deserialize, Serialize};
++
++/// A single action a capability can perform. This is the contract the planner
++/// reads to know what exists and what parameters it takes.
++#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
++pub struct CapabilityAction {
++    /// Action name, unique within the capability, e.g. `"rename"`.
++    pub name: String,
++    pub description: String,
++    /// Names of parameters this action expects.
++    pub parameters: Vec<String>,
++    /// Risk class of the action; drives the permission requirement.
++    pub risk: RiskClass,
++}
++
++/// The contract for a capability. Groups related actions under one name,
++/// e.g. `"filesystem"` with actions `list` / `read` / `rename` / `move`.
++#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
++pub struct Capability {
++    pub id: Id,
++    /// Capability name used by plan steps, e.g. `"filesystem"`.
++    pub name: String,
++    /// Semantic version of this capability's contract, e.g. `"1.0.0"`.
++    pub version: String,
++    pub description: String,
++    pub actions: Vec<CapabilityAction>,
++}
++
++impl Capability {
++    /// Look up an action by name.
++    pub fn action(&self, name: &str) -> Option<&CapabilityAction> {
++        self.actions.iter().find(|a| a.name == name)
++    }
++}
+diff --git a/kernel/cmd-types/src/common.rs b/kernel/cmd-types/src/common.rs
+new file mode 100644
+index 0000000..15799b0
+--- /dev/null
++++ b/kernel/cmd-types/src/common.rs
+@@ -0,0 +1,77 @@
++//! Shared primitives used across the whole object model.
++//!
++//! Mirrors the `Id` and `Timestamp` aliases from the TypeScript schemas
++//! (`schemas/intent.ts`) but gives them real types in Rust.
++
++use serde::{Deserialize, Serialize};
++use uuid::Uuid;
++
++/// A stable unique identifier for any object in cmdOS.
++///
++/// Wraps a UUID v4. Newtype rather than a bare `Uuid` so the compiler stops
++/// us from mixing, say, an intent id with an agent id.
++#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
++pub struct Id(pub Uuid);
++
++impl Id {
++    /// Generate a fresh random id.
++    pub fn new() -> Self {
++        Id(Uuid::new_v4())
++    }
++}
++
++impl Default for Id {
++    fn default() -> Self {
++        Self::new()
++    }
++}
++
++impl std::fmt::Display for Id {
++    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
++        write!(f, "{}", self.0)
++    }
++}
++
++/// An ISO-8601 / RFC-3339 timestamp in UTC.
++pub type Timestamp = chrono::DateTime<chrono::Utc>;
++
++/// Convenience: the current UTC time.
++pub fn now() -> Timestamp {
++    chrono::Utc::now()
++}
++
++/// Reversibility / impact class of an action. This is the single most important
++/// safety signal in cmdOS: it drives whether Alios lets an action run
++/// autonomously, asks for approval, or blocks it.
++///
++/// Supersedes the string `RiskLevel` union from `schemas/capability.ts`:
++/// - `read_only`  -> `R0`
++/// - `reversible` -> `R1`
++/// - `destructive`-> `R2`
++/// - `external`   -> `R3`
++///
++/// The Rn naming is canonical from Strategy v2; the old names map onto it 1:1.
++#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
++pub enum RiskClass {
++    /// R0 — observes state, changes nothing. Always safe to run.
++    R0ReadOnly,
++    /// R1 — changes state but is fully reversible (snapshot + undo).
++    R1Reversible,
++    /// R2 — changes state with side effects; compensable, not free to undo.
++    R2Compensable,
++    /// R3 — irreversible / affects the outside world. ALWAYS human-gated.
++    R3Irreversible,
++}
++
++impl RiskClass {
++    /// Whether an action of this class may ever run without explicit human
++    /// approval. R3 can never be autonomous, by rule.
++    pub fn may_be_autonomous(self) -> bool {
++        !matches!(self, RiskClass::R3Irreversible)
++    }
++
++    /// Whether cmdOS can reverse an action of this class after the fact.
++    pub fn is_reversible(self) -> bool {
++        matches!(self, RiskClass::R0ReadOnly | RiskClass::R1Reversible)
++    }
++}
+diff --git a/kernel/cmd-types/src/event.rs b/kernel/cmd-types/src/event.rs
+new file mode 100644
+index 0000000..d61893b
+--- /dev/null
++++ b/kernel/cmd-types/src/event.rs
+@@ -0,0 +1,62 @@
++//! Events: the append-only record of everything that happens.
++//!
++//! Every action, score, and intervention becomes an Event in the signed audit
++//! ledger (implemented in `cmd-ledger`; the prototype reference is
++//! `prototype/kernel/event-log.ts`). Mirrors `schemas/event.ts`.
++
++use crate::common::{Id, Timestamp};
++use serde::{Deserialize, Serialize};
++use std::collections::BTreeMap;
++
++/// The kind of thing that happened. Kept as an open, explicit enum so the
++/// ledger is self-describing.
++#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
++#[serde(rename_all = "snake_case")]
++pub enum EventType {
++    IntentReceived,
++    IntentUnderstood,
++    PlanCreated,
++    PermissionRequested,
++    PermissionDecided,
++    StepStarted,
++    StepSucceeded,
++    StepFailed,
++    TransactionCommitted,
++    TransactionRolledBack,
++    /// Alios scored an action R0–R3.
++    ActionScored,
++    /// Alios intervened (warn/pause/block/quarantine).
++    SupervisorIntervened,
++}
++
++/// One immutable entry in the audit ledger.
++#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
++pub struct Event {
++    pub id: Id,
++    #[serde(rename = "type")]
++    pub event_type: EventType,
++    pub at: Timestamp,
++    /// The plan this event relates to, if any.
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    pub plan_id: Option<Id>,
++    /// The agent this event relates to, if any.
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    pub agent_id: Option<Id>,
++    /// Free-form structured detail. Deterministic ordering for stable hashing.
++    #[serde(default)]
++    pub detail: BTreeMap<String, serde_json::Value>,
++}
++
++impl Event {
++    /// Create an event of the given type, stamped now.
++    pub fn new(event_type: EventType) -> Self {
++        Event {
++            id: Id::new(),
++            event_type,
++            at: crate::common::now(),
++            plan_id: None,
++            agent_id: None,
++            detail: BTreeMap::new(),
++        }
++    }
++}
+diff --git a/kernel/cmd-types/src/intent.rs b/kernel/cmd-types/src/intent.rs
+new file mode 100644
+index 0000000..3cf9e4a
+--- /dev/null
++++ b/kernel/cmd-types/src/intent.rs
+@@ -0,0 +1,79 @@
++//! The Intent: the first artifact in the canonical loop.
++//!
++//! Intent -> Understanding -> Planning -> Permission -> Execution -> Verification -> Result
++//!
++//! Mirrors `schemas/intent.ts`. An Intent is the structured, validated
++//! representation of what the user wants.
++
++use crate::common::{Id, Timestamp};
++use serde::{Deserialize, Serialize};
++use std::collections::BTreeMap;
++
++/// Where an intent came from.
++#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
++#[serde(rename_all = "snake_case")]
++pub enum IntentSource {
++    UserCommand,
++    Voice,
++    Scheduled,
++    /// Raised by an agent (e.g. a sub-task in a delegation).
++    Agent,
++}
++
++/// Lifecycle status of an intent as it moves through the loop.
++#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
++#[serde(rename_all = "snake_case")]
++pub enum IntentStatus {
++    /// Captured from the user, not yet understood.
++    Received,
++    /// Parsed and validated into a clear objective.
++    Understood,
++    /// An execution plan has been produced.
++    Planned,
++    /// Could not be understood or is not permitted.
++    Rejected,
++}
++
++/// The structured objective cmdOS understood from the raw request.
++#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
++pub struct Objective {
++    /// A short, normalized summary of what to achieve.
++    pub summary: String,
++    /// Optional structured parameters extracted from the request.
++    /// `BTreeMap` (not `HashMap`) so serialization is deterministic — important
++    /// because objectives get hashed into the audit ledger.
++    #[serde(default)]
++    pub parameters: BTreeMap<String, serde_json::Value>,
++}
++
++/// A single expressed goal from the user, plus cmdOS's understanding of it.
++#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
++pub struct Intent {
++    pub id: Id,
++    /// The raw natural-language request, exactly as written.
++    pub raw_text: String,
++    pub source: IntentSource,
++    pub created_at: Timestamp,
++    pub status: IntentStatus,
++    /// The structured objective; `None` until at least `Understood`.
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    pub objective: Option<Objective>,
++    /// Populated only when `Rejected`.
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    pub rejection_reason: Option<String>,
++}
++
++impl Intent {
++    /// Create a freshly received intent from raw user text.
++    pub fn received(raw_text: impl Into<String>, source: IntentSource) -> Self {
++        Intent {
++            id: Id::new(),
++            raw_text: raw_text.into(),
++            source,
++            created_at: crate::common::now(),
++            status: IntentStatus::Received,
++            objective: None,
++            rejection_reason: None,
++        }
++    }
++}
+diff --git a/kernel/cmd-types/src/lib.rs b/kernel/cmd-types/src/lib.rs
+index 0ff5361..27c9091 100644
+--- a/kernel/cmd-types/src/lib.rs
++++ b/kernel/cmd-types/src/lib.rs
+@@ -1,12 +1,206 @@
+-//! cmd-types — Shared object model: Intent, Agent, Capability, Transaction, Mandate, Budget
++//! # cmd-types — the cmdOS object model
+ //!
+-//! Implementation gated on its RFC in docs/rfcs/. Do not add logic here
+-//! until the corresponding RFC is accepted (see CLAUDE.md, RFC-first rule).
++//! The shared "nouns" of cmdOS. Every other crate depends on these and nothing
++//! else in the kernel. Defined by **RFC-0004**.
++//!
++//! The model has two layers:
++//!
++//! - **Ported from the prototype** (the TypeScript `schemas/`, which remain the
++//!   reference): [`Intent`], [`ExecutionPlan`]/[`PlanStep`], [`Capability`],
++//!   [`PermissionRequest`], [`Event`].
++//! - **New in Strategy v2**: [`RiskClass`] (R0–R3), [`Transaction`],
++//!   [`Mandate`], [`Budget`], and the two-tier [`Agent`] model.
++//!
++//! Core loop these types serve:
++//! Intent → Understanding → Planning → Permission → Execution → Verification → Result.
++//!
++//! Legacy kernel-manager mapping (from the archived roadmap) lives in RFC-0004.
++
++pub mod agent;
++pub mod authority;
++pub mod capability;
++pub mod common;
++pub mod event;
++pub mod intent;
++pub mod plan;
++pub mod transaction;
++
++// Flat re-exports so downstream crates can `use cmd_types::Intent;`.
++pub use agent::{Agent, AgentKind, PermissionDecision, PermissionRequest, TrustLevel};
++pub use authority::{Budget, Mandate};
++pub use capability::{Capability, CapabilityAction};
++pub use common::{now, Id, RiskClass, Timestamp};
++pub use event::{Event, EventType};
++pub use intent::{Intent, IntentSource, IntentStatus, Objective};
++pub use plan::{ExecutionPlan, PlanStatus, PlanStep, StepStatus};
++pub use transaction::{Transaction, TransactionPhase};
+ 
+ #[cfg(test)]
+ mod tests {
++    use super::*;
++
++    #[test]
++    fn risk_class_governs_autonomy_and_reversibility() {
++        assert!(RiskClass::R0ReadOnly.may_be_autonomous());
++        assert!(RiskClass::R1Reversible.may_be_autonomous());
++        assert!(RiskClass::R2Compensable.may_be_autonomous());
++        // The load-bearing rule: R3 can never be autonomous.
++        assert!(!RiskClass::R3Irreversible.may_be_autonomous());
++
++        assert!(RiskClass::R0ReadOnly.is_reversible());
++        assert!(RiskClass::R1Reversible.is_reversible());
++        assert!(!RiskClass::R2Compensable.is_reversible());
++        assert!(!RiskClass::R3Irreversible.is_reversible());
++    }
++
++    #[test]
++    fn intent_starts_received_without_objective() {
++        let i = Intent::received("clean my downloads", IntentSource::UserCommand);
++        assert_eq!(i.status, IntentStatus::Received);
++        assert!(i.objective.is_none());
++    }
++
++    #[test]
++    fn budget_enforces_money_ceiling() {
++        let mut b = Budget {
++            id: Id::new(),
++            agent_id: Id::new(),
++            money_ceiling: Some(100),
++            money_spent: 90,
++            currency: Some("USD".into()),
++            action_ceiling: None,
++            actions_taken: 0,
++            expires_at: None,
++        };
++        assert!(b.can_spend(10)); // 90 + 10 == 100, within ceiling
++        assert!(!b.can_spend(11)); // would exceed
++        b.money_spent = 100;
++        assert!(!b.can_spend(1)); // no headroom
++    }
++
++    #[test]
++    fn budget_without_money_ceiling_cannot_spend() {
++        let b = Budget {
++            id: Id::new(),
++            agent_id: Id::new(),
++            money_ceiling: None,
++            money_spent: 0,
++            currency: None,
++            action_ceiling: None,
++            actions_taken: 0,
++            expires_at: None,
++        };
++        assert!(!b.can_spend(1));
++    }
++
++    #[test]
++    fn mandate_active_unless_revoked_or_expired() {
++        let now = now();
++        let mut m = Mandate {
++            id: Id::new(),
++            agent_id: Id::new(),
++            scope: "research".into(),
++            capabilities: vec!["browser".into()],
++            max_autonomous_risk: RiskClass::R1Reversible,
++            budget_id: None,
++            granted_at: now,
++            expires_at: None,
++            revoked_at: None,
++        };
++        assert!(m.is_active(now));
++        assert!(m.authorizes_capability("browser"));
++        assert!(!m.authorizes_capability("cmdpay"));
++        m.revoked_at = Some(now);
++        assert!(!m.is_active(now));
++    }
++
++    #[test]
++    fn transaction_rollback_requires_snapshot() {
++        let mut t = Transaction {
++            id: Id::new(),
++            plan_id: Id::new(),
++            step_id: Id::new(),
++            phase: TransactionPhase::Executed,
++            snapshot_ref: Some("cas:abc123".into()),
++            reversible: true,
++            created_at: now(),
++            error: None,
++        };
++        assert!(t.can_roll_back());
++        t.snapshot_ref = None; // read-only action, nothing to restore
++        assert!(!t.can_roll_back());
++    }
++
++    #[test]
++    fn supervisor_is_distinguished_from_user_agent() {
++        let nova = Agent::new_user("Nova");
++        assert!(!nova.is_supervisor());
++        assert_eq!(nova.trust, TrustLevel::Calm);
++
++        let alios = Agent {
++            id: Id::new(),
++            kind: AgentKind::Supervisor,
++            name: "Alios".into(),
++            avatar: None,
++            role: Some("supervisor".into()),
++            trust: TrustLevel::Calm,
++            created_at: now(),
++        };
++        assert!(alios.is_supervisor());
++    }
++
++    #[test]
++    fn plan_ready_steps_respects_dependencies() {
++        let a = Id::new();
++        let step_a = PlanStep {
++            id: a,
++            description: "first".into(),
++            capability: "filesystem".into(),
++            action: "list".into(),
++            parameters: Default::default(),
++            depends_on: vec![],
++            requires_permission: false,
++            status: StepStatus::Pending,
++            error: None,
++        };
++        let step_b = PlanStep {
++            id: Id::new(),
++            description: "second".into(),
++            capability: "filesystem".into(),
++            action: "rename".into(),
++            parameters: Default::default(),
++            depends_on: vec![a],
++            requires_permission: false,
++            status: StepStatus::Pending,
++            error: None,
++        };
++        let plan = ExecutionPlan {
++            id: Id::new(),
++            intent_id: Id::new(),
++            created_at: now(),
++            status: PlanStatus::Approved,
++            steps: vec![step_a, step_b],
++            summary: "test".into(),
++        };
++        // Nothing completed yet: only step_a (no deps) is ready.
++        let ready = plan.ready_steps(&[]);
++        assert_eq!(ready.len(), 1);
++        assert_eq!(ready[0].id, a);
++
++        // After a completes (status flips to Succeeded), only step_b is ready:
++        // step_a is no longer Pending so it drops out of the ready set.
++        let mut plan = plan;
++        plan.steps[0].status = StepStatus::Succeeded;
++        let ready2 = plan.ready_steps(&[a]);
++        assert_eq!(ready2.len(), 1);
++        assert_ne!(ready2[0].id, a);
++    }
++
+     #[test]
+-    fn skeleton_builds() {
+-        assert!(true);
++    fn objects_roundtrip_through_json() {
++        let i = Intent::received("hello", IntentSource::Voice);
++        let json = serde_json::to_string(&i).unwrap();
++        let back: Intent = serde_json::from_str(&json).unwrap();
++        assert_eq!(i, back);
+     }
+ }
+diff --git a/kernel/cmd-types/src/plan.rs b/kernel/cmd-types/src/plan.rs
+new file mode 100644
+index 0000000..6326234
+--- /dev/null
++++ b/kernel/cmd-types/src/plan.rs
+@@ -0,0 +1,81 @@
++//! The ExecutionPlan: an ordered graph of steps the runtime executes.
++//!
++//! The AI proposes it; the kernel executes it. The AI never executes directly.
++//! Mirrors `schemas/execution-plan.ts`.
++
++use crate::common::{Id, Timestamp};
++use serde::{Deserialize, Serialize};
++use std::collections::BTreeMap;
++
++/// Lifecycle status of a whole plan.
++#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
++#[serde(rename_all = "snake_case")]
++pub enum PlanStatus {
++    Draft,
++    AwaitingPermission,
++    Approved,
++    Executing,
++    Completed,
++    Failed,
++    RolledBack,
++}
++
++/// Lifecycle status of a single step.
++#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
++#[serde(rename_all = "snake_case")]
++pub enum StepStatus {
++    Pending,
++    Running,
++    Succeeded,
++    Failed,
++    Skipped,
++}
++
++/// One unit of work in a plan. A step invokes exactly one capability action and
++/// never mutates state directly — the runtime executes it under permission
++/// control. Mirrors the `PlanStep` interface.
++#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
++pub struct PlanStep {
++    pub id: Id,
++    pub description: String,
++    /// Capability name, e.g. `"filesystem"`.
++    pub capability: String,
++    /// Action name within that capability, e.g. `"rename"`.
++    pub action: String,
++    #[serde(default)]
++    pub parameters: BTreeMap<String, serde_json::Value>,
++    /// Ids of steps that must complete before this one (the DAG edges).
++    #[serde(default)]
++    pub depends_on: Vec<Id>,
++    pub requires_permission: bool,
++    pub status: StepStatus,
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    pub error: Option<String>,
++}
++
++/// The full plan derived from an Intent: an ordered set of steps plus metadata.
++#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
++pub struct ExecutionPlan {
++    pub id: Id,
++    /// The intent this plan fulfills.
++    pub intent_id: Id,
++    pub created_at: Timestamp,
++    pub status: PlanStatus,
++    pub steps: Vec<PlanStep>,
++    pub summary: String,
++}
++
++impl ExecutionPlan {
++    /// Steps whose dependencies are all satisfied by `completed`, and which are
++    /// still pending. This is the set the scheduler may start next.
++    ///
++    /// Kept deliberately simple here (the object model); the real scheduling
++    /// policy lives in `cmd-kernel`.
++    pub fn ready_steps<'a>(&'a self, completed: &[Id]) -> Vec<&'a PlanStep> {
++        self.steps
++            .iter()
++            .filter(|s| s.status == StepStatus::Pending)
++            .filter(|s| s.depends_on.iter().all(|d| completed.contains(d)))
++            .collect()
++    }
++}
+diff --git a/kernel/cmd-types/src/transaction.rs b/kernel/cmd-types/src/transaction.rs
+new file mode 100644
+index 0000000..e2aeffb
+--- /dev/null
++++ b/kernel/cmd-types/src/transaction.rs
+@@ -0,0 +1,59 @@
++//! The Transaction: the v2 primitive that makes execution reversible.
++//!
++//! Every side-effecting action runs as a transaction:
++//! simulate/shadow -> snapshot -> execute -> verify -> commit | rollback.
++//!
++//! This type is the object-model record of that lifecycle. The engine that
++//! drives it lives in `cmd-transaction`; the behavior it must satisfy is
++//! specified by `prototype/tests/filesystem.behavior.test.ts`.
++
++use crate::common::{Id, Timestamp};
++use serde::{Deserialize, Serialize};
++
++/// The phase a transaction is in. Ordered to match the pipeline.
++#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
++#[serde(rename_all = "snake_case")]
++pub enum TransactionPhase {
++    /// Ran in a shadow world; no real effect yet.
++    Simulated,
++    /// Pre-state of affected resources captured.
++    Snapshotted,
++    /// Applied to real state.
++    Executed,
++    /// Post-state checked against the intended outcome.
++    Verified,
++    /// Made permanent (still undoable via the snapshot within the retention window).
++    Committed,
++    /// Reverted using the snapshot; real state restored.
++    RolledBack,
++}
++
++/// A record of one reversible unit of execution, tied to a plan step.
++#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
++pub struct Transaction {
++    pub id: Id,
++    /// The plan this transaction belongs to.
++    pub plan_id: Id,
++    /// The specific step this transaction executes.
++    pub step_id: Id,
++    pub phase: TransactionPhase,
++    /// Opaque handle to the captured pre-state (e.g. a content-addressed snapshot
++    /// id), if one was taken. `None` for read-only (R0) actions.
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    pub snapshot_ref: Option<String>,
++    /// Whether an undo path is registered and currently valid.
++    pub reversible: bool,
++    pub created_at: Timestamp,
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    pub error: Option<String>,
++}
++
++impl Transaction {
++    /// Whether this transaction can still be rolled back: it has a snapshot,
++    /// is marked reversible, and hasn't already been rolled back.
++    pub fn can_roll_back(&self) -> bool {
++        self.reversible
++            && self.snapshot_ref.is_some()
++            && self.phase != TransactionPhase::RolledBack
++    }
++}
