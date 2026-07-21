@@ -8,6 +8,7 @@ const { runFilesystemStep, verifyFilesystemStep, inspectPath, dryRunFilesystemSt
 const path = require("node:path");
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const keyStore = require("./key-store.cjs");
+const receiptStore = require("./receipt-store.cjs");
 
 // Remembers the last undoable action so the UI can reverse it.
 let lastUndoable = null;
@@ -53,6 +54,18 @@ ipcMain.handle("cmdos:runStep", async (event, step) => {
       }
     }
 
+    // Record an immutable execution receipt (proof of what happened).
+    receiptStore.addReceipt({
+      capability: step.capability,
+      action: step.action,
+      description: step.description || "",
+      parameters: step.parameters || {},
+      approved: Boolean(step.requiresPermission),
+      result: check.ok ? "success" : "failed",
+      message: result.message,
+      reversible: Boolean(lastUndoable),
+    });
+
     return { ok: check.ok, message: result.message + " | " + check.message, canUndo: Boolean(lastUndoable) };
   } catch (err) {
     return { ok: false, message: "FAILED: " + (err && err.message ? err.message : String(err)), canUndo: false };
@@ -72,6 +85,11 @@ ipcMain.handle("cmdos:undo", async () => {
   } catch (err) {
     return { ok: false, message: "Undo failed: " + (err && err.message ? err.message : String(err)) };
   }
+});
+
+ipcMain.handle("cmdos:getReceipts", async () => {
+  const all = receiptStore.readReceipts();
+  return { ok: true, receipts: all.reverse() };
 });
 
 // Save the user's API key (BYOK). Never logged, never sent anywhere.

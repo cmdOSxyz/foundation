@@ -194,6 +194,7 @@ const doneEl = document.createElement("div");
   doneEl.className = "trace";
   doneEl.textContent = "✓ completed · audit trail written";
   cm.appendChild(doneEl);
+  loadReceipts(); // refresh the audit trail
 }
 
 // Enter runs the intent.
@@ -255,3 +256,32 @@ async function setupWorkspaceUI() {
   workspace.prepend(bar);
 }
 setupWorkspaceUI();
+
+// --- Audit trail: load real execution receipts into the right column ---
+async function loadReceipts() {
+  const res = await window.cmdos.getReceipts();
+  if (!res.ok) return;
+
+  const historyCol = document.getElementById("historyCol");
+  if (!historyCol) return;
+
+  let html = '<h4 style="color:var(--dim); font-size:10px; letter-spacing:1px;">AUDIT TRAIL</h4>';
+  if (res.receipts.length === 0) {
+    html += '<div style="color:var(--muted); font-size:12px;">No actions yet.</div>';
+  } else {
+    for (const r of res.receipts.slice(0, 20)) {
+      const statusColor = r.result === "success" ? "var(--accent)" : "#f87171";
+      const time = new Date(r.timestamp).toLocaleTimeString();
+      html +=
+        '<div class="task">' +
+        '<div class="t">' + escapeHtml(r.capability + "." + r.action) + "</div>" +
+        '<div class="s" style="color:' + statusColor + ';">' + escapeHtml(r.result) +
+        (r.reversible ? " · undoable" : "") + " · " + escapeHtml(time) + "</div>" +
+        '<div style="color:var(--dim); font-size:10px; margin-top:2px;">#' + escapeHtml(r.hash) + "</div>" +
+        "</div>";
+    }
+  }
+  historyCol.innerHTML = html;
+}
+
+loadReceipts();
