@@ -265,23 +265,61 @@ async function loadReceipts() {
   const historyCol = document.getElementById("historyCol");
   if (!historyCol) return;
 
-  let html = '<h4 style="color:var(--dim); font-size:10px; letter-spacing:1px;">AUDIT TRAIL</h4>';
-  if (res.receipts.length === 0) {
-    html += '<div style="color:var(--muted); font-size:12px;">No actions yet.</div>';
-  } else {
-    for (const r of res.receipts.slice(0, 20)) {
-      const statusColor = r.result === "success" ? "var(--accent)" : "#f87171";
-      const time = new Date(r.timestamp).toLocaleTimeString();
-      html +=
-        '<div class="task">' +
-        '<div class="t">' + escapeHtml(r.capability + "." + r.action) + "</div>" +
-        '<div class="s" style="color:' + statusColor + ';">' + escapeHtml(r.result) +
-        (r.reversible ? " · undoable" : "") + " · " + escapeHtml(time) + "</div>" +
-        '<div style="color:var(--dim); font-size:10px; margin-top:2px;">#' + escapeHtml(r.hash) + "</div>" +
-        "</div>";
-    }
+  const receipts = res.receipts || [];
+  let html =
+    '<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">' +
+    '<h4 style="color:var(--dim); font-size:10px; letter-spacing:1px; margin:0;">AUDIT TRAIL</h4>' +
+    '<span style="color:var(--dim); font-size:10px;">' + receipts.length + ' logged</span>' +
+    "</div>";
+
+  if (receipts.length === 0) {
+    html += '<div style="color:var(--muted); font-size:12px; padding:8px 0;">No actions yet. Everything Alios does will be recorded here with proof.</div>';
+    historyCol.innerHTML = html;
+    return;
   }
+
+  receipts.slice(0, 30).forEach((r, i) => {
+    const ok = r.result === "success";
+    const statusColor = ok ? "var(--accent)" : "#f87171";
+    const icon = ok ? "&#10003;" : "&#10007;";
+    const time = new Date(r.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    const date = new Date(r.timestamp).toLocaleDateString();
+
+    html +=
+      '<div class="receipt" data-i="' + i + '" ' +
+      'style="border:1px solid var(--border); border-left:2px solid ' + statusColor + '; ' +
+      'border-radius:8px; padding:10px; margin-bottom:8px; cursor:pointer; background:var(--panel);">' +
+      // top row: action + status icon
+      '<div style="display:flex; align-items:center; justify-content:space-between;">' +
+      '<span style="color:var(--text); font-size:12px; font-weight:700;">' +
+      escapeHtml(r.capability) + '.' + escapeHtml(r.action) + '</span>' +
+      '<span style="color:' + statusColor + '; font-size:12px;">' + icon + '</span>' +
+      '</div>' +
+      // meta row
+      '<div style="color:var(--muted); font-size:10px; margin-top:4px;">' +
+      time +
+      (r.approved ? ' &middot; approved' : '') +
+      (r.reversible ? ' &middot; undoable' : '') +
+      '</div>' +
+      // hidden detail (revealed on click)
+      '<div class="receipt-detail" style="display:none; margin-top:8px; padding-top:8px; border-top:1px solid var(--border);">' +
+      '<div style="color:var(--dim); font-size:10px;">' + escapeHtml(r.description || '') + '</div>' +
+      '<div style="color:var(--text); font-size:11px; margin-top:4px; word-break:break-all;">' + escapeHtml(r.message || '') + '</div>' +
+      '<div style="color:var(--dim); font-size:9px; margin-top:6px;">' + date + ' &middot; ' + escapeHtml(r.id) + '</div>' +
+      '<div style="color:var(--accent); font-size:9px; margin-top:2px;">hash: ' + escapeHtml(r.hash) + '</div>' +
+      '</div>' +
+      '</div>';
+  });
+
   historyCol.innerHTML = html;
+
+  // Click a receipt to expand/collapse its detail.
+  historyCol.querySelectorAll(".receipt").forEach((el) => {
+    el.addEventListener("click", () => {
+      const detail = el.querySelector(".receipt-detail");
+      detail.style.display = detail.style.display === "none" ? "block" : "none";
+    });
+  });
 }
 
 loadReceipts();
