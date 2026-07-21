@@ -52,8 +52,6 @@ impl Transaction {
     /// Whether this transaction can still be rolled back: it has a snapshot,
     /// is marked reversible, and hasn't already been rolled back.
     pub fn can_roll_back(&self) -> bool {
-        self.reversible
-            && self.snapshot_ref.is_some()
-            && self.phase != TransactionPhase::RolledBack
+        self.reversible && self.snapshot_ref.is_some() && self.phase != TransactionPhase::RolledBack
     }
 }
