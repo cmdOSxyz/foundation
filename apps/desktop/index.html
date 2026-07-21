@@ -114,14 +114,10 @@
 
       <!-- Workspace (scroll area + input pinned at bottom) -->
       <div class="col workspace-col">
-        <div class="workspace-scroll" id="workspace">
-          <div class="msg you">
-            <div class="who">You</div>
-            <div>Hey cmdOS, email Anna a summary of this week's progress.</div>
-          </div>
+       <div class="workspace-scroll" id="workspace">
           <div class="msg">
-            <div class="who">cmdOS</div>
-            <div>Happy to. I'll gather this week's activity, then write something Anna can skim in ten seconds.</div>
+            <div class="who">Alios</div>
+            <div>Hi! I'm Alios. What can I help you with today?</div>
           </div>
         </div>
         <div class="cmdbar">
@@ -129,17 +125,11 @@
         </div>
       </div>
 
-      <!-- History -->
-      <div class="col">
-        <h4 style="color:var(--dim); font-size:10px; letter-spacing:1px;">TASK HISTORY</h4>
-        <div class="task"><div class="t">Email Anna &middot; weekly summary</div><div class="s done">done &middot; 2m</div></div>
-        <div class="task"><div class="t">Debounce util + 4 tests</div><div class="s done">done &middot; 5m</div></div>
-        <div class="task"><div class="t">Deploy staging build</div><div class="s done">done &middot; 12m</div></div>
-        <div class="task"><div class="t">Vendor API call</div><div class="s blocked">blocked &middot; 1h</div></div>
-        <div class="task"><div class="t">Summarize inbox</div><div class="s">queued &middot; &mdash;</div></div>
-        <div class="col" id="historyCol"></div>
+        <!-- Audit trail (filled by loadReceipts) -->
+      <div class="col" id="historyCol">
+        <h4 style="color:var(--dim); font-size:10px; letter-spacing:1px;">AUDIT TRAIL</h4>
+        <div style="color:var(--muted); font-size:12px;">Loading…</div>
       </div>
-    </div>
 
     <script src="renderer.js"></script>
   </body>
