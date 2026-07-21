@@ -11,4 +11,5 @@ contextBridge.exposeInMainWorld("cmdos", {
   pickWorkspace: () => ipcRenderer.invoke("cmdos:pickWorkspace"),
   getWorkspace: () => ipcRenderer.invoke("cmdos:getWorkspace"),
   dryRun: (step) => ipcRenderer.invoke("cmdos:dryRun", step),
+  undo: () => ipcRenderer.invoke("cmdos:undo"),
 });

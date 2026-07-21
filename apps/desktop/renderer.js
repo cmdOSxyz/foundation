@@ -165,8 +165,35 @@ async function runIntent(text) {
     const color = res.ok ? "" : ' style="color:#f87171;"';
     cm.innerHTML += '<div class="trace"' + color + ">" + mark + " " + escapeHtml(res.message) + "</div>";
     if (!res.ok) return;
+
+    // Offer an Undo button for reversible actions.
+    if (res.canUndo) {
+      const undoWrap = document.createElement("div");
+      undoWrap.style.margin = "6px 0";
+      const undoBtn = document.createElement("button");
+      undoBtn.className = "btn deny";
+      undoBtn.textContent = "↶ Undo";
+      undoWrap.appendChild(undoBtn);
+      cm.appendChild(undoWrap);
+
+      undoBtn.addEventListener("click", async () => {
+        undoBtn.disabled = true;
+        undoBtn.textContent = "Undoing…";
+        const u = await window.cmdos.undo();
+        const result = document.createElement("div");
+        result.className = "trace";
+        if (!u.ok) result.style.color = "#f87171";
+        result.textContent = (u.ok ? "✓ " : "✗ ") + u.message;
+        undoWrap.replaceWith(result);
+        workspace.scrollTop = workspace.scrollHeight;
+      });
+      workspace.scrollTop = workspace.scrollHeight;
+    }
   }
-  cm.innerHTML += '<div class="trace">&#10003; completed &middot; audit trail written</div>';
+const doneEl = document.createElement("div");
+  doneEl.className = "trace";
+  doneEl.textContent = "✓ completed · audit trail written";
+  cm.appendChild(doneEl);
 }
 
 // Enter runs the intent.

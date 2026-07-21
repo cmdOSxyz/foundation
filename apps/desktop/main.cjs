@@ -9,6 +9,9 @@ const path = require("node:path");
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const keyStore = require("./key-store.cjs");
 
+// Remembers the last undoable action so the UI can reverse it.
+let lastUndoable = null;
+
 function createWindow() {
   const win = new BrowserWindow({
     width: 1200,
@@ -35,9 +38,39 @@ ipcMain.handle("cmdos:runStep", async (event, step) => {
   try {
     const result = await runFilesystemStep(step);
     const check = await verifyFilesystemStep(step);
-    return { ok: check.ok, message: result.message + " | " + check.message };
+
+    // Record how to undo this action, if possible.
+    lastUndoable = null;
+    if (step.action === "rename" || step.action === "move") {
+      const data = result.data || {};
+      if (data.from && data.to) {
+        lastUndoable = { action: step.action, from: data.to, to: data.from, label: step.action };
+      }
+    } else if (step.action === "delete") {
+      const data = result.data || {};
+      if (data.trashedPath && data.path) {
+        lastUndoable = { action: "restore", from: data.trashedPath, to: data.path, label: "delete" };
+      }
+    }
+
+    return { ok: check.ok, message: result.message + " | " + check.message, canUndo: Boolean(lastUndoable) };
   } catch (err) {
-    return { ok: false, message: "FAILED: " + (err && err.message ? err.message : String(err)) };
+    return { ok: false, message: "FAILED: " + (err && err.message ? err.message : String(err)), canUndo: false };
+  }
+});
+
+// Undo the last undoable action.
+ipcMain.handle("cmdos:undo", async () => {
+  if (!lastUndoable) return { ok: false, message: "Nothing to undo" };
+  try {
+    const { rename } = require("node:fs/promises");
+    const { resolve } = require("node:path");
+    await rename(resolve(lastUndoable.from), resolve(lastUndoable.to));
+    const label = lastUndoable.label;
+    lastUndoable = null;
+    return { ok: true, message: "Undone: " + label };
+  } catch (err) {
+    return { ok: false, message: "Undo failed: " + (err && err.message ? err.message : String(err)) };
   }
 });
 
