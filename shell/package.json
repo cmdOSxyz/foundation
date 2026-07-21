@@ -1,0 +1,8 @@
+{
+  "name": "cmdshell",
+  "private": true,
+  "version": "0.2.0",
+  "scripts": {
+    "dev": "echo 'Run: pnpm create tauri-app to initialize cmdShell (see docs/rfcs/)'"
+  }
+}

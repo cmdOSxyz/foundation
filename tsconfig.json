@@ -43,6 +43,6 @@
     "noEmit": true
   },
   
-    "include": ["schemas/**/*.ts", "kernel/**/*.ts", "capabilities/**/*.ts", "apps/**/*.ts"],
+    "include": ["schemas/**/*.ts", "prototype/**/*.ts"],
     "exclude": ["**/*.demo.ts"]
 }

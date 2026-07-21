@@ -1,15 +1,15 @@
 {
-  "name": "foundation",
+  "name": "cmdos",
   "version": "1.0.0",
   "type": "module",
-  "description": "<p align=\"center\">\r   <h3 align=\"center\">The AI Execution Operating System</h3>\r   <p align=\"center\">Turn Intent Into Execution.</p>\r </p>",
+  "description": "cmdOS - The AI Execution Operating System. Alios executes, you stay in control.",
   "main": "index.js",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron apps/desktop/main.cjs",
+    "test": "npm run build && node --test \"dist/prototype/tests/*.test.js\"",
+    "start": "electron prototype/apps/desktop/main.cjs",
     "build": "tsc --noEmit false --outDir dist"
   },
   "repository": {
@@ -17,8 +17,8 @@
     "url": "git+https://github.com/cmdOSxyz/foundation.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "cmdOS",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/cmdOSxyz/foundation/issues"
   },
