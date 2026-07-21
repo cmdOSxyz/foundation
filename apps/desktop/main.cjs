@@ -4,7 +4,7 @@
 // Load the compiled core (built into dist/ by `npm run build`).
 
 const { planWithClaude } = require("./anthropic-planner.cjs");
-const { runFilesystemStep, verifyFilesystemStep, inspectPath } = require("../../dist/capabilities/filesystem.js");
+const { runFilesystemStep, verifyFilesystemStep, inspectPath, dryRunFilesystemStep } = require("../../dist/capabilities/filesystem.js");
 const path = require("node:path");
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const keyStore = require("./key-store.cjs");
@@ -80,6 +80,16 @@ ipcMain.handle("cmdos:pickWorkspace", async () => {
 // Return the current workspace path (or null).
 ipcMain.handle("cmdos:getWorkspace", async () => {
   return { ok: true, path: keyStore.getKey("workspace") };
+});
+
+// Preview a step's effect without executing it.
+ipcMain.handle("cmdos:dryRun", async (event, step) => {
+  try {
+    const preview = await dryRunFilesystemStep(step);
+    return { ok: true, preview };
+  } catch (err) {
+    return { ok: false, message: err && err.message ? err.message : String(err) };
+  }
 });
 
 app.whenReady().then(() => {

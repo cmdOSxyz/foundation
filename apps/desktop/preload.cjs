@@ -10,4 +10,5 @@ contextBridge.exposeInMainWorld("cmdos", {
   plan: (intentText, history) => ipcRenderer.invoke("cmdos:plan", intentText, history),
   pickWorkspace: () => ipcRenderer.invoke("cmdos:pickWorkspace"),
   getWorkspace: () => ipcRenderer.invoke("cmdos:getWorkspace"),
+  dryRun: (step) => ipcRenderer.invoke("cmdos:dryRun", step),
 });

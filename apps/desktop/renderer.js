@@ -53,19 +53,46 @@ function escapeHtml(s) {
   return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-// Show an approval box; resolve true (approve) or false (deny).
-function askApproval(container, step) {
+// Show an approval box WITH a dry-run preview; resolve true/false.
+async function askApproval(container, step) {
+  // Get the preview first.
+  let previewHtml = '<div style="color:var(--muted); font-size:12px;">Loading preview…</div>';
+  const box = document.createElement("div");
+  box.className = "approval";
+  box.innerHTML =
+    '<div class="label">CMDOS WANTS YOUR APPROVAL</div>' +
+    '<div class="cmd">' + escapeHtml(step.capability) + "." + escapeHtml(step.action) + "</div>" +
+    '<div id="previewArea" style="margin-bottom:10px;">' + previewHtml + '</div>' +
+    '<button class="btn approve">Approve</button>' +
+    '<button class="btn deny">Deny</button>';
+  container.appendChild(box);
+  workspace.scrollTop = workspace.scrollHeight;
+
+  // Fetch and render the dry-run preview.
+  const res = await window.cmdos.dryRun(step);
+  const area = box.querySelector("#previewArea");
+  if (res.ok) {
+    const p = res.preview;
+    const revColor = p.reversible ? "var(--accent)" : "#f87171";
+    const revText = p.reversible ? "Reversible ✓" : "Cannot be undone ✗";
+    let html =
+      '<div style="font-size:12px; color:var(--text); background:var(--panel-2); ' +
+      'border:1px solid var(--border); border-radius:8px; padding:10px; margin-bottom:8px;">' +
+      '<div style="color:var(--dim); font-size:10px; letter-spacing:1px; margin-bottom:6px;">PREVIEW — WHAT WILL HAPPEN</div>' +
+      '<div style="word-break:break-all;">' + escapeHtml(p.summary) + "</div>" +
+      '<div style="color:' + revColor + '; margin-top:6px;">' + revText + "</div>";
+    if (p.warnings && p.warnings.length) {
+      html += '<div style="color:#facc15; margin-top:6px;">⚠ ' +
+        p.warnings.map(escapeHtml).join("<br>⚠ ") + "</div>";
+    }
+    html += "</div>";
+    area.innerHTML = html;
+  } else {
+    area.innerHTML = '<div style="color:#f87171; font-size:12px;">Preview failed: ' + escapeHtml(res.message) + "</div>";
+  }
+  workspace.scrollTop = workspace.scrollHeight;
+
   return new Promise((resolve) => {
-    const box = document.createElement("div");
-    box.className = "approval";
-    box.innerHTML =
-      '<div class="label">CMDOS WANTS YOUR APPROVAL</div>' +
-      '<div class="cmd">' + escapeHtml(step.capability) + "." + escapeHtml(step.action) + "</div>" +
-      '<div style="color:var(--muted); font-size:12px; margin-bottom:10px;">' + escapeHtml(step.description) + "</div>" +
-      '<button class="btn approve">Approve</button>' +
-      '<button class="btn deny">Deny</button>';
-    container.appendChild(box);
-    workspace.scrollTop = workspace.scrollHeight;
     box.querySelector(".approve").onclick = () => { box.remove(); resolve(true); };
     box.querySelector(".deny").onclick = () => { box.remove(); resolve(false); };
   });
