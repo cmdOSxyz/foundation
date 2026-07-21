@@ -212,3 +212,78 @@ export async function inspectPath(p: string): Promise<PathInfo> {
     return { exists: false, fullPath };
   }
 }
+// --- Dry-run (preview) ------------------------------------------------------
+// Describe exactly what a step WOULD do, without doing it. Read-only.
+// This powers the "see the future before you approve" experience.
+
+export interface DryRunResult {
+  summary: string;        // human-readable description of the effect
+  reversible: boolean;    // can this be undone?
+  warnings: string[];     // anything the user should be careful about
+}
+
+export async function dryRunFilesystemStep(step: PlanStep): Promise<DryRunResult> {
+  const p = step.parameters;
+
+  switch (step.action) {
+    case "list":
+    case "read": {
+      const path = String(p.path ?? "");
+      const info = await inspectPath(path);
+      return {
+        summary: info.exists
+          ? "Read-only. Will inspect " + info.fullPath + " (nothing changes)."
+          : "Path not found: " + info.fullPath,
+        reversible: true,
+        warnings: info.exists ? [] : ["Target does not exist"],
+      };
+    }
+
+    case "mkdir": {
+      const path = String(p.path ?? "");
+      const info = await inspectPath(path);
+      return {
+        summary: "Will create folder: " + info.fullPath,
+        reversible: true,
+        warnings: info.exists ? ["Folder already exists — no change"] : [],
+      };
+    }
+
+    case "rename":
+    case "move": {
+      const from = String(p.from ?? "");
+      const to = String(p.to ?? "");
+      const fromInfo = await inspectPath(from);
+      const toInfo = await inspectPath(to);
+      const warnings: string[] = [];
+      if (!fromInfo.exists) warnings.push("Source does not exist: " + fromInfo.fullPath);
+      if (toInfo.exists) warnings.push("Target already exists and may be overwritten: " + toInfo.fullPath);
+      return {
+        summary:
+          "Will " + step.action + ": " + fromInfo.fullPath +
+          "  →  " + toInfo.fullPath +
+          (fromInfo.exists && fromInfo.sizeBytes !== undefined ? " (" + fromInfo.sizeBytes + " bytes)" : ""),
+        reversible: true,
+        warnings,
+      };
+    }
+
+    case "delete": {
+      const path = String(p.path ?? "");
+      const info = await inspectPath(path);
+      return {
+        summary: info.exists
+          ? "Will DELETE: " + info.fullPath +
+            (info.sizeBytes !== undefined ? " (" + info.sizeBytes + " bytes)" : "")
+          : "Nothing to delete — not found: " + info.fullPath,
+        reversible: false, // delete is the dangerous one
+        warnings: info.exists
+          ? ["This is permanent and cannot be undone yet"]
+          : ["Target does not exist"],
+      };
+    }
+
+    default:
+      return { summary: "No preview available for " + step.action, reversible: true, warnings: [] };
+  }
+}
