@@ -80,9 +80,19 @@ export async function runFilesystemStep(step: PlanStep): Promise<FsResult> {
     case "delete": {
       const path = String(p.path ?? "");
       if (!path) throw new Error("delete requires a 'path' parameter");
-      await stat(path); // ensure it exists before deleting
-      await rm(path, { recursive: false });
-      return { ok: true, message: "Deleted " + path, data: { path } };
+      await stat(path); // ensure it exists
+
+      // Safe delete: move into a hidden trash folder so it can be restored.
+      const trashDir = join(dirname(resolve(path)), ".cmdos-trash");
+      await mkdir(trashDir, { recursive: true });
+      const trashedPath = join(trashDir, basename(path) + "." + Date.now());
+      await fsRename(resolve(path), trashedPath);
+
+      return {
+        ok: true,
+        message: "Deleted " + path + " (recoverable)",
+        data: { path, trashedPath },
+      };
     }
 
     default:
@@ -276,9 +286,9 @@ export async function dryRunFilesystemStep(step: PlanStep): Promise<DryRunResult
           ? "Will DELETE: " + info.fullPath +
             (info.sizeBytes !== undefined ? " (" + info.sizeBytes + " bytes)" : "")
           : "Nothing to delete — not found: " + info.fullPath,
-        reversible: false, // delete is the dangerous one
+        reversible: true, // safe delete: moved to trash, recoverable
         warnings: info.exists
-          ? ["This is permanent and cannot be undone yet"]
+          ? ["Moved to cmdOS trash; can be restored"]
           : ["Target does not exist"],
       };
     }
