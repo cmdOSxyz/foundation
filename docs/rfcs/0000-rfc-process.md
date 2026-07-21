@@ -25,7 +25,8 @@ Planned technical RFCs (continuing the existing sequence):
 - 0006 cmdOS Machine & Agent Supervision (accepted-draft)
 - 0005 Transaction Engine (seed: `prototype/capabilities/filesystem.ts` dry-run/verify/undo)
 - 0006 Permission & Degradation Model (seed: `prototype/kernel/permission-gate.ts`; adds R0-R3, scopes, graceful degradation)
-- 0007 AIPC: MCP/A2A binding and Agent Cards
+- 0007 cmd-ledger — ACCEPTED (6 tests green)
+- 0008 AIPC: MCP/A2A binding and Agent Cards
 - 0008 cmdPay mandates and budget enforcement
 - 0009 SemFS
 - 0010 NIS inference service

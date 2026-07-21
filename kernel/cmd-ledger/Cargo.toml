@@ -1,10 +1,12 @@
 [package]
 name = "cmd-ledger"
-description = "Append-only signed audit ledger"
+description = "Append-only, hash-chained signed audit ledger"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 
-# No dependencies in the skeleton. Add them from [workspace.dependencies]
-# only when this crate's RFC is accepted (RFC-first rule, see CLAUDE.md).
 [dependencies]
+cmd-types = { path = "../cmd-types" }
+serde.workspace = true
+serde_json.workspace = true
+sha2 = "0.10"
