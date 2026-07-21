@@ -11,3 +11,10 @@ tokenomics/
 secrets/
 
 sandbox/
+
+# Rust build output
+/target/
+Cargo.lock
+# Node
+node_modules/
+dist/

@@ -1,0 +1,10 @@
+[package]
+name = "cmd-transaction"
+description = "Simulate / snapshot / verify / commit / rollback engine"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+# No dependencies in the skeleton. Add them from [workspace.dependencies]
+# only when this crate's RFC is accepted (RFC-first rule, see CLAUDE.md).
+[dependencies]

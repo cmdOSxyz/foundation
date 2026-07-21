@@ -1,0 +1,10 @@
+[package]
+name = "aipc"
+description = "Agent IPC: MCP host runtime and A2A endpoint"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+# No dependencies in the skeleton. Add them from [workspace.dependencies]
+# only when this crate's RFC is accepted (RFC-first rule, see CLAUDE.md).
+[dependencies]

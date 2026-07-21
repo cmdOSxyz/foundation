@@ -1,0 +1,31 @@
+# RFC-0000: The cmdOS RFC Process
+
+Status: Accepted
+Category: Governance
+
+Every cmdOS component begins as an RFC. Technical RFCs live in this directory;
+governance RFCs live in `docs/00-governance/` (RFC-0001 Documentation Reconciliation
+and RFC-0003 Open-Core Governance already exist there — numbering is shared and
+continues across both locations, never restarted).
+
+Lifecycle: Draft -> Review -> Accepted -> Implemented -> (Superseded)
+
+Rules:
+1. No component code merges without an Accepted RFC.
+2. RFC numbers are sequential across the whole project and never reused.
+3. Superseded RFCs are marked, never deleted.
+4. Each technical RFC states: motivation, design, interfaces, security model,
+   reversibility class impact (R0-R3), and testing strategy.
+5. The prototype under `prototype/` is admissible evidence in any RFC: cite its
+   behavior as the reference specification where applicable.
+
+Planned technical RFCs (continuing the existing sequence):
+- 0004 cmdKernel object model (seeds: `schemas/*.ts`; adds Transaction, Mandate, Budget)
+- 0005 Shadow World Engine (accepted-draft; seed: prototype filesystem dry-run/verify/undo)
+- 0006 cmdOS Machine & Agent Supervision (accepted-draft)
+- 0005 Transaction Engine (seed: `prototype/capabilities/filesystem.ts` dry-run/verify/undo)
+- 0006 Permission & Degradation Model (seed: `prototype/kernel/permission-gate.ts`; adds R0-R3, scopes, graceful degradation)
+- 0007 AIPC: MCP/A2A binding and Agent Cards
+- 0008 cmdPay mandates and budget enforcement
+- 0009 SemFS
+- 0010 NIS inference service

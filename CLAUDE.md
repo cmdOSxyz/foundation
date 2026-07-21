@@ -1,213 +1,69 @@
-# CLAUDE.md
+# CLAUDE.md — cmdOS Engineering Guide
 
-Working agreement for anyone — human or AI — building cmdOS. This file is authoritative
-for product identity, architecture rules, and engineering conventions. When it conflicts
-with an older document, this file and the RFCs under `docs/` win.
+cmdOS is **The Operating System for AI Agents**. A user creates their own agent
+(named, with an avatar); it works inside a personal cloud computer (cmdOS Machine,
+RFC-0006), logging into their tools. **Alios** is the system-level supervisor that
+inspects, risk-scores (R0-R3), and governs every user agent — it never does the user's
+tasks and can never be disabled by a user agent. User agents are untrusted by default;
+R3 (irreversible) is always human-gated. Flagship tech: Shadow World Engine (RFC-0005),
+at VM level. Canonical strategy: `docs/01-vision/strategy-v2.md`. Roadmap: `ROADMAP.md`.
 
----
-
-## Project
-
-**cmdOS — The AI Execution Operating System.**
-
-## Mission
-
-Build a deterministic AI execution operating system. cmdOS turns human intent into
-real-world execution through AI Agents.
+Naming: **cmdOS** is the operating system; **Alios** is the agent living in it.
+The Horizon-1 product is called **cmdOS Layer** (an app on the user's existing OS).
 
 ---
 
-## Product Identity
-
-cmdOS is a standalone, AI-native **desktop** operating system application. The primary
-product is the **cmdOS Desktop Application**.
-
-cmdOS is an execution environment where users delegate work to AI Agents. It is **not**:
-
-- a chatbot or conversational assistant
-- a web application or browser-based AI wrapper
-- a DApp, Web3 app, or blockchain interface
-- a SaaS dashboard or collection of admin panels
-
-The user should feel: *"I have an AI system operating my computer,"* never *"I am
-chatting with an assistant."*
-
----
-
-## Product Architecture
+## Architecture Map
 
 ```
-User
-  ↓
-cmdOS Desktop Interface (Control Center)
-  ↓
-Agent Runtime
-  ↓
-Execution Engine
-  ↓
-Operating System Environment
+cmdos/
+├── kernel/            Rust workspace — self-developed core
+│   ├── cmd-types        Object model: Intent, Agent, Capability, Transaction, Mandate, Budget
+│   ├── cmd-kernel       Intent Scheduler + semantic syscalls
+│   ├── cmd-transaction  simulate → snapshot → execute → verify → commit/rollback
+│   ├── cmd-policy       R0–R3 permissions, budget enforcement, mandate checks
+│   └── cmd-ledger       Append-only signed audit ledger
+├── services/          semfs · nis (AI Router) · aipc (MCP/A2A) · cmdpay
+├── agent/alios/       Prime Agent (planning, memory, delegation)
+├── capabilities/      First-party Rust MCP servers (files, browser, terminal, mail, calendar)
+├── shell/             cmdShell (Tauri) — replaces the Electron prototype shell later
+├── schemas/           TypeScript contracts (shared with shell; mirror of cmd-types)
+├── prototype/         ⭐ REFERENCE IMPLEMENTATION (TypeScript/Electron) — runnable
+│   ├── kernel/          executor, event-log, permission-gate (behavior references)
+│   ├── capabilities/    filesystem.ts — dry-run/verify/undo reference for cmd-transaction
+│   ├── apps/desktop/    Electron shell (npm start)
+│   └── tests/           BEHAVIOR CONTRACTS — Rust ports must pass equivalent suites
+└── docs/              Specs. RFCs: docs/rfcs/ (technical) + docs/00-governance/ (governance)
 ```
 
-The **Control Center** is the management surface (agents, models, connections,
-permissions, memory, execution logs, security). It is a surface within the Interaction
-Layer — not a separate runtime layer.
+## Build & Test
 
----
-
-## Canonical Stack
-
-```
-Interaction Layer → Intelligence Layer → Agent Layer → Capability Layer
-→ Communication Layer → Runtime Layer → [Security: cross-cutting] → Kernel
+```bash
+cargo build --workspace          # Rust skeleton (must stay green)
+cargo test  --workspace
+npm install && npm test          # prototype behavior contracts (8 tests)
+npm start                        # run the Electron prototype
 ```
 
-- **Interaction Layer** — captures user requests (Control Center + command input).
-- **Intelligence Layer** — AI cognition, reasoning, and model routing (AI Router).
-- **Agent Layer** — autonomous workers that plan and drive execution.
-- **Capability Layer** — executable abilities an Agent invokes to act on the world.
-- **Communication Layer** — messages, events, and agent-to-agent coordination.
-- **Runtime Layer** — the environment where approved operations execute.
-- **Security** — cross-cutting: identity, permission, policy, isolation, monitoring, audit.
-- **Kernel** — the single deterministic execution authority. No execution bypasses it.
+## Hard Rules
 
----
-
-## Desktop-First Principle
-
-Build the desktop application first. Do not begin with a web, browser, or DApp interface.
-
-Build order (this is the Stage 1 / MVP component sequence):
-
-1. Desktop Application Shell
-2. Control Center
-3. Agent Runtime
-4. Execution Engine
-5. Capability System
-6. AI Router
-7. Memory System
-
----
-
-## Execution Model
-
-Every cmdOS task follows one pipeline:
-
-```
-Intent → Understanding → Command → Execution Plan → Permission → Runtime → Verification → Result
-```
-
-The kernel-level expansion adds context assembly, reasoning, transaction, observation,
-and memory consolidation, but the contract above is the invariant every feature supports.
-
----
-
-## Agent Model
-
-AI Agents are the primary execution units. Each Agent has identity, memory, planning,
-capability access, execution control, and state.
-
-```
-Agent → Capability → Execution Runtime → Result
-```
-
-Rules:
-
-- Agents **invoke Capabilities, never Plugins**.
-- Agents **never mutate canonical state directly**. All actions pass through the
-  Capability Layer → Permission System → Execution Runtime.
-- Agents **cannot expand their own permissions**.
-- Multi-agent work is coordinated by the kernel Agent Orchestrator; agents never modify
-  another agent's execution state.
-
----
-
-## Capability and Plugin
-
-- **Capability** — the core execution primitive: a versioned interface contract plus an
-  implementation, held in the Capability Registry. The only thing an Agent invokes at
-  runtime.
-- **Plugin** — a signed, versioned distribution package. On install, after security
-  validation, it registers its Capabilities (and optionally Agents) into the Registry.
-  Packaging and provenance, not a runtime concept.
-
-There is **one Marketplace**, and it distributes Plugins.
-
----
-
-## Local-First Architecture
-
-Core components run on the user's machine whenever possible: Agent Runtime, Execution
-Engine, Permission System, Memory Layer. Cloud is supporting infrastructure only (model
-access, sync, marketplace, updates).
-
----
-
-## Security by Default
-
-Security is built into every layer, never added afterward. Required everywhere: identity,
-permission control, policy evaluation, sandbox isolation, audit, and transparent actions.
-
-Sensitive operations require explicit user approval before execution — for example
-sending messages, deleting files, financial actions, and external communication. The
-canonical security model lives in `docs/05-architecture/6-security`.
-
----
-
-## Observability
-
-Everything meaningful is observable. Every important operation has status, history, logs,
-and a recovery path. Track agent actions, execution states, permissions, errors, and
-system events.
-
----
-
-## Core Rules
-
-- Documentation first; RFC before implementation.
-- State is authoritative. Cache is never authoritative. Memory is temporary. Events are
-  immutable.
-- Everything observable. Everything versioned. Secure by default.
-- Define interfaces before implementation.
-- Never bypass kernel contracts, modify canonical state directly, create hidden execution
-  paths, or break architecture boundaries.
-- Architectural changes update documentation before code.
-
----
+1. **RFC-first.** No component code without an Accepted RFC. Numbering is shared across
+   `docs/rfcs/` and `docs/00-governance/` and continues from RFC-0003 (next: RFC-0004).
+2. **Strangler fig.** Rust components replace prototype parts only after passing the
+   corresponding behavior contract in `prototype/tests/`. The prototype is never broken.
+3. **All side effects go through transactions** (dry-run available, snapshot taken,
+   verify after, undo path registered). No direct writes from agent code.
+4. **All tool access goes through AIPC (MCP).** No ad-hoc integrations.
+5. **All spending goes through cmdPay mandates.** No payment-capable keys in agent scope.
+6. **Capability follows safety**: an action class ships only after the machinery
+   controlling it exists. cmdpay is built LAST in Horizon 1.
+7. Languages: Rust (kernel/services/capabilities), TypeScript (schemas/shell/prototype).
+8. Superseded docs go to `docs/archive/` with a pointer header — never deleted.
+9. **Alios is the supervisor** (cmdOS-owned), runs in the control plane, and can never
+   be disabled by a user agent. User agents are untrusted by default. R3 is always
+   human-gated, even inside a fully-authorized Machine.
 
 ## UI Direction
 
-The interface is an AI execution runtime, not a chat app and not a traditional dashboard.
-It is a command center where users delegate tasks and watch Agents execute.
-
-Main layout: Top System Bar · Left Navigation · (Agent Panel | Execution Workspace |
-Task History) · Command Input. The command input is an intent interface, not a chat box.
-Every step of execution must be visible.
-
-Visual language: dark, terminal-inspired, premium developer-tool feel; monospace type,
-glass panels, subtle glow, status indicators, smooth transitions. Avoid chat bubbles,
-social-messaging style, SaaS cards, and generic admin dashboards.
-
----
-
-## Development Philosophy
-
-Build in dependency order; never build isolated features:
-
-```
-Foundation → Runtime → Agents → Capabilities → Execution → Product → Ecosystem
-```
-
-Every feature must contribute to the AI Execution Operating System. The roadmap is
-defined as five product Stages in `docs/09-roadmap`; engineering workstreams ("Phases")
-map into those Stages via `ROADMAP.md`.
-
----
-
-## Final Goal
-
-```
-Human Intent → cmdOS Desktop → AI Agents → Computer Execution → Completed Work
-```
-
-Humans express what they want. AI understands the goal. Agents execute the work.
-Computers become intelligent execution partners.
+Dark terminal-inspired (#0a0a0f base), monospace, execution timeline always visible,
+approval requests explicit, "AI is working for me" — never a chat clone.

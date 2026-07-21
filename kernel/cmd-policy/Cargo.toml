@@ -1,0 +1,10 @@
+[package]
+name = "cmd-policy"
+description = "Permission engine, budget enforcer, mandate verification"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+# No dependencies in the skeleton. Add them from [workspace.dependencies]
+# only when this crate's RFC is accepted (RFC-first rule, see CLAUDE.md).
+[dependencies]

@@ -1,0 +1,36 @@
+[workspace]
+resolver = "2"
+members = [
+    "kernel/cmd-types",
+    "kernel/cmd-kernel",
+    "kernel/cmd-transaction",
+    "kernel/cmd-policy",
+    "kernel/cmd-ledger",
+    "services/semfs",
+    "services/nis",
+    "services/aipc",
+    "services/cmdpay",
+    "agent/alios",
+    "capabilities/files",
+    "capabilities/browser",
+    "capabilities/terminal",
+    "capabilities/mail",
+    "capabilities/calendar",
+]
+
+[workspace.package]
+version = "0.2.0"
+edition = "2021"
+license = "Apache-2.0"
+
+# Curated dependency catalog. Members opt in per accepted RFC —
+# skeleton crates carry ZERO dependencies so the workspace builds
+# green on any stable toolchain from day one.
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+thiserror = "1"
+tracing = "0.1"
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }

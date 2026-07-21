@@ -1,156 +1,67 @@
 # cmdOS
 
-<p align="center">
-  <h3 align="center">The AI Execution Operating System</h3>
-  <p align="center">Turn Intent Into Execution.</p>
-</p>
+### The Operating System for AI Agents
 
-> **The agent you can trust.** cmdOS proposes, you approve, a deterministic kernel executes — verifiable, reversible, and fully audited.
-
+> **Hire your AI. Give it a computer. Choose the future it builds.**
+> Give work to your AI employee in plain language. It does the work for real —
+> shows every step, asks before anything risky, and everything it does can be undone.
 
 ---
 
-## Vision
+## What is cmdOS?
 
-cmdOS is a deterministic execution operating system for AI. Instead of only generating
-text, it turns human intent into secure, observable, deterministic execution across
-applications, devices, cloud infrastructure, and autonomous agents.
+cmdOS is an AI-native operating environment. You type an intent —
+*"invoice my three clients for this week's hours"* — and **Alios**, the resident agent,
+plans it, previews it, asks approval where it matters, executes, verifies, and records
+everything in an auditable ledger. Mistakes are reversible.
 
-cmdOS is a standalone **desktop** application — not a chatbot, web app, DApp, or SaaS
-dashboard. The experience is *"an AI system operating my computer,"* not *"chatting with
-an assistant."*
+The Horizon-1 product (**cmdOS Layer**) is a desktop app for Windows/macOS/Linux.
+The long-term destination is a full AI-native OS — the Android playbook: Linux kernel
+underneath, a fully self-developed userspace on top.
+Strategy: `docs/01-vision/strategy-v2.md` · Roadmap: `ROADMAP.md`.
 
----
+## Why it's different
 
-## Core Principles
+- **Reversible by architecture** — every side effect runs as a transaction:
+  simulate → snapshot → execute → verify → commit/rollback. Undo is a kernel property.
+- **Risk-proportional trust (R0–R3)** — autonomy where mistakes are cheap to reverse,
+  explicit approval where they aren't.
+- **Enforced limits** — permissions, budgets, and payment mandates are checked *below*
+  the agent, where prompt injection cannot reach.
+- **Open by protocol** — MCP is the capability ABI; A2A 1.0 for agent identity and
+  delegation. Compatible with the existing tool ecosystem on day one.
+- **Yours** — local-first; the agent's identity is a signed card owned by the user.
 
-- Intent → Command → Execution Plan → Execution
-- Deterministic by design
-- Security first; authorization precedes every action
-- Human authority is never removed
-- Event-driven and observable
-- Capability-based permissions
-- Provider-agnostic and AI-model-agnostic
-- Local-first execution
+## Repository at a glance
 
----
-
-## Architecture
-
-```text
-                User Intent
-                     │
-                     ▼
-             Interaction Layer          (Control Center + command input)
-                     │
-                     ▼
-            Intelligence Layer           (AI cognition, reasoning, AI Router)
-                     │
-                     ▼
-                Agent Layer              (autonomous workers)
-                     │
-                     ▼
-             Capability Layer            (executable abilities)
-                     │
-                     ▼
-           Communication Layer           (messages, events, coordination)
-                     │
-                     ▼
-              Runtime Layer              (execution environment)
-                     │
-   ┌─────────────────┴─────────────────┐
-   │        Security (cross-cutting)    │  identity · permission · policy
-   │                                    │  isolation · monitoring · audit
-   └─────────────────┬─────────────────┘
-                     ▼
-────────────────────────────────────────
-                 cmdOS Kernel
-────────────────────────────────────────
-Object · State · Command · Validation · Cognition · Execution Planner
-Execution Engine · Transactions · Scheduler · Agent Orchestrator
-Memory · Knowledge · Security · Events · Recovery · Observability
-────────────────────────────────────────
-                     │
-                     ▼
-        Applications · Devices · APIs · Cloud
+```
+kernel/       Rust core: types · scheduler · transactions · policy · ledger
+services/     semfs · nis (AI Router) · aipc (MCP/A2A) · cmdpay
+agent/alios/  the Prime Agent
+capabilities/ first-party MCP servers
+shell/        cmdShell (Tauri)
+schemas/      TypeScript contracts
+prototype/    runnable reference implementation (Electron) + behavior contracts
+docs/         specs & RFCs (docs/rfcs, docs/00-governance) · archive of superseded docs
 ```
 
-The Kernel is the single deterministic execution authority — no execution bypasses it.
-Agents invoke Capabilities; they never mutate canonical state directly.
+## Quick start (prototype)
 
----
-
-## Repository Structure
-
-```text
-cmdOS/
-├── docs/            # Specification (RFCs). Single source of truth for architecture.
-├── apps/            # desktop/ (primary), mobile/, cli/, web/ (non-primary)
-├── kernel/          # core/ scheduler/ memory/ security/ resources/ interfaces/
-├── runtime/         # execution/ workflow/ scheduler/ process/ monitoring/
-├── ai/              # router/ models/ reasoning/ context/ memory/ inference/
-├── agents/          # core/ lifecycle/ planning/ memory/ communication/ templates/
-├── capabilities/    # core/ registry/ built-in/ external/ examples/
-├── plugins/         # loader/ manifest/ signing/ validation/ registry/
-├── providers/       # AI provider adapters + external service integrations
-├── sdk/             # agent-sdk/ capability-sdk/ plugin-sdk/ api/
-├── services/        # identity/ sync/ marketplace/ billing/ analytics/
-├── schemas/         # canonical data schemas / IDL (interface contracts)
-├── infrastructure/  # cloud/ deployment/ containers/ monitoring/ automation/
-├── tools/           # build/ generators/ debugging/ scripts/
-└── tests/           # unit/ integration/ system/ security/ performance/
+```bash
+npm install
+npm test      # 8 behavior contracts, all green
+npm start     # launch the Electron reference app
 ```
 
----
+## Development
 
-## Capability and Plugin
-
-A **Capability** is the core execution primitive — a versioned interface contract plus an
-implementation, held in the Capability Registry, and the only thing an Agent invokes at
-runtime.
-
-A **Plugin** is a signed, versioned distribution package. On install, after security
-validation, it registers its Capabilities (and optionally Agents) into the Registry.
-There is one **Marketplace**, and it distributes Plugins.
-
----
-
-## Roadmap
-
-The canonical roadmap lives in `docs/09-roadmap`, organized as five product Stages.
-Engineering workstreams ("Phases") map into these Stages — see `ROADMAP.md`.
-
-- **Stage 0 — Foundation** — architecture, standards, repository, initial AI infrastructure
-- **Stage 1 — MVP** — first end-to-end execution loop
-- **Stage 2 — Agent Platform** — SDK, plugins, marketplace, developer ecosystem
-- **Stage 3 — Execution OS** — desktop/mobile agents, cross-platform execution
-- **Stage 4 — AI-Native OS** — autonomous agents, enterprise, ecosystem
-
----
-
-## Design Philosophy
-
-```text
-Intent → Command → Execution Plan → Runtime → Verification → Observed Result
-```
-
-Documentation first. RFC before implementation. Every feature contributes to the AI
-Execution Operating System.
-
----
-
-## Documentation
-
-The complete architecture is documented as RFC specifications under `docs/`. Start with
-`docs/01-vision`, then `docs/05-architecture`. Contribution rules are in `CONTRIBUTING.md`;
-security policy is in `SECURITY.md`.
-
----
+Rust workspace: `cargo build --workspace`. Engineering rules live in `CLAUDE.md`.
+Every component starts as an RFC (`docs/rfcs/0000-rfc-process.md`).
 
 ## License
 
-MIT License.
+MIT.
 
 ---
 
-**cmdOS — The AI Execution Operating System.**
+**cmdOS — The Operating System for AI Agents.**
