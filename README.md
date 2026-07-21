@@ -5,6 +5,9 @@
   <p align="center">Turn Intent Into Execution.</p>
 </p>
 
+> **The agent you can trust.** cmdOS proposes, you approve, a deterministic kernel executes — verifiable, reversible, and fully audited.
+
+
 ---
 
 ## Vision
