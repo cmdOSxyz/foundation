@@ -56,14 +56,17 @@ async function callClaude(client, system, userContent, history) {
   return text.replace(/```json/g, "").replace(/```/g, "").trim();
 }
 
-async function planWithClaude(apiKey, intentText, inspectPath, history) {
-  const client = new Anthropic({ apiKey });
+async function planWithClaude(apiKey, intentText, inspectPath, history, workspace) {
+    const client = new Anthropic({ apiKey });
 
   // Pass 1: which paths to inspect?
   let toInspect = [];
   try {
-    const p1 = await callClaude(client, PASS1_PROMPT, intentText, null);
-    const parsed1 = JSON.parse(p1);
+const p1intent = workspace
+      ? intentText + "\n\n(The workspace folder is: " + workspace + ". Resolve relative paths inside it.)"
+      : intentText;
+    const p1 = await callClaude(client, PASS1_PROMPT, p1intent, null);
+        const parsed1 = JSON.parse(p1);
     if (Array.isArray(parsed1.inspect)) toInspect = parsed1.inspect.slice(0, 6);
   } catch {
     toInspect = [];
@@ -80,8 +83,15 @@ async function planWithClaude(apiKey, intentText, inspectPath, history) {
   }
 
   // Pass 2: friendly reply + plan grounded in facts.
+  const workspaceNote = workspace
+    ? "\n\nThe user's workspace folder is: " + workspace +
+      "\nAll relative paths in your plan MUST be inside this workspace. " +
+      "When the user refers to a file without a full path, look for it in the workspace."
+    : "";
+
   const userContent =
     "User message:\n" + intentText +
+    workspaceNote +
     "\n\nReal filesystem facts (JSON):\n" + JSON.stringify(facts, null, 2);
 
   const p2 = await callClaude(client, PASS2_PROMPT, userContent, history);

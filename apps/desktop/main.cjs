@@ -37,6 +37,18 @@ ipcMain.handle("cmdos:ping", async (event, message) => {
 // Run one approved filesystem step, then verify it.
 ipcMain.handle("cmdos:runStep", async (event, step) => {
   try {
+    // Resolve relative paths against the workspace before executing.
+    const workspace = keyStore.getKey("workspace") || null;
+    if (workspace) {
+      const { isAbsolute, join } = require("node:path");
+      const p = step.parameters || {};
+      const resolveIn = (v) => (typeof v === "string" && v && !isAbsolute(v)) ? join(workspace, v) : v;
+      if (p.path) p.path = resolveIn(p.path);
+      if (p.from) p.from = resolveIn(p.from);
+      if (p.to) p.to = resolveIn(p.to);
+      step.parameters = p;
+    }
+    
     const result = await runFilesystemStep(step);
     const check = await verifyFilesystemStep(step);
 
@@ -108,8 +120,17 @@ ipcMain.handle("cmdos:hasKey", async (event, provider) => {
 ipcMain.handle("cmdos:plan", async (event, intentText, history) => {
   const apiKey = keyStore.getKey("anthropic");
   if (!apiKey) return { ok: false, message: "No Claude API key set" };
+  const workspace = keyStore.getKey("workspace") || null;
+
+  // Wrap inspectPath so relative paths resolve inside the workspace.
+  const { isAbsolute, join } = require("node:path");
+  const wsInspect = async (p) => {
+    const full = (workspace && !isAbsolute(p)) ? join(workspace, p) : p;
+    return inspectPath(full);
+  };
+
   try {
-    const result = await planWithClaude(apiKey, intentText, inspectPath, history);
+    const result = await planWithClaude(apiKey, intentText, wsInspect, history, workspace);
     return { ok: true, plan: result };
   } catch (err) {
     return { ok: false, message: err && err.message ? err.message : String(err) };
