@@ -35,3 +35,4 @@ Planned technical RFCs (continuing the existing sequence):
 - 0009 SemFS
 - 0010 NIS inference service
 - 0013 alios — ACCEPTED, user agent planning loop + first agent-driven vertical slice (4 tests green)
+- 0014 Model-backed planning (Claude) — ACCEPTED, transport-trait planner in agent/alios (13 tests green)
