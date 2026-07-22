@@ -9,6 +9,12 @@ license.workspace = true
 name = "cmdos"
 path = "src/main.rs"
 
+[features]
+# The `live` feature enables Claude-backed planning (pulls an HTTP client).
+# Off by default so the CLI builds and tests with no network dependency.
+default = []
+live = ["dep:claude-http"]
+
 [dependencies]
 cmd-types = { path = "../kernel/cmd-types" }
 cmd-kernel = { path = "../kernel/cmd-kernel" }
@@ -16,3 +22,4 @@ cmd-ledger = { path = "../kernel/cmd-ledger" }
 cmd-transaction = { path = "../kernel/cmd-transaction" }
 alios = { path = "../agent/alios" }
 cap-files = { path = "../capabilities/files" }
+claude-http = { path = "../services/claude-http", optional = true }
