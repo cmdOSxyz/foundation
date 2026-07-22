@@ -11,6 +11,7 @@ members = [
     "services/aipc",
     "services/claude-http",
     "services/cmd-auth",
+    "services/cmd-router",
     "services/cmdpay",
     "agent/alios",
     "cli",
