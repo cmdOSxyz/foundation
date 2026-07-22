@@ -1,10 +1,17 @@
 [package]
 name = "cmd-kernel"
-description = "Intent Scheduler and semantic syscall surface"
+description = "Intent Scheduler: runs a plan through policy, transactions, and the ledger"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 
-# No dependencies in the skeleton. Add them from [workspace.dependencies]
-# only when this crate's RFC is accepted (RFC-first rule, see CLAUDE.md).
 [dependencies]
+cmd-types = { path = "../cmd-types" }
+cmd-ledger = { path = "../cmd-ledger" }
+cmd-transaction = { path = "../cmd-transaction" }
+cmd-policy = { path = "../cmd-policy" }
+
+[dev-dependencies]
+cap-files = { path = "../../capabilities/files" }
+serde_json.workspace = true
+tempfile = "3"
