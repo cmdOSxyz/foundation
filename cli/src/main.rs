@@ -19,7 +19,7 @@
 use alios::{Agent, RulePlanner};
 use cmd_kernel::{AuthorityContext, Kernel, StepOutcome};
 use cmd_ledger::Ledger;
-use cmd_types::{now, Id, Mandate, RiskClass};
+use cmd_types::{now, ExecutionPlan, Id, Intent, Mandate, RiskClass};
 use std::process::ExitCode;
 
 fn main() -> ExitCode {
@@ -33,12 +33,13 @@ fn main() -> ExitCode {
         }
     };
 
-    // Build the agent with the deterministic planner.
-    let agent = Agent::new("Nova", RulePlanner::new());
-    let (intent, plan) = agent.plan_for(&parsed.request);
+    // Choose the planner: if ANTHROPIC_API_KEY is set, plan live with Claude;
+    // otherwise use the deterministic rule planner (works with no key).
+    let (intent, plan, planner_name) = plan_request(&parsed.request);
 
     println!("── cmdOS ──────────────────────────────────");
-    println!("agent   : {}", agent.name);
+    println!("agent   : Nova");
+    println!("planner : {planner_name}");
     println!("intent  : {}", intent.raw_text);
     println!("plan    : {}", plan.summary);
     println!("steps   : {}", plan.steps.len());
@@ -114,6 +115,28 @@ fn main() -> ExitCode {
     } else {
         ExitCode::from(1)
     }
+}
+
+/// Plan a request. With the `live` feature and `ANTHROPIC_API_KEY` set, uses the
+/// Claude planner; otherwise the deterministic rule planner. Returns the intent,
+/// the plan, and a label naming which planner was used.
+fn plan_request(request: &str) -> (Intent, ExecutionPlan, &'static str) {
+    #[cfg(feature = "live")]
+    {
+        if let Ok(key) = std::env::var("ANTHROPIC_API_KEY") {
+            if !key.trim().is_empty() {
+                use alios::ClaudePlanner;
+                use claude_http::HttpTransport;
+                let agent = Agent::new("Nova", ClaudePlanner::new(HttpTransport::new(key)));
+                let (intent, plan) = agent.plan_for(request);
+                return (intent, plan, "Claude (live)");
+            }
+        }
+    }
+
+    let agent = Agent::new("Nova", RulePlanner::new());
+    let (intent, plan) = agent.plan_for(request);
+    (intent, plan, "rule-based")
 }
 
 /// Map an action name to its risk class. In the full system this comes from the
