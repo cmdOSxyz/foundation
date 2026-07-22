@@ -1,10 +1,11 @@
 [package]
 name = "cmd-transaction"
-description = "Simulate / snapshot / verify / commit / rollback engine"
+description = "Reversible execution engine: simulate / snapshot / execute / verify / commit / rollback"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 
-# No dependencies in the skeleton. Add them from [workspace.dependencies]
-# only when this crate's RFC is accepted (RFC-first rule, see CLAUDE.md).
 [dependencies]
+cmd-types = { path = "../cmd-types" }
+cmd-ledger = { path = "../cmd-ledger" }
+serde_json.workspace = true
