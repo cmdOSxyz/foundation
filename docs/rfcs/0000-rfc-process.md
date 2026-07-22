@@ -37,3 +37,4 @@ Planned technical RFCs (continuing the existing sequence):
 - 0013 alios — ACCEPTED, user agent planning loop + first agent-driven vertical slice (4 tests green)
 - 0014 Model-backed planning (Claude) — ACCEPTED, transport-trait planner in agent/alios (13 tests green)
 - 0015 cmd-cli — ACCEPTED, first runnable cmdOS runtime (binary cmdos, 4 tests green)
+- 0016 claude-http — ACCEPTED, real ClaudeTransport (not CI-tested; needs API key + recent Rust)

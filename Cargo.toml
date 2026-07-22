@@ -9,6 +9,7 @@ members = [
     "services/semfs",
     "services/nis",
     "services/aipc",
+    "services/claude-http",
     "services/cmdpay",
     "agent/alios",
     "cli",
