@@ -1,10 +1,9 @@
 [package]
 name = "cmd-policy"
-description = "Permission engine, budget enforcer, mandate verification"
+description = "Alios supervision: R0-R3 gate, mandate verification, budget enforcement"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 
-# No dependencies in the skeleton. Add them from [workspace.dependencies]
-# only when this crate's RFC is accepted (RFC-first rule, see CLAUDE.md).
 [dependencies]
+cmd-types = { path = "../cmd-types" }
