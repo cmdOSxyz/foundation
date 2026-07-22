@@ -22,4 +22,5 @@ cmd-ledger = { path = "../kernel/cmd-ledger" }
 cmd-transaction = { path = "../kernel/cmd-transaction" }
 alios = { path = "../agent/alios" }
 cap-files = { path = "../capabilities/files" }
+cmd-auth = { path = "../services/cmd-auth" }
 claude-http = { path = "../services/claude-http", optional = true }

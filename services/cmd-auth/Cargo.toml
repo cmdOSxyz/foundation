@@ -1,0 +1,10 @@
+[package]
+name = "cmd-auth"
+description = "cmdOS access control: username/password + CMDOS access key gate"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+cmd-types = { path = "../../kernel/cmd-types" }
+sha2 = "0.10"
