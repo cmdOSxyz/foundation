@@ -1,10 +1,14 @@
 [package]
 name = "cap-browser"
-description = "First-party browser capability (MCP server)"
+description = "First-party browser capability: navigate, read, fill, submit — with R0-R3 risk"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 
-# No dependencies in the skeleton. Add them from [workspace.dependencies]
-# only when this crate's RFC is accepted (RFC-first rule, see CLAUDE.md).
 [dependencies]
+cmd-types = { path = "../../kernel/cmd-types" }
+cmd-transaction = { path = "../../kernel/cmd-transaction" }
+serde_json.workspace = true
+
+[dev-dependencies]
+cmd-ledger = { path = "../../kernel/cmd-ledger" }
