@@ -129,6 +129,144 @@ impl Aipc {
     }
 }
 
+/// Tool declarations for the first-party capabilities (filesystem, browser).
+///
+/// These describe each capability's actions as MCP-style tools — name,
+/// parameters, and risk — so the agent sees a populated registry. Risk classes
+/// here mirror the capabilities' own `risk_of` semantics (e.g. cap-browser's
+/// submit/buy = R3). Declaring the tools here keeps capabilities free of any
+/// dependency on AIPC (no cycle); the catalog is the single place that binds
+/// capability actions into the tool surface.
+pub mod catalog {
+    use super::{RiskClass, Tool};
+
+    fn t(cap: &str, name: &str, desc: &str, params: &[&str], risk: RiskClass) -> Tool {
+        Tool {
+            capability: cap.into(),
+            name: name.into(),
+            description: desc.into(),
+            parameters: params.iter().map(|p| p.to_string()).collect(),
+            risk,
+        }
+    }
+
+    /// Tools exposed by the filesystem capability (cap-files).
+    pub fn filesystem_tools() -> Vec<Tool> {
+        vec![
+            t(
+                "filesystem",
+                "list",
+                "List entries in a folder",
+                &["path"],
+                RiskClass::R0ReadOnly,
+            ),
+            t(
+                "filesystem",
+                "read",
+                "Read a file's contents",
+                &["path"],
+                RiskClass::R0ReadOnly,
+            ),
+            t(
+                "filesystem",
+                "rename",
+                "Rename a file",
+                &["from", "to"],
+                RiskClass::R1Reversible,
+            ),
+            t(
+                "filesystem",
+                "move",
+                "Move a file",
+                &["from", "to"],
+                RiskClass::R1Reversible,
+            ),
+            t(
+                "filesystem",
+                "delete",
+                "Delete a file",
+                &["path"],
+                RiskClass::R1Reversible,
+            ),
+        ]
+    }
+
+    /// Tools exposed by the browser capability (cap-browser). Mirrors its risk
+    /// model: read-only browsing is R0, filling is R1, and submitting / buying /
+    /// paying is R3 (human-gated).
+    pub fn browser_tools() -> Vec<Tool> {
+        vec![
+            t(
+                "browser",
+                "navigate",
+                "Go to a URL",
+                &["url"],
+                RiskClass::R0ReadOnly,
+            ),
+            t(
+                "browser",
+                "read",
+                "Read page content",
+                &["selector"],
+                RiskClass::R0ReadOnly,
+            ),
+            t(
+                "browser",
+                "screenshot",
+                "Capture the page",
+                &[],
+                RiskClass::R0ReadOnly,
+            ),
+            t(
+                "browser",
+                "fill",
+                "Fill a form field",
+                &["selector", "value"],
+                RiskClass::R1Reversible,
+            ),
+            t(
+                "browser",
+                "submit",
+                "Submit a form",
+                &["selector"],
+                RiskClass::R3Irreversible,
+            ),
+            t(
+                "browser",
+                "click_buy",
+                "Complete a purchase",
+                &["selector"],
+                RiskClass::R3Irreversible,
+            ),
+            t(
+                "browser",
+                "pay",
+                "Authorize a payment",
+                &["selector"],
+                RiskClass::R3Irreversible,
+            ),
+        ]
+    }
+
+    /// All first-party tools.
+    pub fn all() -> Vec<Tool> {
+        let mut v = filesystem_tools();
+        v.extend(browser_tools());
+        v
+    }
+}
+
+impl Aipc {
+    /// Register all first-party capability tools (filesystem + browser). This is
+    /// how the agent gets a populated tool surface at startup.
+    pub fn with_first_party(mut self) -> Self {
+        for tool in catalog::all() {
+            self.register(tool);
+        }
+        self
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -228,5 +366,40 @@ mod tests {
         let m = mandate(&["cmdpay"], RiskClass::R1Reversible);
         let r = aipc.route(&call("cmdpay", "buy", 50), Some(&m), None);
         assert!(matches!(r, RouteResult::Blocked { .. }));
+    }
+
+    // ---- First-party capability catalog ------------------------------------
+
+    #[test]
+    fn first_party_registry_has_filesystem_and_browser_tools() {
+        let aipc = Aipc::new().with_first_party();
+        let tools = aipc.list_tools();
+        // Both capabilities present.
+        assert!(tools.iter().any(|t| t.capability == "filesystem"));
+        assert!(tools.iter().any(|t| t.capability == "browser"));
+        // A known tool resolves.
+        assert!(aipc.tool("filesystem", "rename").is_some());
+        assert!(aipc.tool("browser", "navigate").is_some());
+    }
+
+    #[test]
+    fn browser_buy_is_registered_as_r3() {
+        let aipc = Aipc::new().with_first_party();
+        let buy = aipc.tool("browser", "click_buy").expect("click_buy tool");
+        assert_eq!(buy.risk, RiskClass::R3Irreversible);
+    }
+
+    #[test]
+    fn routing_a_catalog_tool_respects_risk() {
+        // Navigating (R0) is authorized without a mandate; buying (R3) needs
+        // approval — proving the catalog's risk flows through the policy gate.
+        let aipc = Aipc::new().with_first_party();
+
+        let nav = aipc.route(&call("browser", "navigate", 0), None, None);
+        assert!(matches!(nav, RouteResult::Authorized { .. }));
+
+        let m = mandate(&["browser"], RiskClass::R3Irreversible);
+        let buy = aipc.route(&call("browser", "click_buy", 0), Some(&m), None);
+        assert!(matches!(buy, RouteResult::NeedsApproval { .. }));
     }
 }
