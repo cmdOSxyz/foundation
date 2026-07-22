@@ -1,0 +1,18 @@
+[package]
+name = "cmd-cli"
+description = "cmdOS runtime CLI: run an agent end-to-end from the terminal"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "cmdos"
+path = "src/main.rs"
+
+[dependencies]
+cmd-types = { path = "../kernel/cmd-types" }
+cmd-kernel = { path = "../kernel/cmd-kernel" }
+cmd-ledger = { path = "../kernel/cmd-ledger" }
+cmd-transaction = { path = "../kernel/cmd-transaction" }
+alios = { path = "../agent/alios" }
+cap-files = { path = "../capabilities/files" }

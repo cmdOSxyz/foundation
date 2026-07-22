@@ -11,6 +11,7 @@ members = [
     "services/aipc",
     "services/cmdpay",
     "agent/alios",
+    "cli",
     "capabilities/files",
     "capabilities/browser",
     "capabilities/terminal",
