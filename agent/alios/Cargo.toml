@@ -12,6 +12,7 @@ cmd-ledger = { path = "../../kernel/cmd-ledger" }
 cmd-transaction = { path = "../../kernel/cmd-transaction" }
 serde_json.workspace = true
 serde.workspace = true
+cmd-router = { path = "../../services/cmd-router" }
 
 [dev-dependencies]
 cap-files = { path = "../../capabilities/files" }

@@ -18,7 +18,9 @@ use cmd_types::{now, ExecutionPlan, Id, Intent, IntentSource, PlanStatus, PlanSt
 use std::collections::BTreeMap;
 
 pub mod claude_planner;
+pub mod routed_transport;
 pub use claude_planner::{ClaudePlanner, ClaudeTransport, PlanError};
+pub use routed_transport::RoutedTransport;
 
 /// Anything that can turn an intent into a plan. Deterministic implementations
 /// are testable; model-backed ones satisfy the same contract.
