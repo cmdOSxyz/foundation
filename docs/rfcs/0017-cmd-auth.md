@@ -51,6 +51,16 @@ rejection, generated-key format, local verifier accept/reject, password hashing,
 login success, and the three failure paths (bad password, unknown key, malformed
 key).
 
+# 5b. RemoteVerifier (online, revocable) — added
+
+`RemoteVerifier<T: KeyCheckTransport>` defers to the cmdOS server: the transport
+returns `KeyStatus` (Valid / Unknown / Revoked), mapped to Ok / KeyNotRecognized /
+KeyRevoked. The HTTP call is behind `KeyCheckTransport`, so it is tested with a
+fake server; a real HTTP transport plugs in unchanged. This is the production
+path — the server holds the authoritative, revocable list.
+
+The app↔server protocol is specified in `docs/07-product/cmdos-key-server-spec.md`.
+
 # 6. Next
 
 Wire the login gate into the `cmdos` CLI (prompt username → password → key before

@@ -125,6 +125,49 @@ impl KeyVerifier for LocalVerifier {
     }
 }
 
+/// The verdict the cmdOS key server returns for a key.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum KeyStatus {
+    /// Valid and active.
+    Valid,
+    /// Not found in the server's list.
+    Unknown,
+    /// Was issued but has been revoked.
+    Revoked,
+}
+
+/// The one impure operation for online verification: ask the cmdOS server about
+/// a key. Behind a trait so `RemoteVerifier` is testable with a fake, and a real
+/// HTTP transport (in the app / a service crate) plugs in unchanged.
+pub trait KeyCheckTransport {
+    /// Ask the server for the status of `key`. Errors are transport failures.
+    fn check(&self, key: &AccessKey) -> Result<KeyStatus, AuthError>;
+}
+
+/// An online verifier: defers the decision to the cmdOS server via a
+/// [`KeyCheckTransport`]. This is the revocable, production path — the server
+/// holds the authoritative list, so a key can be disabled at any time.
+pub struct RemoteVerifier<T: KeyCheckTransport> {
+    transport: T,
+}
+
+impl<T: KeyCheckTransport> RemoteVerifier<T> {
+    /// Build a remote verifier over the given transport.
+    pub fn new(transport: T) -> Self {
+        RemoteVerifier { transport }
+    }
+}
+
+impl<T: KeyCheckTransport> KeyVerifier for RemoteVerifier<T> {
+    fn verify(&self, key: &AccessKey) -> Result<(), AuthError> {
+        match self.transport.check(key)? {
+            KeyStatus::Valid => Ok(()),
+            KeyStatus::Unknown => Err(AuthError::KeyNotRecognized),
+            KeyStatus::Revoked => Err(AuthError::KeyRevoked),
+        }
+    }
+}
+
 /// A username + password pair. The password is hashed immediately; the plaintext
 /// is never retained.
 #[derive(Debug, Clone)]
@@ -197,18 +240,24 @@ fn hash(input: &str) -> String {
 pub enum AuthError {
     /// The key is not in the `CMDOS-XXXX-XXXX-XXXX` format.
     MalformedKey,
-    /// The key is well-formed but not recognized (unknown or revoked).
+    /// The key is well-formed but not recognized (unknown key).
     KeyNotRecognized,
+    /// The key was valid but has been revoked by cmdOS.
+    KeyRevoked,
     /// The password did not match.
     BadPassword,
+    /// Could not reach or understand the verification server.
+    Transport(String),
 }
 
 impl std::fmt::Display for AuthError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let m = match self {
             AuthError::MalformedKey => "access key is not in CMDOS-XXXX-XXXX-XXXX format",
-            AuthError::KeyNotRecognized => "access key is not recognized or has been revoked",
+            AuthError::KeyNotRecognized => "access key is not recognized",
+            AuthError::KeyRevoked => "access key has been revoked",
             AuthError::BadPassword => "incorrect password",
+            AuthError::Transport(m) => return write!(f, "verification server error: {m}"),
         };
         write!(f, "{m}")
     }
@@ -295,5 +344,52 @@ mod tests {
         let v = LocalVerifier::new();
         let r = login(&c, "cmdOS", "not-a-key", &v);
         assert_eq!(r.unwrap_err(), AuthError::MalformedKey);
+    }
+
+    // ---- RemoteVerifier (online path) via a fake transport -----------------
+
+    struct FakeServer(KeyStatus);
+    impl KeyCheckTransport for FakeServer {
+        fn check(&self, _key: &AccessKey) -> Result<KeyStatus, AuthError> {
+            Ok(self.0)
+        }
+    }
+
+    struct DownServer;
+    impl KeyCheckTransport for DownServer {
+        fn check(&self, _key: &AccessKey) -> Result<KeyStatus, AuthError> {
+            Err(AuthError::Transport("connection refused".into()))
+        }
+    }
+
+    #[test]
+    fn remote_verifier_accepts_valid_key() {
+        let v = RemoteVerifier::new(FakeServer(KeyStatus::Valid));
+        let k = AccessKey::parse("CMDOS-AB12-CD34-EF56").unwrap();
+        assert!(v.verify(&k).is_ok());
+    }
+
+    #[test]
+    fn remote_verifier_rejects_unknown_and_revoked() {
+        let unknown = RemoteVerifier::new(FakeServer(KeyStatus::Unknown));
+        let revoked = RemoteVerifier::new(FakeServer(KeyStatus::Revoked));
+        let k = AccessKey::parse("CMDOS-AB12-CD34-EF56").unwrap();
+        assert_eq!(unknown.verify(&k), Err(AuthError::KeyNotRecognized));
+        assert_eq!(revoked.verify(&k), Err(AuthError::KeyRevoked));
+    }
+
+    #[test]
+    fn remote_verifier_surfaces_transport_errors() {
+        let v = RemoteVerifier::new(DownServer);
+        let k = AccessKey::parse("CMDOS-AB12-CD34-EF56").unwrap();
+        assert!(matches!(v.verify(&k), Err(AuthError::Transport(_))));
+    }
+
+    #[test]
+    fn login_works_through_a_remote_verifier() {
+        let c = Credentials::new("admin", "cmdOS");
+        let v = RemoteVerifier::new(FakeServer(KeyStatus::Valid));
+        let session = login(&c, "cmdOS", "CMDOS-AB12-CD34-EF56", &v).unwrap();
+        assert_eq!(session.username, "admin");
     }
 }
