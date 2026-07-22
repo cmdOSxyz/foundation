@@ -34,3 +34,4 @@ Planned technical RFCs (continuing the existing sequence):
 - 0008 cmdPay mandates and budget enforcement
 - 0009 SemFS
 - 0010 NIS inference service
+- 0013 alios — ACCEPTED, user agent planning loop + first agent-driven vertical slice (4 tests green)
