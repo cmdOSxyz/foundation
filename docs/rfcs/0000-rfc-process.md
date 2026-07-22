@@ -29,7 +29,8 @@ Planned technical RFCs (continuing the existing sequence):
 - 0008 cmd-transaction — ACCEPTED, reversible engine in kernel/cmd-transaction (7 tests green)
 - 0009 cap-files — ACCEPTED, reversible filesystem capability (10 tests, 8 contracts + 2 e2e)
 - 0010 cmd-policy — ACCEPTED, Alios supervision engine (10 tests green)
-- 0011 AIPC: MCP/A2A binding and Agent Cards
+- 0011 cmd-kernel — ACCEPTED, Intent Scheduler + first vertical slice (4 tests green)
+- 0012 AIPC: MCP/A2A binding and Agent Cards
 - 0008 cmdPay mandates and budget enforcement
 - 0009 SemFS
 - 0010 NIS inference service
