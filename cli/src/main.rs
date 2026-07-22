@@ -17,9 +17,11 @@
 //! reversible and recorded — the same guarantees the library crates enforce.
 
 use alios::{Agent, RulePlanner};
+use cmd_auth::{login, Credentials, LocalVerifier};
 use cmd_kernel::{AuthorityContext, Kernel, StepOutcome};
 use cmd_ledger::Ledger;
 use cmd_types::{now, ExecutionPlan, Id, Intent, Mandate, RiskClass};
+use std::io::Write;
 use std::process::ExitCode;
 
 fn main() -> ExitCode {
@@ -32,6 +34,14 @@ fn main() -> ExitCode {
             return ExitCode::from(2);
         }
     };
+
+    // Access gate: username + password + CMDOS access key. Skipped when
+    // --no-auth is passed (for scripting/tests) or CMDOS_SKIP_AUTH is set.
+    if !parsed.no_auth && std::env::var("CMDOS_SKIP_AUTH").is_err() {
+        if let Err(code) = run_login_gate() {
+            return code;
+        }
+    }
 
     // Choose the planner: if ANTHROPIC_API_KEY is set, plan live with Claude;
     // otherwise use the deterministic rule planner (works with no key).
@@ -117,6 +127,61 @@ fn main() -> ExitCode {
     }
 }
 
+/// Interactive access gate: prompt username, password, and CMDOS access key,
+/// then verify. Returns Ok(()) to proceed or Err(exit code) to stop.
+///
+/// The preview defaults a user types are `admin` / `cmdOS`. For the dev build the
+/// verifier accepts one demo key so you can try the flow; production swaps in a
+/// RemoteVerifier that calls the cmdOS server.
+fn run_login_gate() -> Result<(), ExitCode> {
+    println!("── cmdOS access ───────────────────────────");
+    let username = prompt("username (default: admin): ", "admin");
+    let password = prompt("password (default: cmdOS): ", "cmdOS");
+    let key = prompt("access key (CMDOS-XXXX-XXXX-XXXX): ", "");
+
+    // The account's stored credentials. In the product these come from the
+    // user's registration; here we accept the typed username with the default
+    // password so the preview flow works as designed.
+    let creds = Credentials::new(&username, "cmdOS");
+
+    // Dev verifier: accept a single demo key. Replace with RemoteVerifier live.
+    let mut verifier = LocalVerifier::new();
+    verifier.allow("CMDOS-DEMO-2026-CMDX");
+    // Also honor a key allowed via env, for local testing.
+    if let Ok(extra) = std::env::var("CMDOS_ALLOW_KEY") {
+        verifier.allow(&extra);
+    }
+
+    match login(&creds, &password, &key, &verifier) {
+        Ok(session) => {
+            println!("access granted — welcome, {} ✓", session.username);
+            println!("───────────────────────────────────────────");
+            Ok(())
+        }
+        Err(e) => {
+            eprintln!("access denied: {e}");
+            eprintln!("(dev demo key: CMDOS-DEMO-2026-CMDX)");
+            Err(ExitCode::from(3))
+        }
+    }
+}
+
+/// Print a prompt and read a line; if the user enters nothing, use `default`.
+fn prompt(label: &str, default: &str) -> String {
+    print!("{label}");
+    let _ = std::io::stdout().flush();
+    let mut line = String::new();
+    if std::io::stdin().read_line(&mut line).is_err() {
+        return default.to_string();
+    }
+    let trimmed = line.trim();
+    if trimmed.is_empty() {
+        default.to_string()
+    } else {
+        trimmed.to_string()
+    }
+}
+
 /// Plan a request. With the `live` feature and `ANTHROPIC_API_KEY` set, uses the
 /// Claude planner; otherwise the deterministic rule planner. Returns the intent,
 /// the plan, and a label naming which planner was used.
@@ -153,10 +218,12 @@ struct Parsed {
     request: String,
     #[allow(dead_code)]
     dir: Option<String>,
+    no_auth: bool,
 }
 
 fn parse_args(args: &[String]) -> Result<Parsed, String> {
     let mut dir = None;
+    let mut no_auth = false;
     let mut request_parts: Vec<String> = Vec::new();
     let mut i = 1;
     while i < args.len() {
@@ -165,6 +232,7 @@ fn parse_args(args: &[String]) -> Result<Parsed, String> {
                 i += 1;
                 dir = Some(args.get(i).ok_or("--dir needs a path")?.clone());
             }
+            "--no-auth" => no_auth = true,
             "-h" | "--help" => return Err("help".into()),
             other => request_parts.push(other.to_string()),
         }
@@ -176,6 +244,7 @@ fn parse_args(args: &[String]) -> Result<Parsed, String> {
     Ok(Parsed {
         request: request_parts.join(" "),
         dir,
+        no_auth,
     })
 }
 

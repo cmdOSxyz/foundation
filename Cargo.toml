@@ -10,6 +10,7 @@ members = [
     "services/nis",
     "services/aipc",
     "services/claude-http",
+    "services/cmd-auth",
     "services/cmdpay",
     "agent/alios",
     "cli",

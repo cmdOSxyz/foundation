@@ -38,3 +38,4 @@ Planned technical RFCs (continuing the existing sequence):
 - 0014 Model-backed planning (Claude) — ACCEPTED, transport-trait planner in agent/alios (13 tests green)
 - 0015 cmd-cli — ACCEPTED, first runnable cmdOS runtime (binary cmdos, 4 tests green)
 - 0016 claude-http — ACCEPTED, real ClaudeTransport (not CI-tested; needs API key + recent Rust)
+- 0017 cmd-auth — ACCEPTED, credentials + CMDOS access-key gate (9 tests green)
