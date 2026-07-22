@@ -1,0 +1,9 @@
+[package]
+name = "cmd-router"
+description = "API key router: multi-key pool, provider detection, round-robin, per-key limits"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+cmd-types = { path = "../../kernel/cmd-types" }
