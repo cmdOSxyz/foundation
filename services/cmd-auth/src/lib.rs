@@ -16,6 +16,106 @@
 use sha2::{Digest, Sha256};
 use std::collections::HashSet;
 
+/// A key's subscription record: which plan it's on and when it was issued.
+/// Expiry is computed from these. Days are simple integers (e.g. days since an
+/// epoch) so status is deterministic and testable without a wall clock.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct KeyRecord {
+    pub plan: Plan,
+    /// The day the key was issued (integer day count).
+    pub issued_day: u64,
+}
+
+impl KeyRecord {
+    /// Build a record for a plan issued on `issued_day`.
+    pub fn new(plan: Plan, issued_day: u64) -> Self {
+        KeyRecord { plan, issued_day }
+    }
+
+    /// The day this key expires (issue day + plan duration).
+    pub fn expiry_day(self) -> u64 {
+        self.issued_day + self.plan.duration_days() as u64
+    }
+
+    /// Whether the key is still valid as of `today`.
+    pub fn is_valid_on(self, today: u64) -> bool {
+        today < self.expiry_day()
+    }
+
+    /// Days remaining as of `today` (0 if expired).
+    pub fn days_remaining(self, today: u64) -> u64 {
+        self.expiry_day().saturating_sub(today)
+    }
+
+    /// Whether the key is within `window` days of expiring (for renewal nudges),
+    /// but not yet expired.
+    pub fn is_expiring_soon(self, today: u64, window: u64) -> bool {
+        let remaining = self.days_remaining(today);
+        remaining > 0 && remaining <= window
+    }
+
+    /// The status the server would report for this key as of `today`.
+    pub fn status_on(self, today: u64) -> KeyStatus {
+        if self.is_valid_on(today) {
+            KeyStatus::Valid
+        } else {
+            KeyStatus::Expired
+        }
+    }
+}
+
+/// A subscription tier for a cmdOS access key. The website assigns one when it
+/// mints a key; the duration determines when the key expires. Pricing here is
+/// reference data the app can display; the website is the source of truth.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Plan {
+    /// 7-day free trial.
+    Free,
+    /// 1 month.
+    Month,
+    /// 6 months.
+    SixMonths,
+    /// 12 months.
+    Year,
+    /// A custom duration in days (admin-set).
+    Custom(u32),
+}
+
+impl Plan {
+    /// The key's lifetime in days.
+    pub fn duration_days(self) -> u32 {
+        match self {
+            Plan::Free => 7,
+            Plan::Month => 30,
+            Plan::SixMonths => 180,
+            Plan::Year => 365,
+            Plan::Custom(days) => days,
+        }
+    }
+
+    /// Reference price in US dollars (0 for free / custom-priced).
+    pub fn price_usd(self) -> u32 {
+        match self {
+            Plan::Free => 0,
+            Plan::Month => 15,
+            Plan::SixMonths => 75,
+            Plan::Year => 125,
+            Plan::Custom(_) => 0,
+        }
+    }
+
+    /// A display label.
+    pub fn label(self) -> String {
+        match self {
+            Plan::Free => "Free (7 days)".into(),
+            Plan::Month => "1 month".into(),
+            Plan::SixMonths => "6 months".into(),
+            Plan::Year => "12 months".into(),
+            Plan::Custom(d) => format!("Custom ({d} days)"),
+        }
+    }
+}
+
 /// A parsed cmdOS access key of the form `CMDOS-XXXX-XXXX-XXXX`, where each `X`
 /// is an uppercase letter or digit.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -134,6 +234,8 @@ pub enum KeyStatus {
     Unknown,
     /// Was issued but has been revoked.
     Revoked,
+    /// Was valid but its subscription period has ended.
+    Expired,
 }
 
 /// The one impure operation for online verification: ask the cmdOS server about
@@ -164,6 +266,7 @@ impl<T: KeyCheckTransport> KeyVerifier for RemoteVerifier<T> {
             KeyStatus::Valid => Ok(()),
             KeyStatus::Unknown => Err(AuthError::KeyNotRecognized),
             KeyStatus::Revoked => Err(AuthError::KeyRevoked),
+            KeyStatus::Expired => Err(AuthError::KeyExpired),
         }
     }
 }
@@ -244,6 +347,8 @@ pub enum AuthError {
     KeyNotRecognized,
     /// The key was valid but has been revoked by cmdOS.
     KeyRevoked,
+    /// The key's subscription period has ended.
+    KeyExpired,
     /// The password did not match.
     BadPassword,
     /// Could not reach or understand the verification server.
@@ -256,6 +361,7 @@ impl std::fmt::Display for AuthError {
             AuthError::MalformedKey => "access key is not in CMDOS-XXXX-XXXX-XXXX format",
             AuthError::KeyNotRecognized => "access key is not recognized",
             AuthError::KeyRevoked => "access key has been revoked",
+            AuthError::KeyExpired => "access key has expired — renew to keep using cmdOS",
             AuthError::BadPassword => "incorrect password",
             AuthError::Transport(m) => return write!(f, "verification server error: {m}"),
         };
@@ -391,5 +497,49 @@ mod tests {
         let v = RemoteVerifier::new(FakeServer(KeyStatus::Valid));
         let session = login(&c, "cmdOS", "CMDOS-AB12-CD34-EF56", &v).unwrap();
         assert_eq!(session.username, "admin");
+    }
+
+    // ---- Plan tiers & expiry -----------------------------------------------
+
+    #[test]
+    fn plans_have_expected_durations_and_prices() {
+        assert_eq!(Plan::Free.duration_days(), 7);
+        assert_eq!(Plan::Free.price_usd(), 0);
+        assert_eq!(Plan::Month.duration_days(), 30);
+        assert_eq!(Plan::Month.price_usd(), 15);
+        assert_eq!(Plan::SixMonths.duration_days(), 180);
+        assert_eq!(Plan::SixMonths.price_usd(), 75);
+        assert_eq!(Plan::Year.duration_days(), 365);
+        assert_eq!(Plan::Year.price_usd(), 125);
+        assert_eq!(Plan::Custom(90).duration_days(), 90);
+    }
+
+    #[test]
+    fn free_key_expires_after_seven_days() {
+        let rec = KeyRecord::new(Plan::Free, 1000);
+        assert!(rec.is_valid_on(1000)); // issue day
+        assert!(rec.is_valid_on(1006)); // day 6
+        assert!(!rec.is_valid_on(1007)); // day 7 -> expired
+        assert_eq!(rec.status_on(1007), KeyStatus::Expired);
+        assert_eq!(rec.status_on(1005), KeyStatus::Valid);
+    }
+
+    #[test]
+    fn days_remaining_and_expiring_soon() {
+        let rec = KeyRecord::new(Plan::Month, 0); // expires day 30
+        assert_eq!(rec.days_remaining(25), 5);
+        assert_eq!(rec.days_remaining(30), 0);
+        assert_eq!(rec.days_remaining(40), 0); // clamped
+                                               // Within a 7-day renewal window near the end, not yet expired.
+        assert!(rec.is_expiring_soon(25, 7)); // 5 days left
+        assert!(!rec.is_expiring_soon(10, 7)); // 20 days left
+        assert!(!rec.is_expiring_soon(30, 7)); // already expired
+    }
+
+    #[test]
+    fn expired_key_is_denied_through_remote_verifier() {
+        let v = RemoteVerifier::new(FakeServer(KeyStatus::Expired));
+        let k = AccessKey::parse("CMDOS-AB12-CD34-EF56").unwrap();
+        assert_eq!(v.verify(&k), Err(AuthError::KeyExpired));
     }
 }
