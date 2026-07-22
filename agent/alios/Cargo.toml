@@ -1,10 +1,18 @@
 [package]
 name = "alios"
-description = "Alios Prime Agent: planning loop, tiered memory, delegation"
+description = "User agent: planning (intent -> plan) and running plans through the kernel"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 
-# No dependencies in the skeleton. Add them from [workspace.dependencies]
-# only when this crate's RFC is accepted (RFC-first rule, see CLAUDE.md).
 [dependencies]
+cmd-types = { path = "../../kernel/cmd-types" }
+cmd-kernel = { path = "../../kernel/cmd-kernel" }
+cmd-ledger = { path = "../../kernel/cmd-ledger" }
+cmd-transaction = { path = "../../kernel/cmd-transaction" }
+serde_json.workspace = true
+
+[dev-dependencies]
+cap-files = { path = "../../capabilities/files" }
+serde_json.workspace = true
+tempfile = "3"
