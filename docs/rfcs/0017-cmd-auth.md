@@ -61,6 +61,15 @@ path — the server holds the authoritative, revocable list.
 
 The app↔server protocol is specified in `docs/07-product/cmdos-key-server-spec.md`.
 
+# 5c. Plans & expiry (added)
+
+Keys carry a `Plan` (Free 7d / Month $15 / SixMonths $75 / Year $125 / Custom).
+`KeyRecord { plan, issued_day }` computes `expiry_day`, `is_valid_on`,
+`days_remaining`, and `is_expiring_soon` (renewal nudges), all deterministic
+(integer day counts, no wall clock). Expired keys report `KeyStatus::Expired` →
+`AuthError::KeyExpired`. Free-tier abuse prevention is a website responsibility,
+documented in the key-server spec.
+
 # 6. Next
 
 Wire the login gate into the `cmdos` CLI (prompt username → password → key before
