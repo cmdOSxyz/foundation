@@ -1,0 +1,11 @@
+[package]
+name = "claude-http"
+description = "A real ClaudeTransport: HTTPS to the Anthropic Messages API"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+alios = { path = "../../agent/alios" }
+serde_json.workspace = true
+reqwest = { version = "0.12", features = ["blocking", "json", "rustls-tls"], default-features = false }
