@@ -40,3 +40,4 @@ Planned technical RFCs (continuing the existing sequence):
 - 0016 claude-http — ACCEPTED, real ClaudeTransport (not CI-tested; needs API key + recent Rust)
 - 0017 cmd-auth — ACCEPTED, credentials + CMDOS access-key gate (9 tests green)
 - 0018 cmd-router — ACCEPTED, BYOK API key router: detection, round-robin, per-key limits (8 tests green)
+- 0019 RoutedTransport — ACCEPTED, planner over the BYOK key router (17 alios tests green)
