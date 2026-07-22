@@ -27,7 +27,8 @@ Planned technical RFCs (continuing the existing sequence):
 - 0006 Permission & Degradation Model (seed: `prototype/kernel/permission-gate.ts`; adds R0-R3, scopes, graceful degradation)
 - 0007 cmd-ledger — ACCEPTED (6 tests green)
 - 0008 cmd-transaction — ACCEPTED, reversible engine in kernel/cmd-transaction (7 tests green)
-- 0009 AIPC: MCP/A2A binding and Agent Cards
+- 0009 cap-files — ACCEPTED, reversible filesystem capability (10 tests, 8 contracts + 2 e2e)
+- 0010 AIPC: MCP/A2A binding and Agent Cards
 - 0008 cmdPay mandates and budget enforcement
 - 0009 SemFS
 - 0010 NIS inference service
