@@ -63,6 +63,15 @@ rows, and JSON round-trip of the report (the UI contract).
 
 Workspace total after this change: 119 tests.
 
+# 5b. Browsing (added)
+
+`list_dir(path) -> DirListing` and `home_dir()` back the Files app. These take no
+mandate and write no ledger entry, deliberately: the *user* looking at a folder
+is not the *agent* acting on one. Everything the agent does to files still goes
+through the capability and the kernel. Entries sort folders-first then
+case-insensitively by name; unreadable entries are skipped rather than failing
+the whole listing.
+
 # 6. Next
 
 Stream Alios verdicts and execution events to the UI instead of returning them in

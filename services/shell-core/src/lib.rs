@@ -83,6 +83,26 @@ pub struct LedgerRow {
     pub hash: String,
 }
 
+/// One entry in a directory, as the Files app lists it.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct FileEntry {
+    pub name: String,
+    pub path: String,
+    pub is_dir: bool,
+    /// Size in bytes; 0 for directories.
+    pub size: u64,
+}
+
+/// A directory and its contents.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct DirListing {
+    /// The directory that was read, absolute.
+    pub path: String,
+    /// The parent directory, if there is one — for the "up" control.
+    pub parent: Option<String>,
+    pub entries: Vec<FileEntry>,
+}
+
 /// Headline state for the agent status card.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct MachineStatus {
@@ -300,6 +320,53 @@ impl Machine {
         !self.router.is_empty() && self.router.total_remaining() == 0
     }
 
+    // ---- browsing ----------------------------------------------------------
+
+    /// Read a directory for display.
+    ///
+    /// This is the *user* looking at their machine, not the agent acting on it,
+    /// so it takes no mandate and writes no ledger entry: reading a folder to
+    /// show it on screen is not an agent action. Everything the agent does to
+    /// files still goes through the capability and the kernel.
+    pub fn list_dir(&self, path: &str) -> Result<DirListing, String> {
+        let p = std::path::Path::new(path);
+        let read = std::fs::read_dir(p).map_err(|e| format!("{path}: {e}"))?;
+
+        let mut entries: Vec<FileEntry> = Vec::new();
+        for item in read.flatten() {
+            let meta = match item.metadata() {
+                Ok(m) => m,
+                Err(_) => continue, // unreadable entries are skipped, not fatal
+            };
+            let is_dir = meta.is_dir();
+            entries.push(FileEntry {
+                name: item.file_name().to_string_lossy().to_string(),
+                path: item.path().to_string_lossy().to_string(),
+                is_dir,
+                size: if is_dir { 0 } else { meta.len() },
+            });
+        }
+        // Folders first, then names, case-insensitively — how a file list reads.
+        entries.sort_by(|a, b| {
+            b.is_dir
+                .cmp(&a.is_dir)
+                .then_with(|| a.name.to_lowercase().cmp(&b.name.to_lowercase()))
+        });
+
+        Ok(DirListing {
+            path: p.to_string_lossy().to_string(),
+            parent: p.parent().map(|q| q.to_string_lossy().to_string()),
+            entries,
+        })
+    }
+
+    /// The folder the Files app opens on.
+    pub fn home_dir(&self) -> String {
+        std::env::var("HOME")
+            .or_else(|_| std::env::var("USERPROFILE"))
+            .unwrap_or_else(|_| ".".into())
+    }
+
     // ---- audit -------------------------------------------------------------
 
     /// The audit trail for the Ledger app.
@@ -427,6 +494,44 @@ mod tests {
         assert_eq!(rows[0].index, 0);
         assert!(!rows[0].hash.is_empty());
         assert!(m.status().chain_ok);
+    }
+
+    #[test]
+    fn lists_a_directory_folders_first() {
+        use tempfile::tempdir;
+        let dir = tempdir().unwrap();
+        std::fs::write(dir.path().join("b.txt"), "xy").unwrap();
+        std::fs::write(dir.path().join("A.txt"), "x").unwrap();
+        std::fs::create_dir(dir.path().join("zfolder")).unwrap();
+
+        let m = Machine::new("Nova");
+        let listing = m.list_dir(dir.path().to_str().unwrap()).unwrap();
+
+        assert_eq!(listing.entries.len(), 3);
+        // Folders come first even though "zfolder" sorts last alphabetically.
+        assert!(listing.entries[0].is_dir);
+        assert_eq!(listing.entries[0].name, "zfolder");
+        // Then files, case-insensitively by name.
+        assert_eq!(listing.entries[1].name, "A.txt");
+        assert_eq!(listing.entries[2].name, "b.txt");
+        assert_eq!(listing.entries[2].size, 2);
+        assert!(listing.parent.is_some());
+    }
+
+    #[test]
+    fn listing_a_missing_directory_reports_an_error() {
+        let m = Machine::new("Nova");
+        assert!(m.list_dir("/no/such/place/here").is_err());
+    }
+
+    #[test]
+    fn browsing_writes_nothing_to_the_ledger() {
+        use tempfile::tempdir;
+        let dir = tempdir().unwrap();
+        let m = Machine::new("Nova");
+        m.list_dir(dir.path().to_str().unwrap()).unwrap();
+        // Looking at a folder is not an agent action, so nothing is recorded.
+        assert_eq!(m.status().ledger_len, 0);
     }
 
     #[test]
