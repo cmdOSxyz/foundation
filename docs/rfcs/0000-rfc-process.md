@@ -42,3 +42,4 @@ Planned technical RFCs (continuing the existing sequence):
 - 0018 cmd-router — ACCEPTED, BYOK API key router: detection, round-robin, per-key limits (8 tests green)
 - 0019 RoutedTransport — ACCEPTED, planner over the BYOK key router (17 alios tests green)
 - 0020 cap-browser — ACCEPTED, browser capability with R0-R3 (submit/buy = R3, human-gated) (7 tests green)
+- 0021 shell-core — ACCEPTED, testable bridge for cmdShell; fixed a path-case bug in RulePlanner (8 tests green)
