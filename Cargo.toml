@@ -12,6 +12,7 @@ members = [
     "services/claude-http",
     "services/cmd-auth",
     "services/cmd-router",
+    "services/shell-core",
     "services/cmdpay",
     "agent/alios",
     "cli",

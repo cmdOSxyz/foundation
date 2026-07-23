@@ -44,7 +44,11 @@ impl RulePlanner {
 
 impl Planner for RulePlanner {
     fn plan(&self, intent: &Intent) -> ExecutionPlan {
+        // Keywords are matched case-insensitively, but parameters must be read
+        // from the ORIGINAL text: paths are case-sensitive on most filesystems,
+        // so extracting them from a lowercased copy would corrupt them.
         let text = intent.raw_text.to_lowercase();
+        let raw = intent.raw_text.as_str();
         let mut steps = Vec::new();
 
         // Very small rule set, matching the prototype's spirit. A real planner
@@ -54,10 +58,7 @@ impl Planner for RulePlanner {
                 "List the target folder",
                 "filesystem",
                 "list",
-                &[(
-                    "path",
-                    param_after(&text, "in").unwrap_or_else(|| ".".into()),
-                )],
+                &[("path", param_after(raw, "in").unwrap_or_else(|| ".".into()))],
                 vec![],
             ));
         }
@@ -122,9 +123,11 @@ fn step(
 /// Extract the word following `marker` in `text` (a crude "path after 'in'"
 /// heuristic for the rule planner; a real planner needs none of this).
 fn param_after(text: &str, marker: &str) -> Option<String> {
+    // The marker is matched case-insensitively ("in", "In", "IN"), but the value
+    // returned keeps its original case — it is usually a path.
     let mut words = text.split_whitespace();
     while let Some(w) = words.next() {
-        if w == marker {
+        if w.eq_ignore_ascii_case(marker) {
             return words.next().map(|s| s.to_string());
         }
     }
@@ -183,6 +186,31 @@ mod tests {
         let (intent, plan) = agent.plan_for("list what's in my documents folder");
         assert_eq!(plan.intent_id, intent.id);
         assert!(plan.steps.iter().any(|s| s.action == "list"));
+    }
+
+    #[test]
+    fn planner_preserves_path_case() {
+        // Regression: keywords are matched case-insensitively, but a path must
+        // survive planning byte-for-byte — most filesystems are case-sensitive.
+        let agent = Agent::new("Nova", RulePlanner::new());
+        let (_i, plan) = agent.plan_for("list files in /Users/Admin/MyDocs");
+        let path = plan.steps[0]
+            .parameters
+            .get("path")
+            .and_then(|v| v.as_str())
+            .unwrap();
+        assert_eq!(path, "/Users/Admin/MyDocs");
+    }
+
+    #[test]
+    fn planner_matches_keywords_regardless_of_case() {
+        let agent = Agent::new("Nova", RulePlanner::new());
+        let (_i, plan) = agent.plan_for("LIST files IN /Tmp/Data");
+        assert_eq!(plan.steps[0].action, "list");
+        assert_eq!(
+            plan.steps[0].parameters.get("path").unwrap().as_str(),
+            Some("/Tmp/Data")
+        );
     }
 
     #[test]

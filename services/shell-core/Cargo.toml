@@ -1,0 +1,22 @@
+[package]
+name = "shell-core"
+description = "Bridge between cmdShell (Tauri UI) and the cmdOS core: one testable API"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+cmd-types = { path = "../../kernel/cmd-types" }
+cmd-kernel = { path = "../../kernel/cmd-kernel" }
+cmd-ledger = { path = "../../kernel/cmd-ledger" }
+cmd-transaction = { path = "../../kernel/cmd-transaction" }
+cmd-policy = { path = "../../kernel/cmd-policy" }
+cmd-router = { path = "../cmd-router" }
+aipc = { path = "../aipc" }
+alios = { path = "../../agent/alios" }
+cap-files = { path = "../../capabilities/files" }
+serde.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+tempfile = "3"
