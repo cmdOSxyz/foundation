@@ -170,6 +170,127 @@ pub trait TerminalBackend {
     fn run(&mut self, command: &str, cwd: &str) -> Result<Output, ResourceError>;
 }
 
+/// A backend that really runs commands, through the platform's shell.
+///
+/// Two things are deliberately constrained. The working directory must sit
+/// inside a root the caller nominates, so a command cannot be aimed at somewhere
+/// the agent was never given; and every run has a time limit, because a command
+/// that never returns would otherwise hold the machine open indefinitely.
+///
+/// Note what this does *not* do: it does not decide whether a command may run.
+/// That is [`risk_of_command`] and the policy gate above it. A backend that also
+/// judged would be a second, quieter place for the rules to live.
+pub struct SystemShell {
+    root: std::path::PathBuf,
+    timeout: std::time::Duration,
+}
+
+impl SystemShell {
+    /// A shell confined to `root`.
+    pub fn new(root: impl Into<std::path::PathBuf>) -> Self {
+        SystemShell {
+            root: root.into(),
+            timeout: std::time::Duration::from_secs(60),
+        }
+    }
+
+    /// Change the time limit for a single command.
+    pub fn with_timeout(mut self, timeout: std::time::Duration) -> Self {
+        self.timeout = timeout;
+        self
+    }
+
+    /// Resolve `cwd` against the root, refusing anything that climbs out of it.
+    fn resolve_cwd(&self, cwd: &str) -> Result<std::path::PathBuf, ResourceError> {
+        let candidate = if cwd.is_empty() || cwd == "." {
+            self.root.clone()
+        } else {
+            let p = std::path::Path::new(cwd);
+            if p.is_absolute() {
+                p.to_path_buf()
+            } else {
+                self.root.join(p)
+            }
+        };
+
+        // canonicalize resolves `..` and symlinks, which is what makes the
+        // containment check meaningful rather than textual.
+        let real_root = self
+            .root
+            .canonicalize()
+            .map_err(|e| ResourceError::Failed(format!("shell root unavailable: {e}")))?;
+        let real = candidate
+            .canonicalize()
+            .map_err(|e| ResourceError::Failed(format!("no such directory {cwd}: {e}")))?;
+
+        if !real.starts_with(&real_root) {
+            return Err(ResourceError::Failed(format!(
+                "working directory escapes the agent's machine: {cwd}"
+            )));
+        }
+        Ok(real)
+    }
+}
+
+impl TerminalBackend for SystemShell {
+    fn run(&mut self, command: &str, cwd: &str) -> Result<Output, ResourceError> {
+        use std::process::{Command, Stdio};
+
+        let dir = self.resolve_cwd(cwd)?;
+
+        let mut child = if cfg!(target_os = "windows") {
+            let mut c = Command::new("cmd");
+            c.args(["/C", command]);
+            c
+        } else {
+            let mut c = Command::new("sh");
+            c.args(["-c", command]);
+            c
+        }
+        .current_dir(&dir)
+        .stdin(Stdio::null()) // a command must never sit waiting for a person
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .map_err(|e| ResourceError::Failed(format!("could not start `{command}`: {e}")))?;
+
+        // Poll rather than block, so a command that hangs is killed instead of
+        // holding the agent forever.
+        let started = std::time::Instant::now();
+        loop {
+            match child.try_wait() {
+                Ok(Some(_)) => break,
+                Ok(None) => {
+                    if started.elapsed() > self.timeout {
+                        let _ = child.kill();
+                        let _ = child.wait();
+                        return Err(ResourceError::Failed(format!(
+                            "`{command}` did not finish within {}s and was stopped",
+                            self.timeout.as_secs()
+                        )));
+                    }
+                    std::thread::sleep(std::time::Duration::from_millis(20));
+                }
+                Err(e) => {
+                    return Err(ResourceError::Failed(format!(
+                        "waiting on `{command}`: {e}"
+                    )))
+                }
+            }
+        }
+
+        let out = child
+            .wait_with_output()
+            .map_err(|e| ResourceError::Failed(format!("reading output of `{command}`: {e}")))?;
+
+        Ok(Output {
+            stdout: String::from_utf8_lossy(&out.stdout).to_string(),
+            stderr: String::from_utf8_lossy(&out.stderr).to_string(),
+            code: out.status.code().unwrap_or(-1),
+        })
+    }
+}
+
 /// What an undo needs to know. Most shell commands cannot be undone, and saying
 /// so is better than pretending.
 #[derive(Clone, Debug)]
@@ -473,6 +594,102 @@ mod tests {
         .unwrap();
         // Undoing the folder would take someone's work with it.
         assert!(made.exists(), "a folder with contents is left alone");
+    }
+
+    // ---- the real shell ----------------------------------------------------
+    //
+    // These run actual processes. They are written to hold on either platform,
+    // so the command used is one that exists everywhere.
+
+    #[test]
+    fn the_real_shell_runs_a_command_and_returns_its_output() {
+        use tempfile::tempdir;
+        let dir = tempdir().unwrap();
+        let mut shell = SystemShell::new(dir.path());
+
+        let out = shell.run("echo hello", ".").unwrap();
+        assert_eq!(out.code, 0);
+        assert!(out.stdout.contains("hello"), "got: {:?}", out.stdout);
+    }
+
+    #[test]
+    fn a_failing_command_reports_its_exit_code() {
+        use tempfile::tempdir;
+        let dir = tempdir().unwrap();
+        let mut shell = SystemShell::new(dir.path());
+
+        // A path that certainly does not exist, on either platform.
+        let out = shell.run("cd definitely_not_here_12345", ".").unwrap();
+        assert_ne!(out.code, 0, "a failure must not look like success");
+    }
+
+    #[test]
+    fn the_shell_runs_inside_the_directory_it_was_given() {
+        use tempfile::tempdir;
+        let dir = tempdir().unwrap();
+        std::fs::create_dir(dir.path().join("inner")).unwrap();
+        std::fs::write(dir.path().join("inner/marker.txt"), b"x").unwrap();
+
+        let mut shell = SystemShell::new(dir.path());
+        let listing = if cfg!(target_os = "windows") {
+            "dir"
+        } else {
+            "ls"
+        };
+        let out = shell.run(listing, "inner").unwrap();
+        assert!(out.stdout.contains("marker.txt"), "got: {:?}", out.stdout);
+    }
+
+    #[test]
+    fn a_working_directory_cannot_escape_the_root() {
+        use tempfile::tempdir;
+        let outer = tempdir().unwrap();
+        let root = outer.path().join("machine");
+        std::fs::create_dir(&root).unwrap();
+
+        let mut shell = SystemShell::new(&root);
+
+        // Climbing out with `..`, and naming somewhere else outright.
+        let up = shell.run("echo hi", "..");
+        assert!(up.is_err(), "`..` must not reach outside the machine");
+
+        let elsewhere = shell.run("echo hi", outer.path().to_str().unwrap());
+        assert!(elsewhere.is_err(), "an outside path must be refused");
+    }
+
+    #[test]
+    fn a_command_that_never_finishes_is_stopped() {
+        use std::time::Duration;
+        use tempfile::tempdir;
+        let dir = tempdir().unwrap();
+        let mut shell = SystemShell::new(dir.path()).with_timeout(Duration::from_millis(300));
+
+        // A sleep long enough that only the timeout can end it.
+        let sleeper = if cfg!(target_os = "windows") {
+            "ping -n 30 127.0.0.1"
+        } else {
+            "sleep 30"
+        };
+        let started = std::time::Instant::now();
+        let result = shell.run(sleeper, ".");
+
+        assert!(result.is_err(), "a hanging command must be stopped");
+        assert!(
+            started.elapsed() < Duration::from_secs(5),
+            "it must be stopped promptly, not eventually"
+        );
+    }
+
+    #[test]
+    fn the_real_shell_satisfies_the_capability() {
+        use tempfile::tempdir;
+        let dir = tempdir().unwrap();
+        let mut term = Terminal::new(SystemShell::new(dir.path()));
+
+        let s = step("echo wired");
+        term.execute(&s).unwrap();
+        assert!(term.verify(&s).unwrap());
+        assert!(term.last_output().unwrap().stdout.contains("wired"));
     }
 
     #[test]

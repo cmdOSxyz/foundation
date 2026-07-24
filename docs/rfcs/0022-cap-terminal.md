@@ -62,6 +62,26 @@ gated; empty command refused; no snapshot for reads; output recorded and
 verified; non-zero exit is a failure; mkdir undone; undo declines a directory
 that now has contents; simulate states the consequence plainly.
 
+# 6b. The real shell (added)
+
+`SystemShell` runs commands through the platform shell (`cmd /C` on Windows,
+`sh -c` elsewhere) under two constraints:
+
+- **Confined.** The working directory is resolved and canonicalised against a
+  root; `..` and outside paths are refused. A command cannot be aimed at
+  somewhere the agent was never given.
+- **Bounded.** Every run has a time limit and is killed if it exceeds it, so a
+  command that never returns cannot hold the machine open. Standard input is
+  closed, so nothing can sit waiting for a person who is not there.
+
+It deliberately does **not** decide whether a command may run. That is
+`risk_of_command` and the policy gate above it; a backend that also judged would
+be a second, quieter place for the rules to live.
+
+`shell-core::Machine::run_command` puts a command through the kernel: classified,
+gated, executed, recorded. An R3 command comes back as a pending decision with
+nothing run.
+
 # 7. Next
 
 A real backend spawning the platform shell (cmd on Windows, sh elsewhere), with
