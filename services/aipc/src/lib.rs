@@ -248,10 +248,28 @@ pub mod catalog {
         ]
     }
 
+    /// Tools exposed by the shell capability (cap-terminal).
+    ///
+    /// One tool, not one per command, because the risk of running a shell lives
+    /// in the command text rather than in the action name. The catalog registers
+    /// it at R3 — the strictest reading — and the capability's own
+    /// `risk_of_command` decides the real class for a given command, which is
+    /// what the kernel is given at run time.
+    pub fn terminal_tools() -> Vec<Tool> {
+        vec![t(
+            "terminal",
+            "run",
+            "Run a shell command (risk depends on the command)",
+            &["command", "cwd"],
+            RiskClass::R3Irreversible,
+        )]
+    }
+
     /// All first-party tools.
     pub fn all() -> Vec<Tool> {
         let mut v = filesystem_tools();
         v.extend(browser_tools());
+        v.extend(terminal_tools());
         v
     }
 }
@@ -380,6 +398,16 @@ mod tests {
         // A known tool resolves.
         assert!(aipc.tool("filesystem", "rename").is_some());
         assert!(aipc.tool("browser", "navigate").is_some());
+    }
+
+    #[test]
+    fn the_shell_is_registered_at_its_strictest() {
+        // The catalog cannot know what command will be passed, so it advertises
+        // the shell at the worst case; the capability narrows it per command.
+        let aipc = Aipc::new().with_first_party();
+        let run = aipc.tool("terminal", "run").expect("terminal.run");
+        assert_eq!(run.risk, RiskClass::R3Irreversible);
+        assert!(!run.risk.may_be_autonomous());
     }
 
     #[test]
