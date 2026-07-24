@@ -1,4 +1,4 @@
-﻿// Visibility: public
+// Visibility: public
 // schemas/index.ts
 // Single entry point for all cmdOS contracts.
 // Import from here instead of individual files, e.g.:

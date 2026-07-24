@@ -1,4 +1,4 @@
-﻿// Visibility: public
+// Visibility: public
 // schemas/permission-request.ts
 // A PermissionRequest is raised before a sensitive step runs. The runtime pauses,
 // shows the user exactly what will happen, and waits for Approve or Deny.
