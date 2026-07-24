@@ -6,6 +6,7 @@ members = [
     "kernel/cmd-transaction",
     "kernel/cmd-policy",
     "kernel/cmd-ledger",
+    "kernel/cmd-shadow",
     "services/semfs",
     "services/nis",
     "services/aipc",

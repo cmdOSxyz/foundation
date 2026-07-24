@@ -21,6 +21,7 @@ use alios::{Agent, RulePlanner};
 use cmd_kernel::{AuthorityContext, Kernel, StepOutcome};
 use cmd_ledger::Ledger;
 use cmd_router::{ApiKey, KeyRouter};
+use cmd_shadow::{Change, ShadowWorld};
 use cmd_types::{now, Id, Mandate, PlanStep, RiskClass};
 use serde::{Deserialize, Serialize};
 
@@ -103,6 +104,26 @@ pub struct DirListing {
     pub entries: Vec<FileEntry>,
 }
 
+/// One finished outcome the user can promote or throw away.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct OutcomeInfo {
+    pub id: String,
+    pub label: String,
+    /// What promoting this would do to the real folder, in plain words.
+    pub changes: Vec<String>,
+    /// The plan that produced it, step by step.
+    pub steps: Vec<StepReport>,
+    pub completed: bool,
+}
+
+fn describe(c: &Change) -> String {
+    match c {
+        Change::Created(p) => format!("create {p}"),
+        Change::Modified(p) => format!("modify {p}"),
+        Change::Deleted(p) => format!("delete {p}"),
+    }
+}
+
 /// Headline state for the agent status card.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct MachineStatus {
@@ -132,6 +153,9 @@ pub struct Machine {
     ledger: Ledger,
     files: cap_files::FileSystem,
     mandate: Mandate,
+    /// Open candidate futures, if the agent is working in the shadow world.
+    shadow: Option<ShadowWorld>,
+    shadow_root: Option<std::path::PathBuf>,
 }
 
 impl Default for Machine {
@@ -163,6 +187,8 @@ impl Machine {
             ledger: Ledger::new(),
             files: cap_files::FileSystem::new(),
             mandate,
+            shadow: None,
+            shadow_root: None,
         }
     }
 
@@ -264,6 +290,166 @@ impl Machine {
             ledger_len: self.ledger.len(),
             chain_ok: self.ledger.verify().is_ok(),
         }
+    }
+
+    // ---- the shadow world --------------------------------------------------
+
+    /// Run an intent **inside a fork** of `root`. The agent completes the whole
+    /// plan; reality is not touched. What comes back is a finished outcome, to
+    /// promote or throw away.
+    ///
+    /// Steps are executed against the fork by rewriting their path parameters to
+    /// point inside it — the capability and the kernel are unchanged, they simply
+    /// operate somewhere that is not real yet.
+    pub fn run_in_shadow(
+        &mut self,
+        text: &str,
+        root: &str,
+        label: &str,
+        scratch: &str,
+    ) -> Result<OutcomeInfo, String> {
+        let root_path = std::path::Path::new(root).to_path_buf();
+        if self.shadow.is_none() || self.shadow_root.as_deref() != Some(root_path.as_path()) {
+            self.shadow = Some(ShadowWorld::new(&root_path, scratch).map_err(|e| e.to_string())?);
+            self.shadow_root = Some(root_path.clone());
+        }
+
+        let world = self.shadow.as_mut().expect("just created");
+        let fork_id = world.fork(label).map_err(|e| e.to_string())?;
+
+        // Plan first — planning reads nothing and changes nothing.
+        let agent = Agent::new(self.agent_name.clone(), RulePlanner::new());
+        let (_intent, plan) = agent.plan_for(text);
+
+        // Point every path inside the fork, copying originals in as needed so
+        // the agent still sees the folder's real contents.
+        let fork = world.get_mut(fork_id).ok_or("fork vanished")?;
+        let work = fork.work_dir().to_path_buf();
+        let mut shadowed = plan.clone();
+        for step in shadowed.steps.iter_mut() {
+            for key in ["path", "from", "to"] {
+                let Some(v) = step.parameters.get(key).and_then(|v| v.as_str()) else {
+                    continue;
+                };
+                let p = std::path::Path::new(v);
+                let rel = p.strip_prefix(&root_path).ok().map(|r| r.to_path_buf());
+                let rel = match rel {
+                    Some(r) if !r.as_os_str().is_empty() => r,
+                    // A bare name or a path outside the root is taken as relative
+                    // to the root — an agent must not reach past it.
+                    _ if !p.is_absolute() => p.to_path_buf(),
+                    _ => continue,
+                };
+                if let Some(k) = rel.to_str() {
+                    let _ = fork.materialize(k); // copy-on-write, best effort
+                }
+                let target = work.join(&rel);
+                step.parameters
+                    .insert(key.to_string(), serde_json::json!(target.to_string_lossy()));
+            }
+        }
+
+        // Same kernel, same gate, same ledger — only the ground is different.
+        let risks: Vec<RiskClass> = shadowed.steps.iter().map(|s| self.risk_of(s)).collect();
+        let ctx = AuthorityContext {
+            mandate: Some(&self.mandate),
+            budget: None,
+        };
+        let run = {
+            let mut kernel = Kernel::new(&mut self.ledger);
+            let aipc = &self.aipc;
+            let resolve = |s: &PlanStep| {
+                aipc.tool(&s.capability, &s.action)
+                    .map(|t| t.risk)
+                    .unwrap_or(RiskClass::R2Compensable)
+            };
+            kernel.run_plan(&shadowed, &mut self.files, &ctx, &resolve)
+        };
+
+        let steps: Vec<StepReport> = shadowed
+            .steps
+            .iter()
+            .zip(risks.iter())
+            .map(|(s, r)| {
+                let found = run.steps.iter().find(|(id, _)| *id == s.id);
+                let (outcome, reason) = match found.map(|(_, o)| o) {
+                    Some(StepOutcome::Executed) => ("executed", None),
+                    Some(StepOutcome::AwaitingApproval(m)) => {
+                        ("awaiting_approval", Some(m.clone()))
+                    }
+                    Some(StepOutcome::Blocked(m)) => ("blocked", Some(m.clone())),
+                    Some(StepOutcome::Failed(m)) => ("failed", Some(m.clone())),
+                    None => ("not_reached", None),
+                };
+                StepReport {
+                    description: s.description.clone(),
+                    capability: s.capability.clone(),
+                    action: s.action.clone(),
+                    risk: risk_label(*r),
+                    outcome: outcome.to_string(),
+                    reason,
+                }
+            })
+            .collect();
+
+        let world = self.shadow.as_ref().expect("world");
+        let fork = world.get(fork_id).ok_or("fork vanished")?;
+        Ok(OutcomeInfo {
+            id: fork_id.to_string(),
+            label: label.to_string(),
+            changes: fork
+                .changes()
+                .map_err(|e| e.to_string())?
+                .iter()
+                .map(describe)
+                .collect(),
+            steps,
+            completed: run.completed,
+        })
+    }
+
+    /// Every outcome currently on offer.
+    pub fn shadow_outcomes(&self) -> Vec<OutcomeInfo> {
+        let Some(world) = self.shadow.as_ref() else {
+            return Vec::new();
+        };
+        world
+            .outcomes()
+            .unwrap_or_default()
+            .into_iter()
+            .map(|o| OutcomeInfo {
+                id: o.id.to_string(),
+                label: o.label,
+                changes: o.changes.iter().map(describe).collect(),
+                steps: Vec::new(),
+                completed: true,
+            })
+            .collect()
+    }
+
+    /// Choose a future: promote it and drop the rest.
+    pub fn shadow_choose(&mut self, id: &str) -> Result<Vec<String>, String> {
+        let world = self.shadow.as_mut().ok_or("no shadow world open")?;
+        let target = world
+            .outcomes()
+            .map_err(|e| e.to_string())?
+            .into_iter()
+            .find(|o| o.id.to_string() == id)
+            .ok_or("no such outcome")?;
+        let applied = world.choose(target.id).map_err(|e| e.to_string())?;
+        self.shadow = None;
+        self.shadow_root = None;
+        Ok(applied.iter().map(describe).collect())
+    }
+
+    /// Walk away from every open future. Reality never knew.
+    pub fn shadow_discard(&mut self) -> Result<(), String> {
+        if let Some(world) = self.shadow.as_mut() {
+            world.discard_all().map_err(|e| e.to_string())?;
+        }
+        self.shadow = None;
+        self.shadow_root = None;
+        Ok(())
     }
 
     // ---- keys (BYOK) -------------------------------------------------------
@@ -532,6 +718,96 @@ mod tests {
         m.list_dir(dir.path().to_str().unwrap()).unwrap();
         // Looking at a folder is not an agent action, so nothing is recorded.
         assert_eq!(m.status().ledger_len, 0);
+    }
+
+    // ---- the shadow world --------------------------------------------------
+
+    #[test]
+    fn an_intent_runs_in_a_fork_without_touching_reality() {
+        use tempfile::tempdir;
+        let real = tempdir().unwrap();
+        std::fs::write(real.path().join("keep.txt"), b"untouched").unwrap();
+        let scratch = tempdir().unwrap();
+
+        let mut m = Machine::new("Nova");
+        let outcome = m
+            .run_in_shadow(
+                &format!("list files in {}", real.path().display()),
+                real.path().to_str().unwrap(),
+                "Try it",
+                scratch.path().to_str().unwrap(),
+            )
+            .unwrap();
+
+        assert_eq!(outcome.label, "Try it");
+        assert!(!outcome.steps.is_empty(), "the plan ran");
+        // The real folder is exactly as it was.
+        assert_eq!(
+            std::fs::read(real.path().join("keep.txt")).unwrap(),
+            b"untouched"
+        );
+    }
+
+    #[test]
+    fn several_futures_can_be_open_at_once() {
+        use tempfile::tempdir;
+        let real = tempdir().unwrap();
+        let scratch = tempdir().unwrap();
+        let root = real.path().to_str().unwrap().to_string();
+        let sc = scratch.path().to_str().unwrap().to_string();
+
+        let mut m = Machine::new("Nova");
+        m.run_in_shadow("show the folder", &root, "By type", &sc)
+            .unwrap();
+        m.run_in_shadow("show the folder", &root, "By date", &sc)
+            .unwrap();
+
+        let offered = m.shadow_outcomes();
+        assert_eq!(offered.len(), 2, "two candidate futures on offer");
+        assert!(offered.iter().any(|o| o.label == "By date"));
+    }
+
+    #[test]
+    fn choosing_one_future_closes_the_world() {
+        use tempfile::tempdir;
+        let real = tempdir().unwrap();
+        let scratch = tempdir().unwrap();
+        let root = real.path().to_str().unwrap().to_string();
+        let sc = scratch.path().to_str().unwrap().to_string();
+
+        let mut m = Machine::new("Nova");
+        let a = m.run_in_shadow("show the folder", &root, "A", &sc).unwrap();
+        m.run_in_shadow("show the folder", &root, "B", &sc).unwrap();
+
+        m.shadow_choose(&a.id).unwrap();
+
+        // One became real; the rest never happened, and nothing stays open.
+        assert!(m.shadow_outcomes().is_empty());
+    }
+
+    #[test]
+    fn walking_away_leaves_reality_untouched() {
+        use tempfile::tempdir;
+        let real = tempdir().unwrap();
+        std::fs::write(real.path().join("a.txt"), b"original").unwrap();
+        let scratch = tempdir().unwrap();
+
+        let mut m = Machine::new("Nova");
+        m.run_in_shadow(
+            "show the folder",
+            real.path().to_str().unwrap(),
+            "Discarded",
+            scratch.path().to_str().unwrap(),
+        )
+        .unwrap();
+
+        m.shadow_discard().unwrap();
+
+        assert!(m.shadow_outcomes().is_empty());
+        assert_eq!(
+            std::fs::read(real.path().join("a.txt")).unwrap(),
+            b"original"
+        );
     }
 
     #[test]
