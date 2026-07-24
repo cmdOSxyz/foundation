@@ -1,0 +1,13 @@
+[package]
+name = "cmd-shadow"
+description = "Shadow World Engine: fork the machine, finish the work, choose the future"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+cmd-types = { path = "../cmd-types" }
+serde.workspace = true
+
+[dev-dependencies]
+tempfile = "3"

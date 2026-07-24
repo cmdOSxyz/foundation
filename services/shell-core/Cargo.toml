@@ -12,6 +12,7 @@ cmd-ledger = { path = "../../kernel/cmd-ledger" }
 cmd-transaction = { path = "../../kernel/cmd-transaction" }
 cmd-policy = { path = "../../kernel/cmd-policy" }
 cmd-router = { path = "../cmd-router" }
+cmd-shadow = { path = "../../kernel/cmd-shadow" }
 aipc = { path = "../aipc" }
 alios = { path = "../../agent/alios" }
 cap-files = { path = "../../capabilities/files" }
