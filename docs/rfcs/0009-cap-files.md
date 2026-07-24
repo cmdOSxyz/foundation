@@ -61,3 +61,11 @@ replacement once AIPC/MCP exposure (RFC-0010+) lands.
 `cmd-policy` (R0–R3 gate + budgets + mandates) and `cmd-kernel` (Intent
 Scheduler) to complete the kernel, then AIPC to expose capabilities over MCP and
 run the first full end-to-end intent in Rust.
+
+## Amendment — move creates its destination
+
+`fs::rename` does not create the target folder, so "move this into pdf/" failed
+whenever pdf/ did not already exist — an ordinary request. Move now creates the
+destination folder, and undo removes it again if nothing else went into it, so a
+reversal leaves no trace. Found while making the Shadow app able to show a real
+tidy.
