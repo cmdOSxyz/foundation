@@ -167,6 +167,15 @@ impl Resource for FileSystem {
                     return Err(fail(format!("source does not exist: {from}")));
                 }
                 let to = resolve_target(step);
+                // Moving a file into a folder that does not exist yet is an
+                // ordinary request — "put this in pdf/" — so make the folder
+                // rather than failing. Undo removes it again if it is left empty.
+                if let Some(parent) = Path::new(&to).parent() {
+                    if !parent.as_os_str().is_empty() && !parent.exists() {
+                        fs::create_dir_all(parent)
+                            .map_err(|e| fail(format!("create {}: {e}", parent.display())))?;
+                    }
+                }
                 fs::rename(&from, &to)
                     .map_err(|e| fail(format!("{} {from}->{to}: {e}", step.action)))?;
                 Ok(())
@@ -212,7 +221,19 @@ impl Resource for FileSystem {
     fn restore(&mut self, snapshot: Self::Snap) -> Result<(), ResourceError> {
         match snapshot {
             FsSnapshot::Moved { original, moved_to } => {
+                let created_dir = moved_to.parent().map(|p| p.to_path_buf());
                 fs::rename(&moved_to, &original).map_err(|e| fail(format!("undo move: {e}")))?;
+                // If the move made a folder and nothing else went into it, take
+                // it away again — an undo should leave no trace.
+                if let Some(dir) = created_dir {
+                    if dir.is_dir()
+                        && fs::read_dir(&dir)
+                            .map(|mut d| d.next().is_none())
+                            .unwrap_or(false)
+                    {
+                        let _ = fs::remove_dir(&dir);
+                    }
+                }
                 Ok(())
             }
             FsSnapshot::Trashed {
@@ -391,6 +412,37 @@ mod tests {
     }
 
     // Contract 6: delete moves to trash (recoverable), original gone, restorable.
+    #[test]
+    fn moving_into_a_new_folder_creates_it_and_undo_removes_it() {
+        // "Put this in pdf/" is an ordinary request even when pdf/ does not
+        // exist yet. Before this, rename simply failed.
+        let dir = tempdir().unwrap();
+        let src = dir.path().join("report.pdf");
+        fs::write(&src, b"x").unwrap();
+
+        let step = step(
+            "move",
+            &[
+                ("from", src.to_str().unwrap()),
+                ("to", dir.path().join("pdf/report.pdf").to_str().unwrap()),
+            ],
+        );
+
+        let mut fs_cap = FileSystem::new();
+        let snap = fs_cap.snapshot(&step).unwrap().unwrap();
+        fs_cap.execute(&step).unwrap();
+
+        assert!(dir.path().join("pdf/report.pdf").exists());
+        assert!(fs_cap.verify(&step).unwrap());
+
+        fs_cap.restore(snap).unwrap();
+        assert!(src.exists(), "the file came back");
+        assert!(
+            !dir.path().join("pdf").exists(),
+            "and the folder it made is gone"
+        );
+    }
+
     #[test]
     fn delete_moves_to_trash_and_is_recoverable() {
         let dir = tempdir().unwrap();

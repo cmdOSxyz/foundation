@@ -22,8 +22,9 @@ use cmd_kernel::{AuthorityContext, Kernel, StepOutcome};
 use cmd_ledger::Ledger;
 use cmd_router::{ApiKey, KeyRouter};
 use cmd_shadow::{Change, ShadowWorld};
-use cmd_types::{now, Id, Mandate, PlanStep, RiskClass};
+use cmd_types::{now, ExecutionPlan, Id, Mandate, PlanStep, RiskClass};
 use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 
 /// A tool the agent may call, as the UI lists it.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -235,7 +236,16 @@ impl Machine {
     /// shell renders them as pending decisions rather than failures.
     pub fn submit_intent(&mut self, text: &str) -> IntentReport {
         let agent = Agent::new(self.agent_name.clone(), RulePlanner::new());
-        let (intent, plan) = agent.plan_for(text);
+        let (intent, mut plan) = agent.plan_for(text);
+        // "Tidy X" needs to know what is in X, which the keyword planner cannot
+        // see. Fall back to it only when the folder cannot be read.
+        if Self::wants_tidying(text) {
+            if let Some(path) = text.split_whitespace().find(|w| w.contains(['/', '\\'])) {
+                if let Some(real) = self.plan_tidy(path) {
+                    plan = real;
+                }
+            }
+        }
 
         // Classify every step up front so the UI can show the plan with risks
         // even for steps the kernel never reaches.
@@ -292,6 +302,78 @@ impl Machine {
         }
     }
 
+    /// Build a plan that actually *does* something to a folder.
+    ///
+    /// The rule planner is keyword-based and cannot see the disk, so asking it to
+    /// "tidy this folder" produced a read-only listing and, in a shadow, an
+    /// outcome that changed nothing. Sorting files needs to know what is in the
+    /// folder, so that planning happens here, where the filesystem is reachable.
+    ///
+    /// A model-backed planner subsumes this; until one is wired, it is what makes
+    /// the agent able to do real work.
+    fn plan_tidy(&self, root: &str) -> Option<ExecutionPlan> {
+        let listing = self.list_dir(root).ok()?;
+
+        let mut steps = Vec::new();
+        for entry in listing.entries.iter().filter(|e| !e.is_dir) {
+            // Leave hidden files alone: they are usually configuration, and
+            // moving them is rarely what "tidy" means.
+            if entry.name.starts_with('.') {
+                continue;
+            }
+            let ext = std::path::Path::new(&entry.name)
+                .extension()
+                .and_then(|e| e.to_str())
+                .map(|e| e.to_lowercase());
+            let folder = match ext {
+                Some(e) if !e.is_empty() => e,
+                _ => continue, // no extension, nothing to sort it by
+            };
+
+            let mut parameters = BTreeMap::new();
+            parameters.insert("from".into(), serde_json::json!(entry.path.clone()));
+            parameters.insert(
+                "to".into(),
+                serde_json::json!(format!("{folder}/{}", entry.name)),
+            );
+            steps.push(PlanStep {
+                id: Id::new(),
+                description: format!("Move {} into {}/", entry.name, folder),
+                capability: "filesystem".into(),
+                action: "move".into(),
+                parameters,
+                depends_on: vec![],
+                requires_permission: false,
+                status: cmd_types::StepStatus::Pending,
+                error: None,
+            });
+
+            if steps.len() >= 60 {
+                break; // a plan you cannot read is a plan you cannot judge
+            }
+        }
+
+        if steps.is_empty() {
+            return None;
+        }
+        Some(ExecutionPlan {
+            id: Id::new(),
+            intent_id: Id::new(),
+            created_at: now(),
+            status: cmd_types::PlanStatus::Draft,
+            summary: format!("Sort {} file(s) into folders by type", steps.len()),
+            steps,
+        })
+    }
+
+    /// Whether a request is asking for the folder to be organised.
+    fn wants_tidying(text: &str) -> bool {
+        let t = text.to_lowercase();
+        ["tidy", "organis", "organiz", "sort", "clean up", "arrange"]
+            .iter()
+            .any(|k| t.contains(k))
+    }
+
     // ---- the shadow world --------------------------------------------------
 
     /// Run an intent **inside a fork** of `root`. The agent completes the whole
@@ -309,6 +391,19 @@ impl Machine {
         scratch: &str,
     ) -> Result<OutcomeInfo, String> {
         let root_path = std::path::Path::new(root).to_path_buf();
+
+        // Plan first. Planning only reads, and doing it before the fork is opened
+        // keeps the mutable borrow of the shadow world from overlapping it.
+        let plan = if Self::wants_tidying(text) {
+            self.plan_tidy(root).unwrap_or_else(|| {
+                let agent = Agent::new(self.agent_name.clone(), RulePlanner::new());
+                agent.plan_for(text).1
+            })
+        } else {
+            let agent = Agent::new(self.agent_name.clone(), RulePlanner::new());
+            agent.plan_for(text).1
+        };
+
         if self.shadow.is_none() || self.shadow_root.as_deref() != Some(root_path.as_path()) {
             self.shadow = Some(ShadowWorld::new(&root_path, scratch).map_err(|e| e.to_string())?);
             self.shadow_root = Some(root_path.clone());
@@ -316,10 +411,6 @@ impl Machine {
 
         let world = self.shadow.as_mut().expect("just created");
         let fork_id = world.fork(label).map_err(|e| e.to_string())?;
-
-        // Plan first — planning reads nothing and changes nothing.
-        let agent = Agent::new(self.agent_name.clone(), RulePlanner::new());
-        let (_intent, plan) = agent.plan_for(text);
 
         // Point every path inside the fork, copying originals in as needed so
         // the agent still sees the folder's real contents.
@@ -808,6 +899,88 @@ mod tests {
             std::fs::read(real.path().join("a.txt")).unwrap(),
             b"original"
         );
+    }
+
+    #[test]
+    fn tidying_produces_real_changes_in_a_fork() {
+        use tempfile::tempdir;
+        let real = tempdir().unwrap();
+        std::fs::write(real.path().join("report.pdf"), b"a").unwrap();
+        std::fs::write(real.path().join("notes.txt"), b"b").unwrap();
+        std::fs::write(real.path().join("photo.PNG"), b"c").unwrap();
+        std::fs::create_dir(real.path().join("existing")).unwrap();
+        let scratch = tempdir().unwrap();
+
+        let mut m = Machine::new("Nova");
+        let outcome = m
+            .run_in_shadow(
+                "tidy this folder",
+                real.path().to_str().unwrap(),
+                "By type",
+                scratch.path().to_str().unwrap(),
+            )
+            .unwrap();
+
+        // This is the point: a tidy has to offer something to accept.
+        assert!(
+            !outcome.changes.is_empty(),
+            "tidying must produce changes, not an empty outcome"
+        );
+        assert!(outcome.changes.iter().any(|c| c.contains("pdf/report.pdf")));
+        assert!(outcome.changes.iter().any(|c| c.contains("txt/notes.txt")));
+        // Extension case is normalised, so PNG and png do not become two folders.
+        assert!(outcome.changes.iter().any(|c| c.contains("png/photo.PNG")));
+
+        // And reality is still exactly as it was.
+        assert!(real.path().join("report.pdf").exists());
+        assert!(!real.path().join("pdf").exists());
+    }
+
+    #[test]
+    fn promoting_a_tidy_actually_sorts_the_folder() {
+        use tempfile::tempdir;
+        let real = tempdir().unwrap();
+        std::fs::write(real.path().join("a.txt"), b"x").unwrap();
+        let scratch = tempdir().unwrap();
+
+        let mut m = Machine::new("Nova");
+        let o = m
+            .run_in_shadow(
+                "organize this folder",
+                real.path().to_str().unwrap(),
+                "By type",
+                scratch.path().to_str().unwrap(),
+            )
+            .unwrap();
+        m.shadow_choose(&o.id).unwrap();
+
+        assert!(
+            real.path().join("txt/a.txt").exists(),
+            "the file moved for real"
+        );
+    }
+
+    #[test]
+    fn hidden_files_are_left_alone() {
+        use tempfile::tempdir;
+        let real = tempdir().unwrap();
+        std::fs::write(real.path().join(".gitconfig"), b"x").unwrap();
+        std::fs::write(real.path().join("doc.md"), b"y").unwrap();
+        let scratch = tempdir().unwrap();
+
+        let mut m = Machine::new("Nova");
+        let o = m
+            .run_in_shadow(
+                "tidy",
+                real.path().to_str().unwrap(),
+                "By type",
+                scratch.path().to_str().unwrap(),
+            )
+            .unwrap();
+
+        // Dotfiles are configuration; sorting them by extension is not tidying.
+        assert!(!o.changes.iter().any(|c| c.contains("gitconfig")));
+        assert!(o.changes.iter().any(|c| c.contains("md/doc.md")));
     }
 
     #[test]

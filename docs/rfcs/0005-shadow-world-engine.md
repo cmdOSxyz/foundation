@@ -86,6 +86,18 @@ absolute path. This was found by the first Windows run — the engine was report
 the host's separator, which would have made a change produced on one machine
 unreadable on another.
 
+# 6d. Making the agent able to do real work
+
+A shadow is only worth showing if the agent changed something. The keyword
+planner cannot see the disk, so "tidy this folder" planned a read-only listing
+and every outcome reported "changes nothing".
+
+`Machine::plan_tidy` builds a plan from what is actually in the folder: each file
+with an extension gets a move into a folder named for it, hidden files are left
+alone (they are configuration, not clutter), extensions are lowercased so PNG and
+png do not become two folders, and the plan is capped at 60 steps — a plan you
+cannot read is a plan you cannot judge. A model-backed planner subsumes this.
+
 # 7. Next
 
 Run whole plans inside a fork through the kernel (rooting `cap-files` at the fork
