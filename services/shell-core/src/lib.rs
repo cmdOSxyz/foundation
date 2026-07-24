@@ -18,6 +18,7 @@
 
 use aipc::Aipc;
 use alios::{Agent, RulePlanner};
+use cap_terminal::{risk_of_command, SystemShell, Terminal};
 use cmd_kernel::{AuthorityContext, Kernel, StepOutcome};
 use cmd_ledger::Ledger;
 use cmd_router::{ApiKey, KeyRouter};
@@ -125,6 +126,20 @@ fn describe(c: &Change) -> String {
     }
 }
 
+/// What a shell command did.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct CommandResult {
+    pub command: String,
+    pub risk: String,
+    /// `executed` | `awaiting_approval` | `blocked` | `failed`
+    pub outcome: String,
+    pub stdout: String,
+    pub stderr: String,
+    pub code: i32,
+    /// Present when the gate stopped it, saying why.
+    pub reason: Option<String>,
+}
+
 /// Headline state for the agent status card.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct MachineStatus {
@@ -174,7 +189,7 @@ impl Machine {
             id: Id::new(),
             agent_id: Id::new(),
             scope: "shell session".into(),
-            capabilities: vec!["filesystem".into(), "browser".into()],
+            capabilities: vec!["filesystem".into(), "browser".into(), "terminal".into()],
             max_autonomous_risk: RiskClass::R1Reversible,
             budget_id: None,
             granted_at: now(),
@@ -597,6 +612,80 @@ impl Machine {
         !self.router.is_empty() && self.router.total_remaining() == 0
     }
 
+    // ---- the shell ---------------------------------------------------------
+
+    /// Run a shell command through the kernel.
+    ///
+    /// The command is classified by what it can do (see `cap-terminal`), then
+    /// put through the same gate and ledger as everything else. A command the
+    /// mandate does not cover, or one that is irreversible, comes back as a
+    /// pending decision rather than running — which is the whole point of
+    /// letting an agent near a shell at all.
+    pub fn run_command(&mut self, command: &str, cwd: &str) -> Result<CommandResult, String> {
+        let risk = risk_of_command(command);
+
+        let mut parameters = BTreeMap::new();
+        parameters.insert("command".into(), serde_json::json!(command));
+        parameters.insert("cwd".into(), serde_json::json!(cwd));
+        let step = PlanStep {
+            id: Id::new(),
+            description: format!("Run `{command}`"),
+            capability: "terminal".into(),
+            action: "run".into(),
+            parameters,
+            depends_on: vec![],
+            requires_permission: false,
+            status: cmd_types::StepStatus::Pending,
+            error: None,
+        };
+        let plan = ExecutionPlan {
+            id: Id::new(),
+            intent_id: Id::new(),
+            created_at: now(),
+            status: cmd_types::PlanStatus::Approved,
+            summary: format!("Run `{command}`"),
+            steps: vec![step],
+        };
+
+        // The shell is rooted at the working directory it was given, so a
+        // command cannot be aimed outside the folder the user opened.
+        let root = if cwd.is_empty() {
+            self.home_dir()
+        } else {
+            cwd.to_string()
+        };
+        let mut shell = Terminal::new(SystemShell::new(&root));
+
+        let ctx = AuthorityContext {
+            mandate: Some(&self.mandate),
+            budget: None,
+        };
+        let run = {
+            let mut kernel = Kernel::new(&mut self.ledger);
+            let resolve = |_: &PlanStep| risk;
+            kernel.run_plan(&plan, &mut shell, &ctx, &resolve)
+        };
+
+        let (outcome, reason) = match run.steps.first().map(|(_, o)| o) {
+            Some(StepOutcome::Executed) => ("executed", None),
+            Some(StepOutcome::AwaitingApproval(m)) => ("awaiting_approval", Some(m.clone())),
+            Some(StepOutcome::Blocked(m)) => ("blocked", Some(m.clone())),
+            Some(StepOutcome::Failed(m)) => ("failed", Some(m.clone())),
+            None => ("blocked", Some("the kernel did not reach this step".into())),
+        };
+
+        let out = shell.last_output();
+        Ok(CommandResult {
+            command: command.to_string(),
+            risk: risk_label(risk),
+            outcome: outcome.to_string(),
+            stdout: out.map(|o| o.stdout.clone()).unwrap_or_default(),
+            stderr: out.map(|o| o.stderr.clone()).unwrap_or_default(),
+            code: out.map(|o| o.code).unwrap_or(-1),
+            reason,
+        })
+    }
+
     // ---- browsing ----------------------------------------------------------
 
     /// Read a directory for display.
@@ -981,6 +1070,73 @@ mod tests {
         // Dotfiles are configuration; sorting them by extension is not tidying.
         assert!(!o.changes.iter().any(|c| c.contains("gitconfig")));
         assert!(o.changes.iter().any(|c| c.contains("md/doc.md")));
+    }
+
+    // ---- shell commands through the kernel ---------------------------------
+
+    #[test]
+    fn a_safe_command_runs_and_is_recorded() {
+        use tempfile::tempdir;
+        let dir = tempdir().unwrap();
+        let mut m = Machine::new("Nova");
+
+        let r = m
+            .run_command("echo hello", dir.path().to_str().unwrap())
+            .unwrap();
+
+        assert_eq!(r.risk, "R0");
+        assert_eq!(r.outcome, "executed");
+        assert!(r.stdout.contains("hello"), "got {:?}", r.stdout);
+        assert!(m.status().ledger_len > 0, "the run was recorded");
+        assert!(m.status().chain_ok);
+    }
+
+    #[test]
+    fn a_dangerous_command_never_runs_on_its_own() {
+        use tempfile::tempdir;
+        let dir = tempdir().unwrap();
+        std::fs::write(dir.path().join("precious.txt"), b"keep me").unwrap();
+
+        let mut m = Machine::new("Nova");
+        let r = m
+            .run_command("rm precious.txt", dir.path().to_str().unwrap())
+            .unwrap();
+
+        assert_eq!(r.risk, "R3");
+        assert_eq!(r.outcome, "awaiting_approval", "R3 must stop for a person");
+        // And the file is still there, which is the part that matters.
+        assert!(dir.path().join("precious.txt").exists());
+    }
+
+    #[test]
+    fn a_command_hiding_behind_a_safe_word_is_also_stopped() {
+        use tempfile::tempdir;
+        let dir = tempdir().unwrap();
+        std::fs::write(dir.path().join("precious.txt"), b"keep me").unwrap();
+
+        let mut m = Machine::new("Nova");
+        let r = m
+            .run_command("echo hi && rm precious.txt", dir.path().to_str().unwrap())
+            .unwrap();
+
+        assert_eq!(r.risk, "R3");
+        assert_ne!(r.outcome, "executed");
+        assert!(dir.path().join("precious.txt").exists());
+    }
+
+    #[test]
+    fn an_unknown_command_is_held_rather_than_attempted() {
+        use tempfile::tempdir;
+        let dir = tempdir().unwrap();
+        let mut m = Machine::new("Nova");
+
+        let r = m
+            .run_command("frobnicate --everything", dir.path().to_str().unwrap())
+            .unwrap();
+
+        assert_eq!(r.risk, "R3");
+        assert_eq!(r.outcome, "awaiting_approval");
+        assert!(r.stdout.is_empty(), "nothing was run");
     }
 
     #[test]

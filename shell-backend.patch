@@ -1,0 +1,541 @@
+diff --git a/capabilities/calendar/src/lib.rs b/capabilities/calendar/src/lib.rs
+index 7120bfd..30ed80f 100644
+--- a/capabilities/calendar/src/lib.rs
++++ b/capabilities/calendar/src/lib.rs
+@@ -2,11 +2,3 @@
+ //!
+ //! Implementation gated on its RFC in docs/rfcs/. Do not add logic here
+ //! until the corresponding RFC is accepted (see CLAUDE.md, RFC-first rule).
+-
+-#[cfg(test)]
+-mod tests {
+-    #[test]
+-    fn skeleton_builds() {
+-        assert!(true);
+-    }
+-}
+diff --git a/capabilities/mail/src/lib.rs b/capabilities/mail/src/lib.rs
+index e56563c..01fd649 100644
+--- a/capabilities/mail/src/lib.rs
++++ b/capabilities/mail/src/lib.rs
+@@ -2,11 +2,3 @@
+ //!
+ //! Implementation gated on its RFC in docs/rfcs/. Do not add logic here
+ //! until the corresponding RFC is accepted (see CLAUDE.md, RFC-first rule).
+-
+-#[cfg(test)]
+-mod tests {
+-    #[test]
+-    fn skeleton_builds() {
+-        assert!(true);
+-    }
+-}
+diff --git a/capabilities/terminal/src/lib.rs b/capabilities/terminal/src/lib.rs
+index 03954de..87d1570 100644
+--- a/capabilities/terminal/src/lib.rs
++++ b/capabilities/terminal/src/lib.rs
+@@ -170,6 +170,123 @@ pub trait TerminalBackend {
+     fn run(&mut self, command: &str, cwd: &str) -> Result<Output, ResourceError>;
+ }
+ 
++/// A backend that really runs commands, through the platform's shell.
++///
++/// Two things are deliberately constrained. The working directory must sit
++/// inside a root the caller nominates, so a command cannot be aimed at somewhere
++/// the agent was never given; and every run has a time limit, because a command
++/// that never returns would otherwise hold the machine open indefinitely.
++///
++/// Note what this does *not* do: it does not decide whether a command may run.
++/// That is [`risk_of_command`] and the policy gate above it. A backend that also
++/// judged would be a second, quieter place for the rules to live.
++pub struct SystemShell {
++    root: std::path::PathBuf,
++    timeout: std::time::Duration,
++}
++
++impl SystemShell {
++    /// A shell confined to `root`.
++    pub fn new(root: impl Into<std::path::PathBuf>) -> Self {
++        SystemShell {
++            root: root.into(),
++            timeout: std::time::Duration::from_secs(60),
++        }
++    }
++
++    /// Change the time limit for a single command.
++    pub fn with_timeout(mut self, timeout: std::time::Duration) -> Self {
++        self.timeout = timeout;
++        self
++    }
++
++    /// Resolve `cwd` against the root, refusing anything that climbs out of it.
++    fn resolve_cwd(&self, cwd: &str) -> Result<std::path::PathBuf, ResourceError> {
++        let candidate = if cwd.is_empty() || cwd == "." {
++            self.root.clone()
++        } else {
++            let p = std::path::Path::new(cwd);
++            if p.is_absolute() {
++                p.to_path_buf()
++            } else {
++                self.root.join(p)
++            }
++        };
++
++        // canonicalize resolves `..` and symlinks, which is what makes the
++        // containment check meaningful rather than textual.
++        let real_root = self
++            .root
++            .canonicalize()
++            .map_err(|e| ResourceError::Failed(format!("shell root unavailable: {e}")))?;
++        let real = candidate
++            .canonicalize()
++            .map_err(|e| ResourceError::Failed(format!("no such directory {cwd}: {e}")))?;
++
++        if !real.starts_with(&real_root) {
++            return Err(ResourceError::Failed(format!(
++                "working directory escapes the agent's machine: {cwd}"
++            )));
++        }
++        Ok(real)
++    }
++}
++
++impl TerminalBackend for SystemShell {
++    fn run(&mut self, command: &str, cwd: &str) -> Result<Output, ResourceError> {
++        use std::process::{Command, Stdio};
++
++        let dir = self.resolve_cwd(cwd)?;
++
++        let mut child = if cfg!(target_os = "windows") {
++            let mut c = Command::new("cmd");
++            c.args(["/C", command]);
++            c
++        } else {
++            let mut c = Command::new("sh");
++            c.args(["-c", command]);
++            c
++        }
++        .current_dir(&dir)
++        .stdin(Stdio::null()) // a command must never sit waiting for a person
++        .stdout(Stdio::piped())
++        .stderr(Stdio::piped())
++        .spawn()
++        .map_err(|e| ResourceError::Failed(format!("could not start `{command}`: {e}")))?;
++
++        // Poll rather than block, so a command that hangs is killed instead of
++        // holding the agent forever.
++        let started = std::time::Instant::now();
++        loop {
++            match child.try_wait() {
++                Ok(Some(_)) => break,
++                Ok(None) => {
++                    if started.elapsed() > self.timeout {
++                        let _ = child.kill();
++                        let _ = child.wait();
++                        return Err(ResourceError::Failed(format!(
++                            "`{command}` did not finish within {}s and was stopped",
++                            self.timeout.as_secs()
++                        )));
++                    }
++                    std::thread::sleep(std::time::Duration::from_millis(20));
++                }
++                Err(e) => return Err(ResourceError::Failed(format!("waiting on `{command}`: {e}"))),
++            }
++        }
++
++        let out = child
++            .wait_with_output()
++            .map_err(|e| ResourceError::Failed(format!("reading output of `{command}`: {e}")))?;
++
++        Ok(Output {
++            stdout: String::from_utf8_lossy(&out.stdout).to_string(),
++            stderr: String::from_utf8_lossy(&out.stderr).to_string(),
++            code: out.status.code().unwrap_or(-1),
++        })
++    }
++}
++
+ /// What an undo needs to know. Most shell commands cannot be undone, and saying
+ /// so is better than pretending.
+ #[derive(Clone, Debug)]
+@@ -475,6 +592,98 @@ mod tests {
+         assert!(made.exists(), "a folder with contents is left alone");
+     }
+ 
++    // ---- the real shell ----------------------------------------------------
++    //
++    // These run actual processes. They are written to hold on either platform,
++    // so the command used is one that exists everywhere.
++
++    #[test]
++    fn the_real_shell_runs_a_command_and_returns_its_output() {
++        use tempfile::tempdir;
++        let dir = tempdir().unwrap();
++        let mut shell = SystemShell::new(dir.path());
++
++        let out = shell.run("echo hello", ".").unwrap();
++        assert_eq!(out.code, 0);
++        assert!(out.stdout.contains("hello"), "got: {:?}", out.stdout);
++    }
++
++    #[test]
++    fn a_failing_command_reports_its_exit_code() {
++        use tempfile::tempdir;
++        let dir = tempdir().unwrap();
++        let mut shell = SystemShell::new(dir.path());
++
++        // A path that certainly does not exist, on either platform.
++        let out = shell.run("cd definitely_not_here_12345", ".").unwrap();
++        assert_ne!(out.code, 0, "a failure must not look like success");
++    }
++
++    #[test]
++    fn the_shell_runs_inside_the_directory_it_was_given() {
++        use tempfile::tempdir;
++        let dir = tempdir().unwrap();
++        std::fs::create_dir(dir.path().join("inner")).unwrap();
++        std::fs::write(dir.path().join("inner/marker.txt"), b"x").unwrap();
++
++        let mut shell = SystemShell::new(dir.path());
++        let listing = if cfg!(target_os = "windows") { "dir" } else { "ls" };
++        let out = shell.run(listing, "inner").unwrap();
++        assert!(out.stdout.contains("marker.txt"), "got: {:?}", out.stdout);
++    }
++
++    #[test]
++    fn a_working_directory_cannot_escape_the_root() {
++        use tempfile::tempdir;
++        let outer = tempdir().unwrap();
++        let root = outer.path().join("machine");
++        std::fs::create_dir(&root).unwrap();
++
++        let mut shell = SystemShell::new(&root);
++
++        // Climbing out with `..`, and naming somewhere else outright.
++        let up = shell.run("echo hi", "..");
++        assert!(up.is_err(), "`..` must not reach outside the machine");
++
++        let elsewhere = shell.run("echo hi", outer.path().to_str().unwrap());
++        assert!(elsewhere.is_err(), "an outside path must be refused");
++    }
++
++    #[test]
++    fn a_command_that_never_finishes_is_stopped() {
++        use std::time::Duration;
++        use tempfile::tempdir;
++        let dir = tempdir().unwrap();
++        let mut shell = SystemShell::new(dir.path()).with_timeout(Duration::from_millis(300));
++
++        // A sleep long enough that only the timeout can end it.
++        let sleeper = if cfg!(target_os = "windows") {
++            "ping -n 30 127.0.0.1"
++        } else {
++            "sleep 30"
++        };
++        let started = std::time::Instant::now();
++        let result = shell.run(sleeper, ".");
++
++        assert!(result.is_err(), "a hanging command must be stopped");
++        assert!(
++            started.elapsed() < Duration::from_secs(5),
++            "it must be stopped promptly, not eventually"
++        );
++    }
++
++    #[test]
++    fn the_real_shell_satisfies_the_capability() {
++        use tempfile::tempdir;
++        let dir = tempdir().unwrap();
++        let mut term = Terminal::new(SystemShell::new(dir.path()));
++
++        let s = step("echo wired");
++        term.execute(&s).unwrap();
++        assert!(term.verify(&s).unwrap());
++        assert!(term.last_output().unwrap().stdout.contains("wired"));
++    }
++
+     #[test]
+     fn simulate_says_plainly_what_would_happen() {
+         let t = Terminal::new(FakeShell::default());
+diff --git a/docs/rfcs/0022-cap-terminal.md b/docs/rfcs/0022-cap-terminal.md
+index 0e0cbab..8641644 100644
+--- a/docs/rfcs/0022-cap-terminal.md
++++ b/docs/rfcs/0022-cap-terminal.md
+@@ -62,6 +62,26 @@ gated; empty command refused; no snapshot for reads; output recorded and
+ verified; non-zero exit is a failure; mkdir undone; undo declines a directory
+ that now has contents; simulate states the consequence plainly.
+ 
++# 6b. The real shell (added)
++
++`SystemShell` runs commands through the platform shell (`cmd /C` on Windows,
++`sh -c` elsewhere) under two constraints:
++
++- **Confined.** The working directory is resolved and canonicalised against a
++  root; `..` and outside paths are refused. A command cannot be aimed at
++  somewhere the agent was never given.
++- **Bounded.** Every run has a time limit and is killed if it exceeds it, so a
++  command that never returns cannot hold the machine open. Standard input is
++  closed, so nothing can sit waiting for a person who is not there.
++
++It deliberately does **not** decide whether a command may run. That is
++`risk_of_command` and the policy gate above it; a backend that also judged would
++be a second, quieter place for the rules to live.
++
++`shell-core::Machine::run_command` puts a command through the kernel: classified,
++gated, executed, recorded. An R3 command comes back as a pending decision with
++nothing run.
++
+ # 7. Next
+ 
+ A real backend spawning the platform shell (cmd on Windows, sh elsewhere), with
+diff --git a/services/cmdpay/src/lib.rs b/services/cmdpay/src/lib.rs
+index 1696b17..9b9a775 100644
+--- a/services/cmdpay/src/lib.rs
++++ b/services/cmdpay/src/lib.rs
+@@ -2,11 +2,3 @@
+ //!
+ //! Implementation gated on its RFC in docs/rfcs/. Do not add logic here
+ //! until the corresponding RFC is accepted (see CLAUDE.md, RFC-first rule).
+-
+-#[cfg(test)]
+-mod tests {
+-    #[test]
+-    fn skeleton_builds() {
+-        assert!(true);
+-    }
+-}
+diff --git a/services/nis/src/lib.rs b/services/nis/src/lib.rs
+index fe160e1..ae470a3 100644
+--- a/services/nis/src/lib.rs
++++ b/services/nis/src/lib.rs
+@@ -2,11 +2,3 @@
+ //!
+ //! Implementation gated on its RFC in docs/rfcs/. Do not add logic here
+ //! until the corresponding RFC is accepted (see CLAUDE.md, RFC-first rule).
+-
+-#[cfg(test)]
+-mod tests {
+-    #[test]
+-    fn skeleton_builds() {
+-        assert!(true);
+-    }
+-}
+diff --git a/services/semfs/src/lib.rs b/services/semfs/src/lib.rs
+index 8469c1e..58dda0d 100644
+--- a/services/semfs/src/lib.rs
++++ b/services/semfs/src/lib.rs
+@@ -2,11 +2,3 @@
+ //!
+ //! Implementation gated on its RFC in docs/rfcs/. Do not add logic here
+ //! until the corresponding RFC is accepted (see CLAUDE.md, RFC-first rule).
+-
+-#[cfg(test)]
+-mod tests {
+-    #[test]
+-    fn skeleton_builds() {
+-        assert!(true);
+-    }
+-}
+diff --git a/services/shell-core/Cargo.toml b/services/shell-core/Cargo.toml
+index 0de1975..389dc4a 100644
+--- a/services/shell-core/Cargo.toml
++++ b/services/shell-core/Cargo.toml
+@@ -16,6 +16,7 @@ cmd-shadow = { path = "../../kernel/cmd-shadow" }
+ aipc = { path = "../aipc" }
+ alios = { path = "../../agent/alios" }
+ cap-files = { path = "../../capabilities/files" }
++cap-terminal = { path = "../../capabilities/terminal" }
+ serde.workspace = true
+ serde_json.workspace = true
+ 
+diff --git a/services/shell-core/src/lib.rs b/services/shell-core/src/lib.rs
+index 5e4960a..6048d5a 100644
+--- a/services/shell-core/src/lib.rs
++++ b/services/shell-core/src/lib.rs
+@@ -21,6 +21,7 @@ use alios::{Agent, RulePlanner};
+ use cmd_kernel::{AuthorityContext, Kernel, StepOutcome};
+ use cmd_ledger::Ledger;
+ use cmd_router::{ApiKey, KeyRouter};
++use cap_terminal::{risk_of_command, SystemShell, Terminal};
+ use cmd_shadow::{Change, ShadowWorld};
+ use cmd_types::{now, ExecutionPlan, Id, Mandate, PlanStep, RiskClass};
+ use serde::{Deserialize, Serialize};
+@@ -125,6 +126,20 @@ fn describe(c: &Change) -> String {
+     }
+ }
+ 
++/// What a shell command did.
++#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
++pub struct CommandResult {
++    pub command: String,
++    pub risk: String,
++    /// `executed` | `awaiting_approval` | `blocked` | `failed`
++    pub outcome: String,
++    pub stdout: String,
++    pub stderr: String,
++    pub code: i32,
++    /// Present when the gate stopped it, saying why.
++    pub reason: Option<String>,
++}
++
+ /// Headline state for the agent status card.
+ #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+ pub struct MachineStatus {
+@@ -174,7 +189,7 @@ impl Machine {
+             id: Id::new(),
+             agent_id: Id::new(),
+             scope: "shell session".into(),
+-            capabilities: vec!["filesystem".into(), "browser".into()],
++            capabilities: vec!["filesystem".into(), "browser".into(), "terminal".into()],
+             max_autonomous_risk: RiskClass::R1Reversible,
+             budget_id: None,
+             granted_at: now(),
+@@ -597,6 +612,76 @@ impl Machine {
+         !self.router.is_empty() && self.router.total_remaining() == 0
+     }
+ 
++    // ---- the shell ---------------------------------------------------------
++
++    /// Run a shell command through the kernel.
++    ///
++    /// The command is classified by what it can do (see `cap-terminal`), then
++    /// put through the same gate and ledger as everything else. A command the
++    /// mandate does not cover, or one that is irreversible, comes back as a
++    /// pending decision rather than running — which is the whole point of
++    /// letting an agent near a shell at all.
++    pub fn run_command(&mut self, command: &str, cwd: &str) -> Result<CommandResult, String> {
++        let risk = risk_of_command(command);
++
++        let mut parameters = BTreeMap::new();
++        parameters.insert("command".into(), serde_json::json!(command));
++        parameters.insert("cwd".into(), serde_json::json!(cwd));
++        let step = PlanStep {
++            id: Id::new(),
++            description: format!("Run `{command}`"),
++            capability: "terminal".into(),
++            action: "run".into(),
++            parameters,
++            depends_on: vec![],
++            requires_permission: false,
++            status: cmd_types::StepStatus::Pending,
++            error: None,
++        };
++        let plan = ExecutionPlan {
++            id: Id::new(),
++            intent_id: Id::new(),
++            created_at: now(),
++            status: cmd_types::PlanStatus::Approved,
++            summary: format!("Run `{command}`"),
++            steps: vec![step],
++        };
++
++        // The shell is rooted at the working directory it was given, so a
++        // command cannot be aimed outside the folder the user opened.
++        let root = if cwd.is_empty() { self.home_dir() } else { cwd.to_string() };
++        let mut shell = Terminal::new(SystemShell::new(&root));
++
++        let ctx = AuthorityContext {
++            mandate: Some(&self.mandate),
++            budget: None,
++        };
++        let run = {
++            let mut kernel = Kernel::new(&mut self.ledger);
++            let resolve = |_: &PlanStep| risk;
++            kernel.run_plan(&plan, &mut shell, &ctx, &resolve)
++        };
++
++        let (outcome, reason) = match run.steps.first().map(|(_, o)| o) {
++            Some(StepOutcome::Executed) => ("executed", None),
++            Some(StepOutcome::AwaitingApproval(m)) => ("awaiting_approval", Some(m.clone())),
++            Some(StepOutcome::Blocked(m)) => ("blocked", Some(m.clone())),
++            Some(StepOutcome::Failed(m)) => ("failed", Some(m.clone())),
++            None => ("blocked", Some("the kernel did not reach this step".into())),
++        };
++
++        let out = shell.last_output();
++        Ok(CommandResult {
++            command: command.to_string(),
++            risk: risk_label(risk),
++            outcome: outcome.to_string(),
++            stdout: out.map(|o| o.stdout.clone()).unwrap_or_default(),
++            stderr: out.map(|o| o.stderr.clone()).unwrap_or_default(),
++            code: out.map(|o| o.code).unwrap_or(-1),
++            reason,
++        })
++    }
++
+     // ---- browsing ----------------------------------------------------------
+ 
+     /// Read a directory for display.
+@@ -983,6 +1068,71 @@ mod tests {
+         assert!(o.changes.iter().any(|c| c.contains("md/doc.md")));
+     }
+ 
++    // ---- shell commands through the kernel ---------------------------------
++
++    #[test]
++    fn a_safe_command_runs_and_is_recorded() {
++        use tempfile::tempdir;
++        let dir = tempdir().unwrap();
++        let mut m = Machine::new("Nova");
++
++        let r = m.run_command("echo hello", dir.path().to_str().unwrap()).unwrap();
++
++        assert_eq!(r.risk, "R0");
++        assert_eq!(r.outcome, "executed");
++        assert!(r.stdout.contains("hello"), "got {:?}", r.stdout);
++        assert!(m.status().ledger_len > 0, "the run was recorded");
++        assert!(m.status().chain_ok);
++    }
++
++    #[test]
++    fn a_dangerous_command_never_runs_on_its_own() {
++        use tempfile::tempdir;
++        let dir = tempdir().unwrap();
++        std::fs::write(dir.path().join("precious.txt"), b"keep me").unwrap();
++
++        let mut m = Machine::new("Nova");
++        let r = m
++            .run_command("rm precious.txt", dir.path().to_str().unwrap())
++            .unwrap();
++
++        assert_eq!(r.risk, "R3");
++        assert_eq!(r.outcome, "awaiting_approval", "R3 must stop for a person");
++        // And the file is still there, which is the part that matters.
++        assert!(dir.path().join("precious.txt").exists());
++    }
++
++    #[test]
++    fn a_command_hiding_behind_a_safe_word_is_also_stopped() {
++        use tempfile::tempdir;
++        let dir = tempdir().unwrap();
++        std::fs::write(dir.path().join("precious.txt"), b"keep me").unwrap();
++
++        let mut m = Machine::new("Nova");
++        let r = m
++            .run_command("echo hi && rm precious.txt", dir.path().to_str().unwrap())
++            .unwrap();
++
++        assert_eq!(r.risk, "R3");
++        assert_ne!(r.outcome, "executed");
++        assert!(dir.path().join("precious.txt").exists());
++    }
++
++    #[test]
++    fn an_unknown_command_is_held_rather_than_attempted() {
++        use tempfile::tempdir;
++        let dir = tempdir().unwrap();
++        let mut m = Machine::new("Nova");
++
++        let r = m
++            .run_command("frobnicate --everything", dir.path().to_str().unwrap())
++            .unwrap();
++
++        assert_eq!(r.risk, "R3");
++        assert_eq!(r.outcome, "awaiting_approval");
++        assert!(r.stdout.is_empty(), "nothing was run");
++    }
++
+     #[test]
+     fn reports_serialize_for_the_front_end() {
+         let mut m = Machine::new("Nova");

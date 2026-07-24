@@ -261,7 +261,7 @@ mod tests {
 
         // Undo clears the field.
         b.restore(snap).unwrap();
-        assert!(b.backend().fields.get("#email").is_none());
+        assert!(!b.backend().fields.contains_key("#email"));
     }
 
     #[test]
@@ -310,6 +310,6 @@ mod tests {
         // Undo via the engine clears the field.
         let mut engine = TransactionEngine::new(&mut ledger);
         engine.rollback(&mut b, out.transaction, snap, &s).unwrap();
-        assert!(b.backend().fields.get("#name").is_none());
+        assert!(!b.backend().fields.contains_key("#name"));
     }
 }

@@ -217,7 +217,7 @@ mod tests {
         assert!(matches!(err, EngineError::Resource(_)));
         // Nothing committed.
         assert_eq!(ledger.by_type(EventType::TransactionCommitted).len(), 0);
-        assert!(res.world.get("a").is_none());
+        assert!(!res.world.contains_key("a"));
     }
 
     #[test]
