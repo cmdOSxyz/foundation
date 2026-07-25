@@ -1,1406 +1,459 @@
-<!--
-  cmdOS Premium README
-  GitHub-compatible: Markdown + safe HTML + Mermaid + Shields
--->
+[![cmdOS — The Operating System for AI Agents](https://capsule-render.vercel.app/api?type=waving&height=260&color=0:020604,45:06211A,100:00D084&text=cmdOS&fontColor=FFFFFF&fontSize=78&fontAlignY=38&desc=THE%20OPERATING%20SYSTEM%20FOR%20AI%20AGENTS&descAlignY=60&descSize=18&animation=fadeIn)](https://cmdos.xyz/)
 
-<div align="center">
+[![cmdOS execution vision](https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=20&duration=3000&pause=1100&color=00D084&center=true&vCenter=true&repeat=true&width=1000&height=52&lines=Hire+your+AI.+Give+it+a+computer.;Turn+human+intent+into+verified+execution.;Plan.+Approve.+Execute.+Verify.+Undo.;Choose+the+future+it+builds.)](https://github.com/cmdOSxyz/foundation)
 
-<img width="100%" alt="cmdOS — The Operating System for AI Agents" src="https://capsule-render.vercel.app/api?type=waving&height=290&color=0:020604,45:06211a,100:00d084&text=cmdOS&fontColor=ffffff&fontSize=82&fontAlignY=38&desc=THE%20OPERATING%20SYSTEM%20FOR%20AI%20AGENTS&descAlignY=60&descSize=19&animation=fadeIn" />
+# cmdOS
 
-<br />
+## The Operating System for AI Agents
 
-<img alt="Hire your AI. Give it a computer. Choose the future it builds." src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=20&duration=3000&pause=1100&color=00D084&center=true&vCenter=true&repeat=true&width=900&height=50&lines=Hire+your+AI.+Give+it+a+computer.;Turn+human+intent+into+verified+execution.;Plan.+Approve.+Execute.+Verify.+Undo.;Choose+the+future+it+builds." />
+**Turn human intent into safe, observable, and reversible execution.**
 
-<br />
+[![Status](https://img.shields.io/badge/status-active%20development-00D084?style=for-the-badge&labelColor=050807)](https://github.com/cmdOSxyz/foundation)
+[![License](https://img.shields.io/badge/license-MIT-F5F7F6?style=for-the-badge&labelColor=050807)](LICENSE)
+[![Core](https://img.shields.io/badge/core-Rust-00D084?style=for-the-badge&labelColor=050807&logo=rust&logoColor=white)](#development)
+[![Architecture](https://img.shields.io/badge/architecture-local--first-F5F7F6?style=for-the-badge&labelColor=050807)](#architecture)
 
-cmdOS turns natural-language intent into real, observable and policy-controlled execution across applications, files, services and devices.
+[Website](https://cmdos.xyz/) · [Documentation](docs/) · [Roadmap](ROADMAP.md) · [Issues](https://github.com/cmdOSxyz/foundation/issues)
 
-<br />
+---
 
+> [!IMPORTANT]
+> **cmdOS is under active development.**
+>
+> This repository contains architecture, specifications, core modules, behavior contracts, and a runnable reference prototype. Interfaces may evolve as the execution kernel matures.
 
+---
 
-<br />
+## Overview
 
+cmdOS is an **AI-native execution environment**.
 
+Users describe the outcome they want. cmdOS plans the work, checks permissions, executes through controlled capabilities, verifies the result, and records what happened.
 
-<br />
+> **You describe the outcome. cmdOS handles the execution path.**
 
-Explore the vision ·See the architecture ·Run the prototype ·Read the roadmap
-
-</div>
-
-[!IMPORTANT]cmdOS is under active development. This repository contains architecture, specifications,behavior contracts, core modules and a runnable reference prototype. Product surfaces,interfaces and internal boundaries may change as the execution kernel matures.
-
-[!NOTE]This README separates what exists today, what is being built, and what remains a long-term vision.
-
-⚡ The idea in one sentence
-
-cmdOS is an AI-native execution environment where users describe outcomes, agents plan the work, the system enforces trust boundaries, and every consequential action is observed, verified and reversible whenever technically possible.
-
-🧭 Navigate
-
-<table>
-<tr>
-<td width="33%" valign="top">
-
-🧠 Understand
-
-The vision
-
-Why cmdOS exists
-
-What cmdOS is
-
-Core principles
-
-</td>
-<td width="33%" valign="top">
-
-⚙️ Explore
-
-Execution lifecycle
-
-System architecture
-
-Alios
-
-Security model
-
-</td>
-<td width="33%" valign="top">
-
-🛠️ Build
-
-Repository map
-
-Quick start
-
-Development
-
-Contributing
-
-</td>
-</tr>
-</table>
-
-🌌 The Vision
-
-<div align="center">
-
-From software people operate
-
-to systems that understand intent and execute responsibly.
-
-</div>
-
-Today, users still translate goals into applications, menus, commands, tabs and workflows.AI can reason about the goal, but the human usually remains the execution engine.
-
-cmdOS is built around a different model:
-
-USER INTENT
-     │
-     ▼
-AI UNDERSTANDING
-     │
-     ▼
-STRUCTURED PLAN
-     │
-     ▼
-POLICY + PERMISSION + RISK
-     │
-     ▼
-REAL EXECUTION
-     │
-     ▼
-VERIFIED RESULT
-     │
-     ▼
-AUDIT + LEARNING + RECOVERY
-
-The ambition is not to put a chatbot beside the operating system.The ambition is to make AI-native execution a system primitive.
-
-The user says what should happen. cmdOS determines how it can happen safely.
-
-🚀 Why cmdOS exists
-
-Modern AI can:
-
-write code;
-
-reason over documents;
-
-search and summarize information;
-
-generate plans;
-
-use tools;
-
-coordinate agents.
-
-But most products still end at the edge of a response.
-
-They can tell a user how to complete a task, yet rarely own the full lifecycle:
-
-Missing capability
-
-Why it matters
-
-Understand the real goal
-
-A prompt is not always the same as the intended outcome.
-
-Build an explicit plan
-
-Complex work needs structure, dependencies and checkpoints.
-
-Choose capabilities safely
-
-Tool access should be controlled, not improvised.
-
-Estimate risk before action
-
-Reading a file and sending money are not equivalent.
-
-Ask approval only where needed
-
-Too many approvals destroy usability; too few destroy trust.
-
-Execute across applications
-
-Real work spans browsers, files, APIs, desktop apps and devices.
-
-Verify the outcome
-
-A successful API call is not always a successful real-world result.
-
-Recover from failure
-
-Partial execution must not leave hidden damage.
-
-Create an audit trail
-
-Users need to know what happened, when and why.
-
-cmdOS exists to make that execution loop observable, governable and recoverable.
-
-The shift
-
-- User learns the interface
-- User coordinates the workflow
-- User checks every result manually
-
-+ User describes the outcome
-+ System constructs and controls the workflow
-+ Agents execute through constrained capabilities
-+ System verifies and reports the real result
-
-🧠 What cmdOS is
-
-cmdOS is an AI-native operating environment for autonomous and semi-autonomous agents.
-
-A user can express an intent such as:
-
-“Invoice my three clients for this week's hours, send each invoice by email, and show me anything that needs approval before it goes out.”
-
-Alios, the resident Prime Agent, converts that intent into an execution graph.The system then coordinates capabilities, evaluates risk, enforces policy, previews sensitive effects,executes approved actions, verifies outcomes and records the complete transaction.
-
-Product direction
-
-<table>
-<tr>
-<td width="50%" valign="top">
-
-🖥️ Horizon 1 — cmdOS Layer
-
-A desktop application for Windows, macOS and Linux that adds AI-native execution to the computers and apps people already use.
-
-Designed around:
-
-natural-language intent;
-
-visible execution plans;
-
-permission-aware actions;
-
-local-first control;
-
-reversible workflows;
-
-capability-based integrations.
-
-</td>
-<td width="50%" valign="top">
-
-🌍 Long-term — Full cmdOS
-
-A complete AI-native operating system built on a Linux foundation with a purpose-built userspace, execution kernel, agent runtime and capability ecosystem.
-
-The strategic progression:
-
-Layer on existing operating systems.
-
-Own the agent runtime.
-
-Own the execution model.
-
-Own the AI-native userspace.
-
-Become a full AI-native OS.
-
-</td>
-</tr>
-</table>
-
-✨ The cmdOS promise
-
-<table>
-<tr>
-<td width="33%" align="center" valign="top">
-
-🎯
-
-Intent-first
-
-Describe the outcome.Do not micromanage the interface.
-
-</td>
-<td width="33%" align="center" valign="top">
-
-👁️
-
-Observable
-
-See plans, approvals,actions and results.
-
-</td>
-<td width="33%" align="center" valign="top">
-
-🛡️
-
-Governed
-
-Permissions and limits livebelow the model.
-
-</td>
-</tr>
-<tr>
-<td width="33%" align="center" valign="top">
-
-↩️
-
-Reversible
-
-Recover from mistakeswhenever technically possible.
-
-</td>
-<td width="33%" align="center" valign="top">
-
-✅
-
-Verified
-
-Measure real outcomes,not just tool responses.
-
-</td>
-<td width="33%" align="center" valign="top">
-
-🔌
-
-Open
-
-Extend through protocols,capabilities and agents.
-
-</td>
-</tr>
-</table>
-
-🔄 Execution lifecycle
-
-cmdOS treats execution as a controlled state machine rather than an unconstrained chain of model calls.
-
-flowchart LR
-    I[User Intent] --> U[Understand]
-    U --> P[Plan]
-    P --> R[Classify Risk]
-    R --> G{Permission Gate}
-    G -->|Approved| S[Simulate + Snapshot]
-    G -->|Rejected| X[Stop Safely]
-    S --> E[Execute Capabilities]
-    E --> V[Verify Outcome]
-    V -->|Valid| C[Commit]
-    V -->|Invalid| B[Rollback / Recover]
-    C --> L[Audit Ledger]
-    B --> L
-    L --> O[Observable Result]
-    O --> F[Learning]
-
-Lifecycle stages
-
-Stage
-
-Responsibility
-
-Example output
-
+```text
 Intent
-
-Capture what the user wants to achieve.
-
-“Send the weekly KPI report.”
-
-Understanding
-
-Resolve context, scope and constraints.
-
-Recipients, date range, source systems.
-
-Planning
-
-Create a structured execution graph.
-
-Read → calculate → draft → approve → send.
-
-Risk classification
-
-Determine the trust level of every action.
-
-Email send = R2. Payment = R3.
-
-Policy check
-
-Apply permissions, budgets and mandates.
-
-Block unauthorized recipient or spend.
-
-Simulation
-
-Preview expected effects.
-
-Final email, attachments and recipients.
-
+  ↓
+Plan
+  ↓
+Permission
+  ↓
 Execution
-
-Act through controlled capabilities.
-
-Create report and send approved message.
-
+  ↓
 Verification
-
-Confirm the real-world result.
-
-Report exists; email delivered.
-
-Commit / rollback
-
-Preserve or recover state.
-
-Commit success or restore snapshot.
-
-Ledger
-
-Record actions, evidence and outcomes.
-
-Auditable execution history.
-
-🪄 Example execution
-
-User intent
-
-“Prepare the monthly product report, attach the latest analytics, send it to the leadership team and schedule a review next week.”
-
-cmdOS response model
-
-sequenceDiagram
-    autonumber
-    participant U as User
-    participant A as Alios
-    participant K as Execution Kernel
-    participant C as Capabilities
-    participant L as Audit Ledger
-
-    U->>A: Prepare report, email it, schedule review
-    A->>K: Submit structured execution graph
-    K->>K: Classify risk and evaluate policy
-    K-->>U: Preview recipients, files and meeting time
-    U->>K: Approve consequential actions
-    K->>C: Execute report, email and calendar steps
-    C-->>K: Return results and evidence
-    K->>K: Verify external state
-    K->>L: Record transaction
-    K-->>U: Return verified final result
-
-<details>
-<summary><strong>Expand the step-by-step execution</strong></summary>
-
-Interpret the objectiveIdentify period, systems, recipients and scheduling constraints.
-
-Build the execution graphRead analytics, calculate metrics, generate report, validate numbers, draft email and inspect calendars.
-
-Classify riskReading approved analytics may be R0. Sending email and creating a leadership meeting may be R2.
-
-Preview consequential actionsShow the final message, attachments, recipients and meeting details.
-
-Execute approved stepsUse constrained capabilities through the runtime.
-
-Verify the resultConfirm report creation, attachment integrity, email delivery and calendar event state.
-
-Record the transactionPreserve evidence, status and recoverability information in the ledger.
-
-</details>
-
-🌟 Why cmdOS is different
-
-Conversation is not execution
-
-Category
-
-Primary interface
-
-Who owns execution?
-
-Policy layer
-
+  ↓
 Recovery
+```
 
-Verification
+The first product is **cmdOS Layer**, a desktop application for Windows, macOS, and Linux.
 
-Traditional software
+The long-term goal is a complete AI-native operating system.
 
-GUI
+---
 
-Human
+## Why cmdOS
 
-App-specific
+Most AI products can explain how to complete a task, but the user still performs the work manually.
 
-Limited
+cmdOS is designed to manage the complete execution lifecycle:
 
-Human
+- Understand the real goal.
+- Build a structured plan.
+- Select the correct capabilities.
+- Evaluate risk before acting.
+- Request approval when needed.
+- Execute across applications and services.
+- Verify the real-world result.
+- Recover from mistakes when possible.
+- Record every consequential action.
 
-AI chatbot
+cmdOS treats AI execution as an **operating-system problem**, not only as a chatbot feature.
 
-Conversation
+---
 
-Human
+## Core Principles
 
-Prompt-level
+### Intent First
 
-Rare
+Describe the desired outcome instead of operating every interface manually.
 
-Usually absent
+### Observable
 
-Workflow automation
+Keep plans, approvals, actions, progress, and results visible.
 
-Rules and flows
+### Governed
 
-Mixed
+Enforce permissions, budgets, and limits below the AI model.
 
-Workflow-level
+### Reversible
 
-Partial
+Prepare recovery before changing external state.
 
-Connector-dependent
+### Verified
 
-cmdOS
+Confirm real outcomes instead of trusting tool responses alone.
 
-Intent + execution graph
+### Open
 
-System + agent
+Extend the system through protocols, capabilities, and agents.
 
-Below model
+---
 
-Architectural goal
+## Execution Lifecycle
 
-First-class
+```mermaid
+flowchart TD
+    A[User Intent] --> B[Understand]
+    B --> C[Plan]
+    C --> D[Risk Check]
+    D --> E{Permission Gate}
+    E -->|Approved| F[Simulate and Snapshot]
+    E -->|Rejected| G[Stop Safely]
+    F --> H[Execute]
+    H --> I[Verify]
+    I -->|Valid| J[Commit]
+    I -->|Invalid| K[Recover or Roll Back]
+    J --> L[Audit Ledger]
+    K --> L
+    L --> M[Observable Result]
+```
 
-Five defining properties
+### 1. Intent
 
-01 — Reversible by architecture
+Capture the desired outcome, constraints, and context.
 
-simulate → snapshot → execute → verify → commit / rollback
+### 2. Plan
 
-Undo is treated as a system responsibility, not a UI convenience.
+Build a structured execution graph.
 
-02 — Risk-proportional trust
+### 3. Risk
 
-Autonomy is appropriate where errors are cheap and recoverable.Explicit approval is required where consequences are material or irreversible.
+Classify the impact and determine approval requirements.
 
-03 — Limits enforced below the agent
+### 4. Permission
 
-Permissions, budgets, payment mandates and capability scopes are enforced in infrastructure the model cannot rewrite.
+Enforce policies, budgets, and capability limits.
 
-04 — Open by protocol
+### 5. Execution
 
-MCP serves as the capability ABI. A2A provides a direction for agent identity, delegation and coordination.
+Perform approved actions through controlled capabilities.
 
-05 — Local-first ownership
+### 6. Verification
 
-The user's environment remains the center of identity, trust, policy and control.
+Confirm that the real result matches the original intent.
 
-📐 Core principles
+### 7. Recovery
 
-Principle
+Commit valid results, compensate for errors, or roll back when possible.
 
-Meaning
+### 8. Ledger
 
-Intent over interface
+Record actions, evidence, approvals, and outcomes.
 
-The user states the outcome instead of operating every tool manually.
+---
 
-Execution over suggestion
+## Core System
 
-The system performs work rather than only describing it.
+### Alios
 
-Control at the right boundary
+**Alios** is the resident Prime Agent.
 
-Human approval appears where risk, cost or ambiguity justify it.
+It is responsible for:
 
-Reversibility by design
+- Understanding user intent.
+- Building execution plans.
+- Coordinating capabilities and sub-agents.
+- Explaining risk and approval requirements.
+- Returning an observable result.
 
-Recovery is designed before execution, not after failure.
+Alios can propose actions, but it cannot bypass kernel policy or permission boundaries.
 
-Observability over opacity
+### Execution Kernel
 
-Plans, actions and results remain visible.
+The kernel controls:
 
-Policy below prompts
+- Scheduling.
+- Transactions.
+- Risk classification.
+- Permission enforcement.
+- Verification.
+- Recovery.
+- Audit records.
 
-Critical rules cannot depend only on model behavior.
+### Capability Runtime
 
-Capability isolation
+The capability runtime connects cmdOS to:
 
-Tools are scoped, constrained and independently governable.
+- Desktop applications.
+- Browsers.
+- Operating-system functions.
+- Cloud services.
+- MCP servers.
+- A2A agents.
 
-Protocol openness
+### Audit Ledger
 
-The ecosystem grows without forcing everything into one monolith.
+The ledger records:
 
-Gradual autonomy
+- The original intent.
+- The approved plan.
+- Executed actions.
+- Evidence and outputs.
+- Verification results.
+- Recovery state.
 
-Autonomy expands only when trust and evidence justify it.
+---
 
-Reality-based verification
+## Architecture
 
-The system checks the actual result, not just the model's belief.
+```mermaid
+flowchart TD
+    U[User] --> S[cmdShell]
+    S --> A[Alios]
+    A --> K[Execution Kernel]
 
-🏗️ System architecture
+    K --> P[Policy Engine]
+    K --> T[Transaction Engine]
+    K --> V[Verification Engine]
+    K --> L[Audit Ledger]
+    K --> C[Capability Runtime]
 
-flowchart TB
-    subgraph UX[Experience Layer]
-        USER[User]
-        SHELL[cmdShell]
-    end
+    C --> M[MCP Servers]
+    C --> N[A2A Agents]
+    C --> O[Apps, Browser, OS, and Cloud]
 
-    subgraph INTELLIGENCE[Intelligence Layer]
-        ALIOS[Alios Prime Agent]
-        ROUTER[NIS AI Router]
-    end
+    K --> R[NIS AI Router]
+    K --> F[semfs]
+    K --> Y[cmdPay]
+```
 
-    subgraph CORE[Execution Kernel]
-        SCHED[Scheduler]
-        TX[Transaction Engine]
-        POLICY[Policy Engine]
-        RISK[Risk Classifier]
-        VERIFY[Verification Engine]
-        LEDGER[Audit Ledger]
-    end
+### cmdShell
 
-    subgraph RUNTIME[Capability Runtime]
-        MCP[MCP Capabilities]
-        A2A[A2A Agents]
-        IPC[AIPC]
-    end
+The user interface for intents, plans, approvals, execution status, and results.
 
-    subgraph SERVICES[System Services]
-        SEMFS[semfs]
-        PAY[cmdPay]
-        STORE[Storage]
-        ID[Identity]
-    end
+### NIS
 
-    subgraph WORLD[External Environment]
-        DESKTOP[Desktop Apps]
-        BROWSER[Browser]
-        CLOUD[Cloud Services]
-        DEVICES[Devices]
-    end
+The AI model routing and inference layer.
 
-    USER --> SHELL
-    SHELL --> ALIOS
-    ALIOS --> ROUTER
-    ALIOS --> SCHED
-    SCHED --> TX
-    TX --> POLICY
-    POLICY --> RISK
-    RISK --> VERIFY
-    VERIFY --> LEDGER
-    TX --> MCP
-    TX --> A2A
-    TX --> IPC
-    MCP --> DESKTOP
-    MCP --> BROWSER
-    A2A --> CLOUD
-    IPC --> DEVICES
-    TX --> SEMFS
-    TX --> PAY
-    TX --> STORE
-    POLICY --> ID
+### semfs
 
-Architecture layers
+Semantic file and storage services.
 
-<table>
-<tr>
-<td width="50%" valign="top">
+### cmdPay
 
-🖥️ Experience layer
+Payment mandates, budget limits, and controlled financial execution.
 
-cmdShell
+---
 
-intent input
+## Trust and Security
 
-plan preview
+cmdOS assumes that models, prompts, tools, and external data can fail or become adversarial.
 
-approval gates
+Security therefore depends on system boundaries, not on model behavior alone.
 
-execution timeline
+### Risk Levels
 
-result and recovery surfaces
+#### R0 — Observe
 
-🤖 Intelligence layer
+Read-only actions that can usually run autonomously.
 
-intent understanding
+#### R1 — Low Impact
 
-planning
+Reversible changes with logging and limited scope.
 
-capability selection
+#### R2 — Material
 
-model routing
+Actions that normally require preview and approval.
 
-orchestration
+#### R3 — Critical
 
-</td>
-<td width="50%" valign="top">
+High-risk or irreversible actions requiring explicit confirmation.
 
-⚙️ Execution kernel
+### Security Rules
 
-scheduling
+- Enforce policy below the AI model.
+- Scope every capability to minimum required access.
+- Require approval for consequential actions.
+- Verify external results after execution.
+- Record every important action.
+- Prepare recovery before mutation.
+- Keep identity and trust local-first.
 
-transactions
+> [!WARNING]
+> Not every external system supports perfect rollback.
+>
+> cmdOS distinguishes between true reversal, compensating actions, and irreversible but auditable operations.
 
-policy
+---
 
-risk
+## Open Protocols
 
-verification
+### MCP
 
-ledger
+Capability and tool interoperability.
 
-🔌 Runtime and services
+### A2A
 
-MCP capabilities
+Agent identity, delegation, and coordination.
 
-A2A delegation
+### Shared Schemas
 
-storage
+Contracts across the shell, runtime, services, and capabilities.
 
-payments
+### Capability Servers
 
-identity
+Extensions that add functionality without expanding the core unnecessarily.
 
-OS and app bridges
+---
 
-</td>
-</tr>
-</table>
+## Repository Structure
 
-[!IMPORTANT]The model may propose actions. The kernel determines what may happen, under which constraints, when approval is required, and how success must be verified.
-
-🧱 The cmdOS stack
-
-┌─────────────────────────────────────────────────────────────────────┐
-│                            cmdShell                                 │
-│      intent • plans • approvals • progress • results • recovery    │
-├─────────────────────────────────────────────────────────────────────┤
-│                             Alios                                   │
-│       understanding • planning • orchestration • explanation       │
-├─────────────────────────────────────────────────────────────────────┤
-│                        Execution Kernel                             │
-│  scheduler • transactions • policy • risk • verification • ledger │
-├─────────────────────────────────────────────────────────────────────┤
-│                    Capability + Agent Runtime                       │
-│           MCP capabilities • A2A agents • AIPC bridges             │
-├─────────────────────────────────────────────────────────────────────┤
-│                         System Services                             │
-│             semfs • NIS • cmdPay • storage • identity              │
-├─────────────────────────────────────────────────────────────────────┤
-│            Desktop • Browser • Cloud • Apps • Devices              │
-└─────────────────────────────────────────────────────────────────────┘
-
-🤖 Alios — the Prime Agent
-
-Alios is the resident intelligence of cmdOS.
-
-Alios is not simply a chatbot personality. It is the primary orchestration agent responsible for turning intent into structured execution.
-
-<table>
-<tr>
-<td width="25%" align="center" valign="top">
-
-🧩 Interpreter
-
-Understands goals, context, constraints and ambiguity.
-
-</td>
-<td width="25%" align="center" valign="top">
-
-🗺️ Planner
-
-Builds explicit execution graphs with dependencies and checkpoints.
-
-</td>
-<td width="25%" align="center" valign="top">
-
-🎛️ Orchestrator
-
-Coordinates tools, capabilities, services and sub-agents.
-
-</td>
-<td width="25%" align="center" valign="top">
-
-💬 Explainer
-
-Communicates risk, approvals, progress and outcomes clearly.
-
-</td>
-</tr>
-</table>
-
-[!CAUTION]Alios does not replace permissions, policy, transaction control or payment limits.Those boundaries must remain outside the model.
-
-🧾 Transactional execution
-
-The core execution pattern is:
-
-<div align="center">
-
-SIMULATE → SNAPSHOT → EXECUTE → VERIFY → COMMIT / ROLLBACK
-
-</div>
-
-Transaction goals
-
-Goal
-
-System behavior
-
-Preview before consequence
-
-Show the user what sensitive actions will do.
-
-Snapshot before mutation
-
-Preserve recoverable state before changes.
-
-Verify after action
-
-Confirm real effects instead of trusting a tool response.
-
-Commit on confidence
-
-Finalize only when validation succeeds.
-
-Recover on failure
-
-Reverse, compensate or stop safely when execution is incomplete.
-
-True reversal vs compensation
-
-Not every external system supports perfect rollback. cmdOS distinguishes:
-
-true rollback — restore the previous state;
-
-compensating action — create a corrective action;
-
-irreversible but auditable action — require stronger approval and preserve evidence.
-
-🛡️ Security & trust model
-
-cmdOS assumes that:
-
-models can hallucinate;
-
-prompts can be adversarial;
-
-tool outputs can contain malicious instructions;
-
-integrations can be over-permissioned;
-
-external state can change mid-execution;
-
-irreversible actions require stronger guarantees.
-
-Risk levels
-
-Level
-
-Category
-
-Typical examples
-
-Default posture
-
-R0
-
-Observe
-
-Read files, inspect state, query approved data
-
-Autonomous with logging
-
-R1
-
-Low-impact change
-
-Draft content, create local files, organize information
-
-Usually autonomous
-
-R2
-
-Material action
-
-Send email, schedule meetings, update shared records
-
-Preview + approval
-
-R3
-
-High-risk action
-
-Payments, destructive deletion, permission changes
-
-Strong confirmation + safeguards
-
-Security pillars
-
-<table>
-<tr>
-<td width="33%" valign="top">
-
-🔒 Policy below the model
-
-Rules are enforced in infrastructure that prompt injection cannot rewrite.
-
-</td>
-<td width="33%" valign="top">
-
-🧱 Capability isolation
-
-Every tool receives only the permissions and scope it actually needs.
-
-</td>
-<td width="33%" valign="top">
-
-👁️ Observable execution
-
-Actions, evidence and outcomes are visible and auditable.
-
-</td>
-</tr>
-<tr>
-<td width="33%" valign="top">
-
-✅ Verification
-
-Success is confirmed in the external system, not assumed.
-
-</td>
-<td width="33%" valign="top">
-
-💳 Budget control
-
-Spending and payment mandates are enforced below the agent.
-
-</td>
-<td width="33%" valign="top">
-
-🪪 Local-first identity
-
-The user remains the root of agent identity, trust and delegation.
-
-</td>
-</tr>
-</table>
-
-🔌 Open protocol layer
-
-cmdOS is designed to participate in an open agent ecosystem.
-
-Interface
-
-Role
-
-MCP
-
-Capability ABI and tool interoperability layer
-
-A2A
-
-Agent identity, delegation and multi-agent coordination direction
-
-AIPC
-
-Internal communication between agents, capabilities and services
-
-Shared schemas
-
-Stable contracts across shell, kernel and services
-
-Why openness matters
-
-capabilities can evolve independently;
-
-third-party tools do not need to be hard-coded into the kernel;
-
-users are not locked into one model or vendor;
-
-the ecosystem can grow around stable execution contracts.
-
-💼 Use cases
-
-<table>
-<tr>
-<td width="50%" valign="top">
-
-🧑‍💼 Knowledge work
-
-prepare and distribute reports;
-
-summarize meetings and create follow-ups;
-
-reconcile data across systems;
-
-draft, approve and send communications;
-
-organize research with evidence.
-
-🏢 Operations
-
-run multi-application checklists;
-
-update approved systems;
-
-monitor workflows;
-
-route exceptions to humans;
-
-coordinate recurring processes.
-
-</td>
-<td width="50%" valign="top">
-
-🧑‍💻 Personal execution
-
-organize files;
-
-schedule events;
-
-plan travel;
-
-manage administrative tasks;
-
-coordinate apps on desktop and mobile.
-
-🤖 AI-native workflows
-
-long-running execution with checkpoints;
-
-multi-agent delegation;
-
-conditional tasks under policy;
-
-auditable tool use;
-
-recovery-aware automation.
-
-</td>
-</tr>
-</table>
-
-Intent examples
-
-“Invoice my clients for this week's hours.”
-“Prepare tomorrow's meeting brief.”
-“Clean my downloads folder, but ask before deleting anything.”
-“Send our weekly KPI update after I approve the final numbers.”
-“Compare travel options and prepare the booking, but do not pay yet.”
-
-📂 Repository map
-
-cmdOS/
+```text
+.
 ├── agent/
-│   └── alios/                  # Prime Agent
-├── capabilities/               # first-party MCP capability servers
-├── docs/
-│   ├── 00-governance/          # project governance
-│   ├── 01-vision/              # strategy and positioning
-│   └── rfcs/                   # architectural decisions
-├── kernel/                     # Rust execution core
-├── prototype/                  # runnable Electron reference implementation
-├── schemas/                    # TypeScript contracts
-├── services/
-│   ├── semfs/                  # semantic filesystem direction
-│   ├── nis/                    # AI model router
-│   ├── aipc/                   # MCP / A2A communication
-│   └── cmdpay/                 # payment and mandate layer
-└── shell/                      # cmdShell desktop experience
+│   └── alios/          # Prime Agent
+├── capabilities/       # First-party MCP servers
+├── docs/               # Strategy, RFCs, specs, and governance
+├── kernel/             # Rust execution core
+├── prototype/          # Runnable reference implementation
+├── schemas/            # Shared TypeScript contracts
+├── services/           # semfs, NIS, aipc, and cmdPay
+└── shell/              # cmdShell user interface
+```
 
-Path
+---
 
-Purpose
+## Quick Start
 
-kernel/
+### Reference Prototype
 
-Types, scheduler, transactions, policy, verification and ledger
-
-services/
-
-Shared execution infrastructure
-
-agent/alios/
-
-Intent understanding and orchestration
-
-capabilities/
-
-Controlled external action surfaces
-
-shell/
-
-User-facing execution experience
-
-schemas/
-
-Shared data contracts
-
-prototype/
-
-Runnable reference implementation and behavior contracts
-
-docs/
-
-Strategy, RFCs, architecture and governance
-
-🚀 Quick start
-
-[!NOTE]The commands below target the current prototype/reference implementation.
-
-Prototype
-
+```bash
 npm install
 npm test
 npm start
+```
 
-Rust workspace
+### Rust Workspace
 
+```bash
 cargo build --workspace
+```
 
-Recommended first path
+---
 
-README.md
-   ↓
-ROADMAP.md
-   ↓
-docs/01-vision/strategy-v2.md
-   ↓
-docs/rfcs/0000-rfc-process.md
-   ↓
-prototype behavior contracts
-   ↓
-kernel + services
+## Development
 
-🛠️ Development
+cmdOS follows a specification-led and RFC-driven workflow.
 
-cmdOS development is expected to be:
+```text
+Idea → RFC → Review → Implementation → Tests → Documentation
+```
 
-spec-led — architecture begins with explicit documents;
+Before making architectural changes:
 
-boundary-conscious — trust and ownership are defined clearly;
+1. Read `ROADMAP.md`.
+2. Review the relevant documentation.
+3. Read `docs/rfcs/0000-rfc-process.md`.
+4. Document security and trust implications.
+5. Keep behavior observable and testable.
 
-behavior-driven — execution semantics are testable;
+---
 
-security-aware — capability and policy implications are documented;
+## Roadmap
 
-observable — system behavior can be inspected and explained.
+### Horizon 1 — cmdOS Layer
 
-Engineering workflow
+Desktop execution layer for Windows, macOS, and Linux.
 
-flowchart LR
-    I[Idea] --> D[Discussion]
-    D --> R[RFC Draft]
-    R --> V[Review]
-    V --> A[Accepted Direction]
-    A --> M[Implementation]
-    M --> T[Tests + Behavior Contracts]
-    T --> DOC[Documentation Update]
+### Horizon 2 — Runtime Ownership
 
-[!TIP]Architectural work should begin with docs/rfcs/0000-rfc-process.md.
+Own the agent runtime, execution model, and trust boundaries.
 
-🧪 Technology direction
+### Horizon 3 — AI-Native Userspace
 
-Area
+Move from an application layer to a complete AI-first environment.
 
-Direction
+### Horizon 4 — Full cmdOS
 
-Core kernel
+A Linux-based operating system where AI-native execution is a system primitive.
 
-Rust
+See [`ROADMAP.md`](ROADMAP.md) for the complete roadmap.
 
-Desktop shell
+---
 
-Tauri direction; Electron reference prototype exists
+## Project Status
 
-Shared contracts
+### Available Now
 
-TypeScript schemas
+- Architecture and strategy.
+- RFC process.
+- Repository structure.
+- Reference prototype.
+- Behavior contracts.
+- Early core modules.
 
-Capability interface
+### In Progress
 
-MCP
+- Execution kernel semantics.
+- Policy model.
+- Capability boundaries.
+- Verification and recovery.
+- Shell experience.
+- Service interfaces.
 
-Agent coordination
+### Long-Term Direction
 
-A2A direction
+- AI-native userspace.
+- Complete operating system.
+- Broader capability ecosystem.
+- Deeper device integration.
+- Secure multi-agent execution.
 
-Model routing
+---
 
-NIS multi-model router
+## Documentation
 
-Storage
+- [Project Documentation](docs/)
+- [Roadmap](ROADMAP.md)
+- [RFC Process](docs/rfcs/0000-rfc-process.md)
+- [Project Strategy](docs/01-vision/strategy-v2.md)
 
-Local-first and semantic filesystem direction
+---
 
-Payments
+## Contributing
 
-cmdPay mandate and budget layer
+Contributions are welcome from developers interested in:
 
-[!NOTE]Technology choices and internal interfaces may evolve as architecture is validated.
+- AI infrastructure.
+- Operating systems.
+- Agent runtimes.
+- Capability protocols.
+- Security architecture.
+- Local-first software.
+- Interaction design.
 
-🌍 Project horizons
+Read the relevant documentation and open an RFC or issue before making major architectural changes.
 
-flowchart LR
-    H1[Horizon 1<br/>cmdOS Layer] --> H2[Horizon 2<br/>Own Agent Runtime]
-    H2 --> H3[Horizon 3<br/>Own AI-native Userspace]
-    H3 --> H4[Horizon 4<br/>Full AI-native OS]
+---
 
-Horizon 1 — cmdOS Layer
+## Community
 
-Goal: Deliver a real desktop product on top of Windows, macOS and Linux.
+- [Website](https://cmdos.xyz/)
+- [X / Twitter](https://x.com/cmdOS_xyz)
+- [Telegram](https://t.me/cmdOS_xyz)
+- [GitHub Issues](https://github.com/cmdOSxyz/foundation/issues)
 
-natural-language execution;
+---
 
-controlled capabilities;
+## License
 
-approval and preview surfaces;
+MIT.
 
-observable workflows;
+---
 
-reversible actions where possible;
+## cmdOS
 
-local-first user control.
+**The Operating System for AI Agents.**
 
-Horizon 2 — Runtime ownership
-
-Goal: Own the agent substrate and execution semantics.
-
-execution graph runtime;
-
-policy and risk engine;
-
-capability ecosystem;
-
-verification architecture;
-
-agent identity and delegation.
-
-Horizon 3 — AI-native userspace
-
-Goal: Move beyond “an app with agents” toward a complete AI-first interaction layer.
-
-Horizon 4 — Full operating system
-
-Goal: Build a Linux-based foundation where AI execution is a native operating-system capability.
-
-📊 Project status
-
-Area
-
-Status
-
-Notes
-
-Vision and positioning
-
-🟢 Defined
-
-Core project direction established
-
-Architecture documentation
-
-🟢 Active
-
-Continues to mature through RFCs
-
-Reference prototype
-
-🟡 Available
-
-Runnable prototype and behavior contracts
-
-Rust execution kernel
-
-🟡 In progress
-
-Core boundaries and semantics evolving
-
-Alios orchestration
-
-🟡 In design / development
-
-Prime Agent behavior being refined
-
-Capability ecosystem
-
-🟡 In progress
-
-First-party and protocol-based direction
-
-Security and policy engine
-
-🟡 In design
-
-Core system requirement
-
-Full AI-native userspace
-
-🔵 Planned
-
-Later horizon
-
-Complete AI-native OS
-
-🟣 Vision
-
-Long-term destination
-
-Legend
-
-🟢 Defined / available
-
-🟡 Active development
-
-🔵 Planned
-
-🟣 Long-term vision
-
-📚 Documentation
-
-Topic
-
-Location
-
-Strategy
-
-docs/01-vision/strategy-v2.md
-
-Roadmap
-
-ROADMAP.md
-
-RFC process
-
-docs/rfcs/0000-rfc-process.md
-
-Governance
-
-docs/00-governance/
-
-Specifications
-
-docs/
-
-Documentation philosophy
-
-One concept → one canonical definition
-One architecture decision → one explicit rationale
-Superseded ideas → archived, not silently duplicated
-Security assumptions → visible, reviewable and testable
-
-🤝 Contributing
-
-Contributions are welcome from people working on:
-
-agent runtimes;
-
-AI infrastructure;
-
-systems programming;
-
-capability protocols;
-
-local-first software;
-
-trust and security architecture;
-
-desktop automation;
-
-developer experience;
-
-AI-native interaction design.
-
-Before opening a pull request
-
-Read the relevant architecture documents.
-
-Check whether the change needs an RFC.
-
-Make security and permission implications explicit.
-
-Add or update behavior contracts where appropriate.
-
-Keep terminology consistent with canonical docs.
-
-Update documentation alongside implementation.
-
-Contribution standard
-
-Clarity over cleverness. Explicit boundaries over hidden coupling. Durable infrastructure over short-term prompt hacks.
-
-🌐 Community
-
-<div align="center">
-
-
-
-</div>
-
-📜 License
-
-Distributed under the MIT License. See LICENSE for details.
-
-<div align="center">
-
-<img width="100%" alt="cmdOS footer" src="https://capsule-render.vercel.app/api?type=waving&height=180&section=footer&color=0:00d084,55:06211a,100:020604&animation=fadeIn" />
-
-The future of AI is not only about models that can answer.
-
-It is about systems that can understand intent, execute responsibly, verify reality and recover when things go wrong.
-
-<br />
-
-cmdOS
-
-The Operating System for AI Agents
-
-<sub>Built for observable execution, proportional trust and user-owned intelligence.</sub>
-
-</div>
+Plan. Approve. Execute. Verify. Recover.
