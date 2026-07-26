@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420">
+<rect width="1200" height="420" rx="24" fill="#050806"/>
+<rect x="1" y="1" width="1198" height="418" rx="23" fill="none" stroke="#173c29"/>
+
+<defs><filter id="g"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<text x="600" y="40" fill="#22c55e" font-family="monospace" font-size="19" text-anchor="middle">cmdOS CONNECT</text>
+<g stroke="#1d6b3b" stroke-width="2" opacity=".55"><path d="M600 210L210 90M600 210L990 90M600 210L210 330M600 210L990 330M210 90L990 90M210 330L990 330"/></g>
+<g font-family="monospace" text-anchor="middle">
+<g fill="#0a130d" stroke="#2d8a50"><rect x="500" y="160" width="200" height="100" rx="18"/><rect x="130" y="55" width="160" height="70" rx="14"/><rect x="910" y="55" width="160" height="70" rx="14"/><rect x="130" y="295" width="160" height="70" rx="14"/><rect x="910" y="295" width="160" height="70" rx="14"/></g>
+<g fill="#d1fae5" font-size="18"><text x="600" y="205">cmdOS</text><text x="600" y="231" fill="#22c55e">CONNECT</text><text x="210" y="98">Human</text><text x="990" y="98">Team</text><text x="210" y="338">Agent</text><text x="990" y="338">Device</text></g>
+</g>
+<g fill="#22c55e" filter="url(#g)"><circle r="6"><animateMotion dur="3.4s" repeatCount="indefinite" path="M600 210L210 90L990 90L600 210"/></circle><circle r="6"><animateMotion dur="3.8s" begin=".6s" repeatCount="indefinite" path="M600 210L990 330L210 330L600 210"/></circle></g>
+
+</svg>

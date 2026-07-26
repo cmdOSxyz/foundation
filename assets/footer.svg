@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="280" viewBox="0 0 1200 280">
+<rect width="1200" height="280" rx="24" fill="#050806"/>
+<rect x="1" y="1" width="1198" height="278" rx="23" fill="none" stroke="#173c29"/>
+
+<defs><filter id="g"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<text x="600" y="120" text-anchor="middle" font-family="monospace" font-size="42" font-weight="700" fill="#f4fff8">cmd<tspan fill="#22c55e">OS</tspan></text>
+<text x="600" y="165" text-anchor="middle" font-family="monospace" font-size="18" fill="#a7f3d0">secure communication · agent execution · verified results</text>
+<rect x="330" y="220" width="540" height="3" rx="2" fill="#123c25"/>
+<circle cy="221.5" r="6" fill="#22c55e" filter="url(#g)"><animate attributeName="cx" values="330;870;330" dur="3.6s" repeatCount="indefinite"/></circle>
+
+</svg>
