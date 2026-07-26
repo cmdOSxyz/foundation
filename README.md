@@ -1257,19 +1257,9 @@ Before public testing, the repository should include:
 
 ---
 
-# License
-
-The project license has not yet been finalized.
-
-Add a `LICENSE` file before accepting external contributions or distributing production builds.
-
----
-
 <div align="center">
 
 <img src="./assets/footer.svg" width="100%" alt="cmdOS footer animation" />
-
-### Not another chatbot.
 
 ### The secure operating layer for people, AI agents, applications, and devices.
 
