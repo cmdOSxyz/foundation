@@ -46,34 +46,34 @@
 <rect width="1440" height="700" rx="38" fill="url(#bg)"/>
 
 <circle cx="1180" cy="110" r="330" fill="url(#orb)"/>
-<text x="720" y="62" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="30" font-weight="300" fill="#ffffff">cmdOS connect</text>
-<text x="720" y="98" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="300" fill="#94a3b8">human conversations and agent execution share the same operational context</text>
+<text x="720" y="62" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="30" font-weight="300" fill="#ffffff">product experience</text>
+<text x="720" y="98" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="300" fill="#94a3b8">a focused command surface for intent, approvals, active agents and verified outcomes</text>
 
-<g transform="translate(120 165) rotate(-4 150.0 210.0)" filter="url(#deepShadow)">
-  <rect x="12" y="18" width="300" height="420" rx="28" fill="#000000" opacity=".48"/>
-  <rect width="300" height="420" rx="28" fill="url(#glass)" stroke="#a78bfa" stroke-opacity=".34"/>
-  <path d="M28 34 H272" stroke="#ffffff" stroke-opacity=".16" stroke-width="2"/>
-  <text x="30" y="58" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="400" fill="#a78bfa">channels</text>
-  <text x="30" y="102" font-family="Inter,Arial,sans-serif" font-size="20" font-weight="300" fill="#ffffff"># product-launch · engineering</text>
-  <rect x="30" y="356" width="240" height="28" rx="14" fill="#a78bfa" opacity=".10"/>
-</g>
-
-<g transform="translate(405 135) rotate(1 325.0 225.0)" filter="url(#deepShadow)">
-  <rect x="12" y="18" width="650" height="450" rx="28" fill="#000000" opacity=".48"/>
-  <rect width="650" height="450" rx="28" fill="url(#glass)" stroke="#60a5fa" stroke-opacity=".34"/>
-  <path d="M28 34 H622" stroke="#ffffff" stroke-opacity=".16" stroke-width="2"/>
-  <text x="30" y="58" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="400" fill="#60a5fa">conversation</text>
-  <text x="30" y="102" font-family="Inter,Arial,sans-serif" font-size="20" font-weight="300" fill="#ffffff">people and agents collaborate</text>
-  <rect x="30" y="386" width="590" height="28" rx="14" fill="#60a5fa" opacity=".10"/>
-</g>
-
-<g transform="translate(1010 190) rotate(5 155.0 185.0)" filter="url(#deepShadow)">
-  <rect x="12" y="18" width="310" height="370" rx="28" fill="#000000" opacity=".48"/>
-  <rect width="310" height="370" rx="28" fill="url(#glass)" stroke="#22d3ee" stroke-opacity=".34"/>
+<g transform="translate(110 170) rotate(-5 155.0 215.0)" filter="url(#deepShadow)">
+  <rect x="12" y="18" width="310" height="430" rx="28" fill="#000000" opacity=".48"/>
+  <rect width="310" height="430" rx="28" fill="url(#glass)" stroke="#a78bfa" stroke-opacity=".34"/>
   <path d="M28 34 H282" stroke="#ffffff" stroke-opacity=".16" stroke-width="2"/>
-  <text x="30" y="58" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="400" fill="#22d3ee">agent activity</text>
-  <text x="30" y="102" font-family="Inter,Arial,sans-serif" font-size="20" font-weight="300" fill="#ffffff">summaries · tasks · approvals</text>
-  <rect x="30" y="306" width="250" height="28" rx="14" fill="#22d3ee" opacity=".10"/>
+  <text x="30" y="58" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="400" fill="#a78bfa">workspace</text>
+  <text x="30" y="102" font-family="Inter,Arial,sans-serif" font-size="20" font-weight="300" fill="#ffffff">intent, plans and recent runs</text>
+  <rect x="30" y="366" width="250" height="28" rx="14" fill="#a78bfa" opacity=".10"/>
+</g>
+
+<g transform="translate(430 145) rotate(2 305.0 215.0)" filter="url(#deepShadow)">
+  <rect x="12" y="18" width="610" height="430" rx="28" fill="#000000" opacity=".48"/>
+  <rect width="610" height="430" rx="28" fill="url(#glass)" stroke="#60a5fa" stroke-opacity=".34"/>
+  <path d="M28 34 H582" stroke="#ffffff" stroke-opacity=".16" stroke-width="2"/>
+  <text x="30" y="58" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="400" fill="#60a5fa">command center</text>
+  <text x="30" y="102" font-family="Inter,Arial,sans-serif" font-size="20" font-weight="300" fill="#ffffff">describe what cmdOS should do</text>
+  <rect x="30" y="366" width="550" height="28" rx="14" fill="#60a5fa" opacity=".10"/>
+</g>
+
+<g transform="translate(1015 185) rotate(5 155.0 200.0)" filter="url(#deepShadow)">
+  <rect x="12" y="18" width="310" height="400" rx="28" fill="#000000" opacity=".48"/>
+  <rect width="310" height="400" rx="28" fill="url(#glass)" stroke="#22d3ee" stroke-opacity=".34"/>
+  <path d="M28 34 H282" stroke="#ffffff" stroke-opacity=".16" stroke-width="2"/>
+  <text x="30" y="58" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="400" fill="#22d3ee">agent panel</text>
+  <text x="30" y="102" font-family="Inter,Arial,sans-serif" font-size="20" font-weight="300" fill="#ffffff">live state and permissions</text>
+  <rect x="30" y="336" width="250" height="28" rx="14" fill="#22d3ee" opacity=".10"/>
 </g>
 
 <circle r="7" fill="#ffffff" filter="url(#glow)">
