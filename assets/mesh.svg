@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420">
+<rect width="1200" height="420" rx="24" fill="#050806"/>
+<rect x="1" y="1" width="1198" height="418" rx="23" fill="none" stroke="#173c29"/>
+
+<defs><filter id="g"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<text x="600" y="38" fill="#22c55e" font-family="monospace" font-size="19" text-anchor="middle">SECURE AGENT MESH</text>
+<g stroke="#1d6b3b" stroke-width="2" opacity=".55"><path d="M600 210L220 100M600 210L980 100M600 210L220 320M600 210L980 320M220 100L980 100M220 320L980 320M220 100L220 320M980 100L980 320"/></g>
+<g font-family="monospace" text-anchor="middle">
+<g fill="#0a130d" stroke="#2d8a50"><rect x="500" y="165" width="200" height="90" rx="18"/><rect x="130" y="65" width="180" height="70" rx="14"/><rect x="890" y="65" width="180" height="70" rx="14"/><rect x="130" y="285" width="180" height="70" rx="14"/><rect x="890" y="285" width="180" height="70" rx="14"/></g>
+<g fill="#d1fae5" font-size="18"><text x="600" y="205">cmdOS</text><text x="600" y="230" fill="#22c55e">MESH</text><text x="220" y="107">Phone</text><text x="980" y="107">Laptop</text><text x="220" y="327">Desktop</text><text x="980" y="327">Server</text></g>
+</g>
+<g fill="#22c55e" filter="url(#g)"><circle r="6"><animateMotion dur="3s" repeatCount="indefinite" path="M600 210L220 100L980 100L600 210"/></circle><circle r="6"><animateMotion dur="3.6s" begin=".6s" repeatCount="indefinite" path="M600 210L980 320L220 320L600 210"/></circle><circle r="5"><animateMotion dur="2.8s" begin="1s" repeatCount="indefinite" path="M220 100L220 320L980 320L980 100"/></circle></g>
+<text x="600" y="392" fill="#789482" font-family="monospace" font-size="15" text-anchor="middle">internet · lan · p2p · wi-fi direct · bluetooth proximity relay</text>
+
+</svg>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="260" viewBox="0 0 1200 260">
+<rect width="1200" height="260" rx="24" fill="#050806"/>
+<rect x="1" y="1" width="1198" height="258" rx="23" fill="none" stroke="#173c29"/>
+
+<defs><filter id="g"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<text x="600" y="42" fill="#22c55e" font-family="monospace" font-size="19" text-anchor="middle">SECURE EXECUTION PIPELINE</text>
+<g font-family="monospace" font-size="16" text-anchor="middle">
+<g fill="#0a130d" stroke="#255c3b">
+<rect x="35" y="105" width="135" height="72" rx="13"/><rect x="200" y="105" width="135" height="72" rx="13"/>
+<rect x="365" y="105" width="135" height="72" rx="13"/><rect x="530" y="105" width="135" height="72" rx="13"/>
+<rect x="695" y="105" width="135" height="72" rx="13"/><rect x="860" y="105" width="135" height="72" rx="13"/>
+<rect x="1025" y="105" width="140" height="72" rx="13"/>
+</g>
+<g fill="#d1fae5"><text x="102" y="147">Intent</text><text x="267" y="147">Understand</text><text x="432" y="147">Plan</text><text x="597" y="147">Permission</text><text x="762" y="147">Execute</text><text x="927" y="147">Verify</text><text x="1095" y="147">Result</text></g>
+</g>
+<g stroke="#22c55e" stroke-width="3" opacity=".35"><path d="M170 141H200M335 141H365M500 141H530M665 141H695M830 141H860M995 141H1025"/></g>
+<circle cy="141" r="6" fill="#22c55e" filter="url(#g)"><animate attributeName="cx" values="170;1025" dur="4.8s" repeatCount="indefinite"/></circle>
+
+</svg>

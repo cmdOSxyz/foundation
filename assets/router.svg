@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="430" viewBox="0 0 1200 430">
+<rect width="1200" height="430" rx="24" fill="#050806"/>
+<rect x="1" y="1" width="1198" height="428" rx="23" fill="none" stroke="#173c29"/>
+
+<defs><filter id="g"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<text x="600" y="40" fill="#22c55e" font-family="monospace" font-size="19" text-anchor="middle">MODEL ROUTING LAYER</text>
+<g stroke="#1d6b3b" stroke-width="2" opacity=".5"><path d="M260 210H500M700 210H940M700 210L940 80M700 210L940 145M700 210L940 275M700 210L940 340"/></g>
+<g font-family="monospace" text-anchor="middle">
+<g fill="#0a130d" stroke="#2d8a50"><rect x="100" y="170" width="160" height="80" rx="14"/><rect x="500" y="160" width="200" height="100" rx="18"/><rect x="940" y="48" width="160" height="60" rx="12"/><rect x="940" y="118" width="160" height="60" rx="12"/><rect x="940" y="188" width="160" height="60" rx="12"/><rect x="940" y="258" width="160" height="60" rx="12"/><rect x="940" y="328" width="160" height="60" rx="12"/></g>
+<g fill="#d1fae5" font-size="17"><text x="180" y="218">Task</text><text x="600" y="207">AI Router</text><text x="600" y="232" fill="#22c55e">policy-aware</text><text x="1020" y="84">OpenAI</text><text x="1020" y="154">Claude</text><text x="1020" y="224">Gemini</text><text x="1020" y="294">Kimi / GLM</text><text x="1020" y="364">Local LLM</text></g>
+</g>
+<circle r="6" fill="#22c55e" filter="url(#g)"><animateMotion dur="3s" repeatCount="indefinite" path="M260 210H500H700L940 80"/></circle>
+<circle r="5" fill="#22c55e" filter="url(#g)"><animateMotion dur="3.6s" begin="1s" repeatCount="indefinite" path="M260 210H500H700L940 340"/></circle>
+
+</svg>
