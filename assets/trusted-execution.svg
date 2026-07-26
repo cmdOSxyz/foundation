@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="540" viewBox="0 0 1440 540">
+<defs>
+  <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#070A12"/>
+    <stop offset=".52" stop-color="#11102A"/>
+    <stop offset="1" stop-color="#071C28"/>
+  </linearGradient>
+  <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#A78BFA"/>
+    <stop offset=".48" stop-color="#60A5FA"/>
+    <stop offset="1" stop-color="#22D3EE"/>
+  </linearGradient>
+  <linearGradient id="soft" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#8B5CF6" stop-opacity=".22"/>
+    <stop offset="1" stop-color="#22D3EE" stop-opacity=".08"/>
+  </linearGradient>
+  <radialGradient id="orb">
+    <stop offset="0" stop-color="#A78BFA" stop-opacity=".38"/>
+    <stop offset="1" stop-color="#A78BFA" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%">
+    <feDropShadow dx="0" dy="22" stdDeviation="26" flood-color="#020617" flood-opacity=".5"/>
+  </filter>
+  <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+    <feGaussianBlur stdDeviation="8" result="blur"/>
+    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<rect width="1440" height="540" rx="38" fill="url(#canvas)"/>
+
+<text x="720" y="58" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="28" font-weight="850" fill="#FFFFFF">Execution without blind trust</text>
+<text x="720" y="92" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="16" fill="#94A3B8">Every meaningful action passes through explicit controls and leaves verifiable evidence.</text>
+
+<g font-family="Inter,Arial,sans-serif" filter="url(#shadow)">
+  <rect x="90" y="160" width="236" height="290" rx="27" fill="#FFFFFF" opacity=".08" stroke="#A78BFA" stroke-opacity=".28"/>
+  <text x="122" y="210" font-size="13" font-weight="800" fill="#C4B5FD">01 · INTENT</text>
+  <text x="122" y="254" font-size="21" font-weight="800" fill="#FFFFFF">Understand</text>
+  <text x="122" y="292" font-size="15" fill="#CBD5E1">Capture the goal,</text>
+  <text x="122" y="319" font-size="15" fill="#CBD5E1">context and limits.</text>
+
+  <rect x="346" y="160" width="236" height="290" rx="27" fill="#FFFFFF" opacity=".08" stroke="#818CF8" stroke-opacity=".28"/>
+  <text x="378" y="210" font-size="13" font-weight="800" fill="#A5B4FC">02 · PLAN</text>
+  <text x="378" y="254" font-size="21" font-weight="800" fill="#FFFFFF">Orchestrate</text>
+  <text x="378" y="292" font-size="15" fill="#CBD5E1">Select agents, tools,</text>
+  <text x="378" y="319" font-size="15" fill="#CBD5E1">models and recovery.</text>
+
+  <rect x="602" y="160" width="236" height="290" rx="27" fill="#FFFFFF" opacity=".08" stroke="#60A5FA" stroke-opacity=".28"/>
+  <text x="634" y="210" font-size="13" font-weight="800" fill="#93C5FD">03 · PERMISSION</text>
+  <text x="634" y="254" font-size="21" font-weight="800" fill="#FFFFFF">Authorize</text>
+  <text x="634" y="292" font-size="15" fill="#CBD5E1">Expose sensitive actions</text>
+  <text x="634" y="319" font-size="15" fill="#CBD5E1">before execution.</text>
+
+  <rect x="858" y="160" width="236" height="290" rx="27" fill="#FFFFFF" opacity=".08" stroke="#22D3EE" stroke-opacity=".28"/>
+  <text x="890" y="210" font-size="13" font-weight="800" fill="#67E8F9">04 · EXECUTION</text>
+  <text x="890" y="254" font-size="21" font-weight="800" fill="#FFFFFF">Perform</text>
+  <text x="890" y="292" font-size="15" fill="#CBD5E1">Run scoped actions</text>
+  <text x="890" y="319" font-size="15" fill="#CBD5E1">through trusted agents.</text>
+
+  <rect x="1114" y="160" width="236" height="290" rx="27" fill="#FFFFFF" opacity=".08" stroke="#34D399" stroke-opacity=".28"/>
+  <text x="1146" y="210" font-size="13" font-weight="800" fill="#6EE7B7">05 · VERIFICATION</text>
+  <text x="1146" y="254" font-size="21" font-weight="800" fill="#FFFFFF">Prove</text>
+  <text x="1146" y="292" font-size="15" fill="#CBD5E1">Validate the outcome</text>
+  <text x="1146" y="319" font-size="15" fill="#CBD5E1">with evidence.</text>
+</g>
+<path d="M326 305H346M582 305H602M838 305H858M1094 305H1114" stroke="url(#brand)" stroke-width="4" stroke-linecap="round"/>
+<circle r="7" fill="#FFFFFF" filter="url(#glow)">
+  <animateMotion dur="5.5s" repeatCount="indefinite" path="M310 305H1130"/>
+</circle>
+
+</svg>

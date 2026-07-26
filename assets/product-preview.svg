@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="600" viewBox="0 0 1400 600">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#F8FAFC"/>
+    <stop offset="0.52" stop-color="#F5F3FF"/>
+    <stop offset="1" stop-color="#ECFEFF"/>
+  </linearGradient>
+  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#7C3AED"/>
+    <stop offset="0.5" stop-color="#3B82F6"/>
+    <stop offset="1" stop-color="#06B6D4"/>
+  </linearGradient>
+  <linearGradient id="accentSoft" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#EDE9FE"/>
+    <stop offset="1" stop-color="#CFFAFE"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#64748B" flood-opacity=".18"/>
+  </filter>
+  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="7" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<rect width="1400" height="600" rx="36" fill="url(#bg)"/>
+
+<circle cx="130" cy="90" r="150" fill="#C4B5FD" opacity=".23"/>
+<circle cx="1280" cy="350" r="190" fill="#67E8F9" opacity=".20"/>
+<text x="700" y="48" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="25" font-weight="800" fill="#111827">Product Preview</text>
+
+<g filter="url(#shadow)">
+  <rect x="120" y="85" width="1160" height="455" rx="34" fill="#FFFFFF"/>
+  <rect x="120" y="85" width="1160" height="54" rx="34" fill="#F8FAFC"/>
+  <circle cx="160" cy="112" r="7" fill="#F87171"/>
+  <circle cx="184" cy="112" r="7" fill="#FBBF24"/>
+  <circle cx="208" cy="112" r="7" fill="#34D399"/>
+
+  <rect x="145" y="165" width="220" height="350" rx="24" fill="#F8FAFC"/>
+  <rect x="390" y="165" width="565" height="350" rx="24" fill="#FFFFFF" stroke="#E2E8F0"/>
+  <rect x="980" y="165" width="275" height="350" rx="24" fill="#F8FAFC"/>
+</g>
+
+<g font-family="Inter,Arial,sans-serif">
+  <text x="175" y="205" font-size="18" font-weight="800" fill="#111827">cmdOS</text>
+  <text x="175" y="248" font-size="13" font-weight="700" fill="#64748B">WORKSPACE</text>
+  <rect x="165" y="270" width="180" height="42" rx="13" fill="#EDE9FE"/>
+  <text x="190" y="297" font-size="15" font-weight="700" fill="#6D28D9">Execution</text>
+  <text x="190" y="345" font-size="15" fill="#475569">Connect</text>
+  <text x="190" y="389" font-size="15" fill="#475569">Agents</text>
+  <text x="190" y="433" font-size="15" fill="#475569">Workflows</text>
+
+  <text x="425" y="205" font-size="14" font-weight="700" fill="#64748B">NEW EXECUTION</text>
+  <text x="425" y="245" font-size="26" font-weight="800" fill="#111827">What should cmdOS do?</text>
+
+  <rect x="425" y="275" width="495" height="84" rx="18" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <text x="450" y="308" font-size="15" fill="#334155">Prepare the launch report, email the team,</text>
+  <text x="450" y="334" font-size="15" fill="#334155">and schedule a review meeting tomorrow.</text>
+
+  <rect x="425" y="385" width="495" height="96" rx="18" fill="url(#accentSoft)"/>
+  <text x="450" y="418" font-size="14" font-weight="800" fill="#6D28D9">PLAN READY</text>
+  <text x="450" y="446" font-size="15" fill="#334155">3 agents · 5 actions · 1 approval required</text>
+
+  <text x="1010" y="205" font-size="14" font-weight="800" fill="#64748B">LIVE AGENTS</text>
+  <circle cx="1024" cy="250" r="12" fill="#7C3AED"/>
+  <text x="1050" y="255" font-size="15" font-weight="700" fill="#111827">Planner</text>
+  <circle cx="1024" cy="300" r="12" fill="#3B82F6"/>
+  <text x="1050" y="305" font-size="15" font-weight="700" fill="#111827">Mail Agent</text>
+  <circle cx="1024" cy="350" r="12" fill="#06B6D4"/>
+  <text x="1050" y="355" font-size="15" font-weight="700" fill="#111827">Calendar Agent</text>
+
+  <rect x="1010" y="410" width="205" height="58" rx="16" fill="url(#accent)"/>
+  <text x="1112" y="446" text-anchor="middle" font-size="16" font-weight="800" fill="#FFFFFF">Approve & Run</text>
+</g>
+
+<circle r="7" fill="#7C3AED" filter="url(#glow)">
+  <animateMotion dur="4.5s" repeatCount="indefinite" path="M430 495 C650 545, 850 545, 1110 495"/>
+</circle>
+
+</svg>

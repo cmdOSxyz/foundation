@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="670" viewBox="0 0 1440 670">
+<defs>
+  <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#070A12"/>
+    <stop offset=".52" stop-color="#11102A"/>
+    <stop offset="1" stop-color="#071C28"/>
+  </linearGradient>
+  <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#A78BFA"/>
+    <stop offset=".48" stop-color="#60A5FA"/>
+    <stop offset="1" stop-color="#22D3EE"/>
+  </linearGradient>
+  <linearGradient id="soft" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#8B5CF6" stop-opacity=".22"/>
+    <stop offset="1" stop-color="#22D3EE" stop-opacity=".08"/>
+  </linearGradient>
+  <radialGradient id="orb">
+    <stop offset="0" stop-color="#A78BFA" stop-opacity=".38"/>
+    <stop offset="1" stop-color="#A78BFA" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%">
+    <feDropShadow dx="0" dy="22" stdDeviation="26" flood-color="#020617" flood-opacity=".5"/>
+  </filter>
+  <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+    <feGaussianBlur stdDeviation="8" result="blur"/>
+    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<rect width="1440" height="670" rx="38" fill="url(#canvas)"/>
+
+<text x="720" y="58" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="28" font-weight="850" fill="#FFFFFF">One execution layer. Every environment.</text>
+<text x="720" y="92" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="16" fill="#94A3B8">Coordinate models, agents, applications and trusted devices through a single permissioned runtime.</text>
+
+<g filter="url(#shadow)">
+  <circle cx="720" cy="350" r="112" fill="url(#brand)" opacity=".95"/>
+  <circle cx="720" cy="350" r="83" fill="#0B1020"/>
+</g>
+<text x="720" y="340" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="30" font-weight="900" fill="#FFFFFF">cmdOS</text>
+<text x="720" y="373" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="13" font-weight="800" fill="#93C5FD">EXECUTION CORE</text>
+
+<g font-family="Inter,Arial,sans-serif" filter="url(#shadow)">
+  <rect x="120" y="170" width="245" height="105" rx="23" fill="#FFFFFF" opacity=".08" stroke="#A78BFA" stroke-opacity=".35"/>
+  <text x="148" y="208" font-size="13" font-weight="800" fill="#C4B5FD">AI MODELS</text>
+  <text x="148" y="240" font-size="17" font-weight="750" fill="#FFFFFF">Cloud + local routing</text>
+
+  <rect x="1075" y="170" width="245" height="105" rx="23" fill="#FFFFFF" opacity=".08" stroke="#60A5FA" stroke-opacity=".35"/>
+  <text x="1103" y="208" font-size="13" font-weight="800" fill="#93C5FD">APPLICATIONS</text>
+  <text x="1103" y="240" font-size="17" font-weight="750" fill="#FFFFFF">Apps, APIs and files</text>
+
+  <rect x="120" y="465" width="245" height="105" rx="23" fill="#FFFFFF" opacity=".08" stroke="#22D3EE" stroke-opacity=".35"/>
+  <text x="148" y="503" font-size="13" font-weight="800" fill="#67E8F9">AGENTS</text>
+  <text x="148" y="535" font-size="17" font-weight="750" fill="#FFFFFF">Specialized capabilities</text>
+
+  <rect x="1075" y="465" width="245" height="105" rx="23" fill="#FFFFFF" opacity=".08" stroke="#34D399" stroke-opacity=".35"/>
+  <text x="1103" y="503" font-size="13" font-weight="800" fill="#6EE7B7">DEVICES</text>
+  <text x="1103" y="535" font-size="17" font-weight="750" fill="#FFFFFF">Desktop, mobile, edge</text>
+</g>
+
+<g fill="none" stroke="url(#brand)" stroke-width="3" opacity=".62">
+  <path d="M365 223 C470 223, 520 285, 620 324"/>
+  <path d="M1075 223 C970 223, 920 285, 820 324"/>
+  <path d="M365 517 C470 517, 520 425, 620 380"/>
+  <path d="M1075 517 C970 517, 920 425, 820 380"/>
+</g>
+
+<circle r="7" fill="#A78BFA" filter="url(#glow)">
+  <animateMotion dur="6s" repeatCount="indefinite" path="M365 223 C470 223,520 285,620 324 C680 345,760 345,820 324 C920 285,970 223,1075 223"/>
+</circle>
+<circle r="7" fill="#22D3EE" filter="url(#glow)">
+  <animateMotion dur="6s" begin="-3s" repeatCount="indefinite" path="M365 517 C470 517,520 425,620 380 C680 355,760 355,820 380 C920 425,970 517,1075 517"/>
+</circle>
+
+</svg>

@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="630" viewBox="0 0 1400 630">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#F8FAFC"/>
+    <stop offset="0.52" stop-color="#F5F3FF"/>
+    <stop offset="1" stop-color="#ECFEFF"/>
+  </linearGradient>
+  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#7C3AED"/>
+    <stop offset="0.5" stop-color="#3B82F6"/>
+    <stop offset="1" stop-color="#06B6D4"/>
+  </linearGradient>
+  <linearGradient id="accent2" x1="0" y1="1" x2="1" y2="0">
+    <stop offset="0" stop-color="#A78BFA"/>
+    <stop offset="1" stop-color="#22D3EE"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#64748B" flood-opacity=".18"/>
+  </filter>
+  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="7" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<rect width="1400" height="630" rx="36" fill="url(#bg)"/>
+
+<text x="700" y="46" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="25" font-weight="800" fill="#111827">Agent Operations Dashboard</text>
+<g filter="url(#shadow)">
+  <rect x="110" y="90" width="1180" height="470" rx="34" fill="#FFFFFF"/>
+</g>
+<g font-family="Inter,Arial,sans-serif">
+  <text x="150" y="145" font-size="22" font-weight="800" fill="#111827">Agent fleet</text>
+  <text x="150" y="176" font-size="14" fill="#64748B">Monitor capability, health, permissions, and current tasks.</text>
+
+  <rect x="150" y="215" width="250" height="250" rx="24" fill="#F8FAFC"/>
+  <rect x="435" y="215" width="250" height="250" rx="24" fill="#F8FAFC"/>
+  <rect x="720" y="215" width="250" height="250" rx="24" fill="#F8FAFC"/>
+  <rect x="1005" y="215" width="235" height="250" rx="24" fill="#F8FAFC"/>
+
+  <circle cx="195" cy="260" r="18" fill="#7C3AED"/>
+  <text x="230" y="266" font-size="17" font-weight="800" fill="#111827">Planner</text>
+  <text x="180" y="315" font-size="13" fill="#64748B">Status</text><text x="330" y="315" text-anchor="end" font-size="13" font-weight="800" fill="#16A34A">Active</text>
+  <text x="180" y="350" font-size="13" fill="#64748B">Tasks</text><text x="330" y="350" text-anchor="end" font-size="13" font-weight="800" fill="#111827">4</text>
+  <text x="180" y="385" font-size="13" fill="#64748B">Permission</text><text x="330" y="385" text-anchor="end" font-size="13" font-weight="800" fill="#111827">Scoped</text>
+
+  <circle cx="480" cy="260" r="18" fill="#3B82F6"/>
+  <text x="515" y="266" font-size="17" font-weight="800" fill="#111827">Browser</text>
+  <text x="465" y="315" font-size="13" fill="#64748B">Status</text><text x="615" y="315" text-anchor="end" font-size="13" font-weight="800" fill="#16A34A">Active</text>
+  <text x="465" y="350" font-size="13" fill="#64748B">Tasks</text><text x="615" y="350" text-anchor="end" font-size="13" font-weight="800" fill="#111827">2</text>
+  <text x="465" y="385" font-size="13" fill="#64748B">Permission</text><text x="615" y="385" text-anchor="end" font-size="13" font-weight="800" fill="#111827">Web only</text>
+
+  <circle cx="765" cy="260" r="18" fill="#06B6D4"/>
+  <text x="800" y="266" font-size="17" font-weight="800" fill="#111827">Terminal</text>
+  <text x="750" y="315" font-size="13" fill="#64748B">Status</text><text x="900" y="315" text-anchor="end" font-size="13" font-weight="800" fill="#D97706">Waiting</text>
+  <text x="750" y="350" font-size="13" fill="#64748B">Tasks</text><text x="900" y="350" text-anchor="end" font-size="13" font-weight="800" fill="#111827">1</text>
+  <text x="750" y="385" font-size="13" fill="#64748B">Permission</text><text x="900" y="385" text-anchor="end" font-size="13" font-weight="800" fill="#111827">Approval</text>
+
+  <circle cx="1050" cy="260" r="18" fill="#10B981"/>
+  <text x="1085" y="266" font-size="17" font-weight="800" fill="#111827">Verifier</text>
+  <text x="1035" y="315" font-size="13" fill="#64748B">Status</text><text x="1180" y="315" text-anchor="end" font-size="13" font-weight="800" fill="#16A34A">Active</text>
+  <text x="1035" y="350" font-size="13" fill="#64748B">Checks</text><text x="1180" y="350" text-anchor="end" font-size="13" font-weight="800" fill="#111827">6</text>
+  <text x="1035" y="385" font-size="13" fill="#64748B">Trust</text><text x="1180" y="385" text-anchor="end" font-size="13" font-weight="800" fill="#111827">High</text>
+</g>
+<circle cy="500" r="7" fill="#7C3AED" filter="url(#glow)">
+  <animate attributeName="cx" values="170;1230;170" dur="6s" repeatCount="indefinite"/>
+</circle>
+
+</svg>

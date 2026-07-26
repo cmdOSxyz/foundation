@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="500" viewBox="0 0 1400 500">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#F8FAFC"/>
+    <stop offset="0.52" stop-color="#F5F3FF"/>
+    <stop offset="1" stop-color="#ECFEFF"/>
+  </linearGradient>
+  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#7C3AED"/>
+    <stop offset="0.5" stop-color="#3B82F6"/>
+    <stop offset="1" stop-color="#06B6D4"/>
+  </linearGradient>
+  <linearGradient id="accentSoft" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#EDE9FE"/>
+    <stop offset="1" stop-color="#CFFAFE"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#64748B" flood-opacity=".18"/>
+  </filter>
+  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="7" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<rect width="1400" height="500" rx="36" fill="url(#bg)"/>
+
+<text x="700" y="48" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="25" font-weight="800" fill="#111827">Roadmap</text>
+<path d="M150 255 C350 110, 520 400, 700 255 C880 110, 1050 400, 1250 255" fill="none" stroke="#CBD5E1" stroke-width="5" stroke-linecap="round"/>
+
+<g filter="url(#shadow)" font-family="Inter,Arial,sans-serif">
+  <circle cx="170" cy="235" r="55" fill="#FFFFFF"/>
+  <circle cx="390" cy="165" r="55" fill="#FFFFFF"/>
+  <circle cx="610" cy="325" r="55" fill="#FFFFFF"/>
+  <circle cx="830" cy="165" r="55" fill="#FFFFFF"/>
+  <circle cx="1050" cy="325" r="55" fill="#FFFFFF"/>
+  <circle cx="1240" cy="235" r="55" fill="url(#accent)"/>
+</g>
+
+<g font-family="Inter,Arial,sans-serif" text-anchor="middle">
+  <text x="170" y="232" font-size="17" font-weight="800" fill="#111827">01</text>
+  <text x="170" y="254" font-size="13" fill="#64748B">Foundation</text>
+
+  <text x="390" y="162" font-size="17" font-weight="800" fill="#111827">02</text>
+  <text x="390" y="184" font-size="13" fill="#64748B">Local Runtime</text>
+
+  <text x="610" y="322" font-size="17" font-weight="800" fill="#111827">03</text>
+  <text x="610" y="344" font-size="13" fill="#64748B">Connect</text>
+
+  <text x="830" y="162" font-size="17" font-weight="800" fill="#111827">04</text>
+  <text x="830" y="184" font-size="13" fill="#64748B">Secure Mesh</text>
+
+  <text x="1050" y="322" font-size="17" font-weight="800" fill="#111827">05</text>
+  <text x="1050" y="344" font-size="13" fill="#64748B">Distributed</text>
+
+  <text x="1240" y="232" font-size="17" font-weight="800" fill="#FFFFFF">06</text>
+  <text x="1240" y="254" font-size="13" fill="#FFFFFF">Ecosystem</text>
+</g>
+
+<circle r="8" fill="#7C3AED" filter="url(#glow)">
+  <animateMotion dur="6s" repeatCount="indefinite" path="M150 255 C350 110, 520 400, 700 255 C880 110, 1050 400, 1250 255"/>
+</circle>
+
+</svg>

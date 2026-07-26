@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#F8FAFC"/>
+    <stop offset="0.52" stop-color="#F5F3FF"/>
+    <stop offset="1" stop-color="#ECFEFF"/>
+  </linearGradient>
+  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#7C3AED"/>
+    <stop offset="0.5" stop-color="#3B82F6"/>
+    <stop offset="1" stop-color="#06B6D4"/>
+  </linearGradient>
+  <linearGradient id="accent2" x1="0" y1="1" x2="1" y2="0">
+    <stop offset="0" stop-color="#A78BFA"/>
+    <stop offset="1" stop-color="#22D3EE"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#64748B" flood-opacity=".18"/>
+  </filter>
+  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="7" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<rect width="1400" height="760" rx="36" fill="url(#bg)"/>
+
+<text x="700" y="46" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="25" font-weight="800" fill="#111827">Mobile Agent Companion</text>
+<circle cx="220" cy="160" r="180" fill="#C4B5FD" opacity=".18"/>
+<circle cx="1160" cy="420" r="220" fill="#67E8F9" opacity=".18"/>
+<g filter="url(#shadow)">
+  <rect x="510" y="80" width="380" height="610" rx="56" fill="#111827"/>
+  <rect x="528" y="99" width="344" height="572" rx="42" fill="#FFFFFF"/>
+</g>
+<rect x="635" y="111" width="130" height="22" rx="11" fill="#111827"/>
+<g font-family="Inter,Arial,sans-serif">
+  <text x="565" y="180" font-size="20" font-weight="800" fill="#111827">Good morning</text>
+  <text x="565" y="210" font-size="14" fill="#64748B">3 agents are active</text>
+
+  <rect x="558" y="245" width="284" height="120" rx="24" fill="url(#accent)"/>
+  <text x="585" y="282" font-size="13" font-weight="800" fill="#EDE9FE">RUNNING</text>
+  <text x="585" y="315" font-size="18" font-weight="800" fill="#FFFFFF">Release workflow</text>
+  <text x="585" y="340" font-size="13" fill="#E0F2FE">5 of 7 actions complete</text>
+
+  <text x="558" y="415" font-size="15" font-weight="800" fill="#111827">Needs approval</text>
+  <rect x="558" y="438" width="284" height="112" rx="22" fill="#F8FAFC"/>
+  <text x="582" y="472" font-size="14" font-weight="700" fill="#111827">Deploy production build?</text>
+  <text x="582" y="499" font-size="13" fill="#64748B">Target: cmdos.xyz</text>
+  <rect x="582" y="518" width="110" height="36" rx="12" fill="#EDE9FE"/>
+  <text x="637" y="541" text-anchor="middle" font-size="13" font-weight="800" fill="#6D28D9">Review</text>
+  <rect x="708" y="518" width="110" height="36" rx="12" fill="url(#accent)"/>
+  <text x="763" y="541" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">Approve</text>
+
+  <text x="558" y="600" font-size="14" font-weight="800" fill="#111827">Home</text>
+  <text x="652" y="600" font-size="14" fill="#64748B">Connect</text>
+  <text x="760" y="600" font-size="14" fill="#64748B">Agents</text>
+</g>
+<circle r="7" fill="#06B6D4" filter="url(#glow)">
+  <animateMotion dur="4s" repeatCount="indefinite" path="M965 180 C1120 250, 1120 480, 965 560"/>
+</circle>
+
+</svg>

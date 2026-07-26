@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="650" viewBox="0 0 1400 650">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#F8FAFC"/>
+    <stop offset="0.52" stop-color="#F5F3FF"/>
+    <stop offset="1" stop-color="#ECFEFF"/>
+  </linearGradient>
+  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#7C3AED"/>
+    <stop offset="0.5" stop-color="#3B82F6"/>
+    <stop offset="1" stop-color="#06B6D4"/>
+  </linearGradient>
+  <linearGradient id="accent2" x1="0" y1="1" x2="1" y2="0">
+    <stop offset="0" stop-color="#A78BFA"/>
+    <stop offset="1" stop-color="#22D3EE"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#64748B" flood-opacity=".18"/>
+  </filter>
+  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="7" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<rect width="1400" height="650" rx="36" fill="url(#bg)"/>
+
+<text x="700" y="46" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="25" font-weight="800" fill="#111827">Workflow Builder</text>
+<g filter="url(#shadow)">
+  <rect x="100" y="85" width="1200" height="500" rx="34" fill="#FFFFFF"/>
+</g>
+<rect x="100" y="85" width="220" height="500" rx="34" fill="#F8FAFC"/>
+<g font-family="Inter,Arial,sans-serif">
+  <text x="135" y="135" font-size="18" font-weight="800" fill="#111827">Blocks</text>
+  <rect x="130" y="175" width="160" height="48" rx="14" fill="#EDE9FE"/>
+  <text x="210" y="205" text-anchor="middle" font-size="14" font-weight="800" fill="#6D28D9">Intent</text>
+  <rect x="130" y="240" width="160" height="48" rx="14" fill="#DBEAFE"/>
+  <text x="210" y="270" text-anchor="middle" font-size="14" font-weight="800" fill="#2563EB">Agent</text>
+  <rect x="130" y="305" width="160" height="48" rx="14" fill="#CFFAFE"/>
+  <text x="210" y="335" text-anchor="middle" font-size="14" font-weight="800" fill="#0891B2">Permission</text>
+  <rect x="130" y="370" width="160" height="48" rx="14" fill="#DCFCE7"/>
+  <text x="210" y="400" text-anchor="middle" font-size="14" font-weight="800" fill="#15803D">Verify</text>
+</g>
+
+<g filter="url(#shadow)" font-family="Inter,Arial,sans-serif">
+  <rect x="390" y="150" width="200" height="92" rx="24" fill="#FFFFFF"/>
+  <rect x="650" y="150" width="200" height="92" rx="24" fill="#FFFFFF"/>
+  <rect x="910" y="150" width="200" height="92" rx="24" fill="#FFFFFF"/>
+  <rect x="520" y="350" width="200" height="92" rx="24" fill="#FFFFFF"/>
+  <rect x="780" y="350" width="200" height="92" rx="24" fill="url(#accent)"/>
+</g>
+<g font-family="Inter,Arial,sans-serif" text-anchor="middle">
+  <text x="490" y="190" font-size="15" font-weight="800" fill="#7C3AED">INTENT</text>
+  <text x="490" y="218" font-size="14" fill="#334155">Launch report</text>
+  <text x="750" y="190" font-size="15" font-weight="800" fill="#2563EB">RESEARCH AGENT</text>
+  <text x="750" y="218" font-size="14" fill="#334155">Collect updates</text>
+  <text x="1010" y="190" font-size="15" font-weight="800" fill="#0891B2">PERMISSION</text>
+  <text x="1010" y="218" font-size="14" fill="#334155">Share externally</text>
+  <text x="620" y="390" font-size="15" font-weight="800" fill="#0F766E">VERIFY</text>
+  <text x="620" y="418" font-size="14" fill="#334155">Validate report</text>
+  <text x="880" y="390" font-size="15" font-weight="800" fill="#FFFFFF">RESULT</text>
+  <text x="880" y="418" font-size="14" fill="#FFFFFF">Deliver outcome</text>
+</g>
+<g stroke="#CBD5E1" stroke-width="4" fill="none">
+  <path d="M590 196H650"/>
+  <path d="M850 196H910"/>
+  <path d="M1010 242 C1010 300, 880 300, 880 350"/>
+  <path d="M780 396H720"/>
+</g>
+<circle r="8" fill="#7C3AED" filter="url(#glow)">
+  <animateMotion dur="5.5s" repeatCount="indefinite" path="M590 196H650H850H910 C1010 196,1010 300,880 350H780"/>
+</circle>
+
+</svg>

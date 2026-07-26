@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="630" viewBox="0 0 1440 630">
+<defs>
+  <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#070A12"/>
+    <stop offset=".52" stop-color="#11102A"/>
+    <stop offset="1" stop-color="#071C28"/>
+  </linearGradient>
+  <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#A78BFA"/>
+    <stop offset=".48" stop-color="#60A5FA"/>
+    <stop offset="1" stop-color="#22D3EE"/>
+  </linearGradient>
+  <linearGradient id="soft" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#8B5CF6" stop-opacity=".22"/>
+    <stop offset="1" stop-color="#22D3EE" stop-opacity=".08"/>
+  </linearGradient>
+  <radialGradient id="orb">
+    <stop offset="0" stop-color="#A78BFA" stop-opacity=".38"/>
+    <stop offset="1" stop-color="#A78BFA" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%">
+    <feDropShadow dx="0" dy="22" stdDeviation="26" flood-color="#020617" flood-opacity=".5"/>
+  </filter>
+  <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+    <feGaussianBlur stdDeviation="8" result="blur"/>
+    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<rect width="1440" height="630" rx="38" fill="url(#canvas)"/>
+
+<text x="720" y="58" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="28" font-weight="850" fill="#FFFFFF">A platform developers can extend</text>
+<text x="720" y="92" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="16" fill="#94A3B8">Build agents, tools and reusable workflows around explicit contracts.</text>
+
+<g filter="url(#shadow)">
+  <rect x="95" y="140" width="760" height="410" rx="30" fill="#070B16" stroke="#FFFFFF" stroke-opacity=".12"/>
+  <rect x="95" y="140" width="760" height="54" rx="30" fill="#FFFFFF" opacity=".05"/>
+  <circle cx="130" cy="167" r="7" fill="#F87171"/><circle cx="154" cy="167" r="7" fill="#FBBF24"/><circle cx="178" cy="167" r="7" fill="#34D399"/>
+</g>
+<g font-family="ui-monospace,SFMono-Regular,Consolas,monospace" font-size="15">
+  <text x="130" y="235" fill="#C4B5FD">agent</text><text x="180" y="235" fill="#F8FAFC">:</text>
+  <text x="160" y="268" fill="#93C5FD">name</text><text x="228" y="268" fill="#F8FAFC">: release-verifier</text>
+  <text x="160" y="301" fill="#93C5FD">capabilities</text><text x="286" y="301" fill="#F8FAFC">:</text>
+  <text x="190" y="334" fill="#67E8F9">- inspect_build</text>
+  <text x="190" y="367" fill="#67E8F9">- run_tests</text>
+  <text x="190" y="400" fill="#67E8F9">- verify_release</text>
+  <text x="160" y="433" fill="#93C5FD">permissions</text><text x="275" y="433" fill="#F8FAFC">:</text>
+  <text x="190" y="466" fill="#6EE7B7">- repository:read</text>
+  <text x="190" y="499" fill="#FBBF24">- deployment:approve</text>
+</g>
+
+<g font-family="Inter,Arial,sans-serif" filter="url(#shadow)">
+  <rect x="900" y="140" width="445" height="116" rx="24" fill="#FFFFFF" opacity=".08" stroke="#A78BFA" stroke-opacity=".3"/>
+  <text x="932" y="181" font-size="13" font-weight="800" fill="#C4B5FD">AGENT SDK</text>
+  <text x="932" y="218" font-size="17" font-weight="750" fill="#FFFFFF">Planning, execution and recovery</text>
+
+  <rect x="900" y="281" width="445" height="116" rx="24" fill="#FFFFFF" opacity=".08" stroke="#60A5FA" stroke-opacity=".3"/>
+  <text x="932" y="322" font-size="13" font-weight="800" fill="#93C5FD">TOOL SDK</text>
+  <text x="932" y="359" font-size="17" font-weight="750" fill="#FFFFFF">Permissioned access to apps and APIs</text>
+
+  <rect x="900" y="422" width="445" height="116" rx="24" fill="#FFFFFF" opacity=".08" stroke="#22D3EE" stroke-opacity=".3"/>
+  <text x="932" y="463" font-size="13" font-weight="800" fill="#67E8F9">WORKFLOW SDK</text>
+  <text x="932" y="500" font-size="17" font-weight="750" fill="#FFFFFF">Reusable, inspectable execution systems</text>
+</g>
+
+</svg>

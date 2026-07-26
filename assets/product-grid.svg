@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="410" viewBox="0 0 1400 410">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#F8FAFC"/>
+    <stop offset="1" stop-color="#EEF2FF"/>
+  </linearGradient>
+  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#7C3AED"/>
+    <stop offset="0.5" stop-color="#3B82F6"/>
+    <stop offset="1" stop-color="#06B6D4"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#64748B" flood-opacity=".20"/>
+  </filter>
+  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="8" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<rect width="1400" height="410" rx="36" fill="url(#bg)"/>
+
+<g font-family="Inter,Arial,sans-serif">
+  <g filter="url(#shadow)">
+    <rect x="70" y="80" width="290" height="250" rx="28" fill="#FFFFFF"/>
+    <rect x="390" y="80" width="290" height="250" rx="28" fill="#FFFFFF"/>
+    <rect x="720" y="80" width="290" height="250" rx="28" fill="#FFFFFF"/>
+    <rect x="1040" y="80" width="290" height="250" rx="28" fill="#FFFFFF"/>
+  </g>
+  <g font-weight="700" font-size="21" fill="#111827">
+    <text x="105" y="145">AI Execution</text>
+    <text x="425" y="145">cmdOS Connect</text>
+    <text x="755" y="145">Agent Runtime</text>
+    <text x="1075" y="145">Secure Mesh</text>
+  </g>
+  <g font-size="15" fill="#64748B">
+    <text x="105" y="182">Intent to verified action</text>
+    <text x="425" y="182">People and agents together</text>
+    <text x="755" y="182">Specialized agent orchestration</text>
+    <text x="1075" y="182">Trusted devices and networks</text>
+  </g>
+  <g>
+    <circle cx="125" cy="245" r="34" fill="#EDE9FE"/><circle cx="445" cy="245" r="34" fill="#DBEAFE"/>
+    <circle cx="775" cy="245" r="34" fill="#CFFAFE"/><circle cx="1095" cy="245" r="34" fill="#E0E7FF"/>
+    <path d="M112 245h26M125 232v26" stroke="#7C3AED" stroke-width="5" stroke-linecap="round"/>
+    <path d="M432 237h26v18h-26zM437 255l-5 7" fill="none" stroke="#2563EB" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M762 234h26v22h-26zM770 226h10" fill="none" stroke="#0891B2" stroke-width="4" stroke-linecap="round"/>
+    <path d="M1080 249c12-24 30-24 42 0M1085 239c8-13 24-13 32 0" fill="none" stroke="#4F46E5" stroke-width="4" stroke-linecap="round"/>
+  </g>
+</g>
+
+</svg>

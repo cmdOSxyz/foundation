@@ -1,23 +1,19 @@
 <div align="center">
 
-<img src="./assets/hero.svg" width="100%" alt="cmdOS — The AI Execution Operating System" />
+<img src="./assets/hero-studio.svg" width="100%" alt="cmdOS — The AI Execution Operating System" />
 
-<br/>
+<br />
 
-# cmdOS
+[![Website](https://img.shields.io/badge/Website-cmdos.xyz-0B1020?style=for-the-badge)](https://cmdos.xyz/)
+[![X](https://img.shields.io/badge/X-@cmdOS__xyz-0B1020?style=for-the-badge)](https://x.com/cmdOS_xyz)
+[![Telegram](https://img.shields.io/badge/Telegram-cmdOS__xyz-0B1020?style=for-the-badge)](https://t.me/cmdOS_xyz)
+[![Email](https://img.shields.io/badge/Email-hello@cmdos.xyz-0B1020?style=for-the-badge)](mailto:hello@cmdos.xyz)
 
-### The AI Execution Operating System
+**Intent → Understanding → Planning → Permission → Execution → Verification**
 
-**A secure operating layer where people and AI agents communicate, collaborate, and execute real-world work across applications, devices, local networks, and cloud infrastructure.**
+cmdOS is an AI-native execution layer that turns natural-language intent into secure, observable and verifiable action across applications, devices and digital environments.
 
-[![Status](https://img.shields.io/badge/status-active%20development-22c55e?style=for-the-badge&labelColor=07110b)](#project-status)
-[![Architecture](https://img.shields.io/badge/architecture-local--first-22c55e?style=for-the-badge&labelColor=07110b)](#local-first-by-design)
-[![Communication](https://img.shields.io/badge/communication-human%20%2B%20agent-22c55e?style=for-the-badge&labelColor=07110b)](#cmdos-connect)
-[![Network](https://img.shields.io/badge/network-mesh%20%2B%20p2p-22c55e?style=for-the-badge&labelColor=07110b)](#secure-agent-mesh)
-
-<br/>
-
-[Vision](#vision) · [Features](#core-capabilities) · [cmdOS Connect](#cmdos-connect) · [Architecture](#architecture) · [Roadmap](#roadmap) · [Security](#security-model)
+[Vision](#vision) · [Platform](#platform) · [Architecture](#architecture) · [Product](#product-experience) · [Roadmap](#roadmap) · [Community](#community)
 
 </div>
 
@@ -25,1002 +21,693 @@
 
 ## Vision
 
-cmdOS is being designed as an AI-native execution operating system.
+Most AI products stop at the answer.
 
-Instead of stopping at generated text, cmdOS is intended to help users move from **intent** to **verified action**:
+cmdOS is designed for the next step: **execution**.
 
-```text
-Intent → Understanding → Planning → Permission → Execution → Verification → Result
-```
-
-Its broader product vision combines three core layers:
-
-```text
-1. AI Execution
-2. Human Communication
-3. Secure Agent Mesh
-```
-
-Together, these layers allow people and AI agents to work inside one secure environment.
-
----
-
-## Why cmdOS?
-
-Most AI products end at conversation.
-
-cmdOS is designed to continue beyond conversation by connecting:
-
-```text
-People ↔ AI Agents ↔ Applications ↔ Devices ↔ Networks ↔ Results
-```
-
-The goal is to make AI useful not only for answering questions, but also for:
-
-- executing approved tasks;
-- coordinating multiple agents;
-- operating tools and applications;
-- collaborating with other users;
-- transferring files and workflows securely;
-- distributing work across trusted devices;
-- verifying whether the requested outcome was actually achieved.
-
-> cmdOS is not positioned as another chatbot.  
-> It is positioned as the secure execution and communication layer for people, agents, applications, and devices.
-
----
-
-## Product Pillars
-
-<div align="center">
-
-| AI Execution | Human Communication | Secure Agent Mesh |
-|---|---|---|
-| Turn natural language into real actions | Chat privately with people and teams | Connect trusted users, agents, and devices |
-| Plan, authorize, execute, and verify | Use AI directly inside conversations | Support local, peer-to-peer, and relay-based communication |
-| Route tasks to the right model or agent | Share files, prompts, workflows, and results | Enable distributed execution across trusted nodes |
-
-</div>
-
----
-
-## Execution Pipeline
-
-<div align="center">
-  <img src="./assets/execution-flow.svg" width="100%" alt="Animated cmdOS execution pipeline" />
-</div>
-
-### 1. Intent
-
-The user describes the desired outcome in natural language.
-
-```text
-"Prepare the weekly report, verify the figures,
-send it to the team, and notify me after delivery."
-```
-
-### 2. Understanding
-
-cmdOS identifies:
-
-- the user goal;
-- required context;
-- constraints;
-- sensitive actions;
-- expected result;
-- possible execution risks.
-
-### 3. Planning
-
-The planner creates an execution graph containing:
-
-- steps;
-- tools;
-- agents;
-- dependencies;
-- approval checkpoints;
-- fallback paths;
-- verification rules.
-
-### 4. Permission
-
-Sensitive actions are paused until the user approves them.
-
-Examples:
-
-- sending a message;
-- publishing content;
-- deleting files;
-- executing shell commands;
-- spending money;
-- controlling another device;
-- sharing protected information.
-
-### 5. Execution
-
-Authorized agents operate approved tools and environments.
-
-### 6. Verification
-
-cmdOS checks whether the target state was reached.
-
-### 7. Result
-
-The user receives:
-
-- the final output;
-- supporting evidence;
-- execution status;
-- failures or warnings;
-- an auditable action trace.
-
----
-
-# Core Capabilities
-
-## AI Agent Runtime
-
-The Agent Runtime is intended to coordinate specialized agents across local and remote environments.
-
-### Planned agent types
-
-- Browser Agent
-- Desktop Agent
-- Terminal Agent
-- Mobile Agent
-- File Agent
-- Communication Agent
-- Cloud Agent
-- Research Agent
-- Coding Agent
-- Verification Agent
-- Security Agent
-- Device Agent
-
-### Runtime responsibilities
-
-- task delegation;
-- agent lifecycle management;
-- tool access control;
-- sandboxing;
-- state transitions;
-- retries and recovery;
-- resource limits;
-- approval gates;
-- structured execution logs;
-- result verification.
-
----
-
-## Multi-Agent Orchestration
-
-cmdOS is designed to allow multiple agents to cooperate on one goal.
+A user should be able to describe an outcome without knowing commands, APIs, integrations or workflow syntax. cmdOS interprets that intent, creates a plan, requests permission where required, coordinates specialized agents, executes across tools, and verifies the final result.
 
 ```text
 User Intent
-   ↓
-Planner Agent
-   ├── Research Agent
-   ├── Browser Agent
-   ├── Coding Agent
-   ├── File Agent
-   └── Verification Agent
-   ↓
-Verified Result
+    ↓
+AI Understanding
+    ↓
+Dynamic Planning
+    ↓
+Permission & Policy
+    ↓
+Agent Execution
+    ↓
+Evidence & Verification
+    ↓
+Trusted Result
 ```
 
-Agents may:
+> The goal is not to make every application conversational.  
+> The goal is to make intent executable.
 
-- split complex goals into subtasks;
-- work in parallel;
-- delegate work;
-- exchange structured state;
-- request human approval;
-- recover from failed steps;
-- return evidence with results.
+---
+
+## Platform
+
+<img src="./assets/platform-map.svg" width="100%" alt="cmdOS platform map" />
+
+cmdOS is positioned between the user and the environments where work happens.
+
+| Layer | Responsibility |
+|---|---|
+| **Experience** | Desktop, mobile, web, chat, voice and command interfaces |
+| **Intent** | Understand goals, context, constraints and success criteria |
+| **Orchestration** | Plan tasks, route models, assign agents and recover from failure |
+| **Trust** | Identity, permissions, policies, secrets, isolation and audit |
+| **Runtime** | Execute through browser, terminal, desktop, mobile, cloud and edge agents |
+| **Verification** | Collect evidence, validate outcomes and produce execution receipts |
+
+### Core product surfaces
+
+| Product surface | Purpose |
+|---|---|
+| **Command Workspace** | Describe outcomes and inspect the generated plan |
+| **Execution Timeline** | Follow agents, approvals, retries, tool calls and results |
+| **cmdOS Connect** | Bring people and AI agents into the same operational conversation |
+| **Agent Runtime** | Run specialized capabilities across trusted environments |
+| **Workflow Studio** | Turn successful executions into reusable systems |
+| **Security Center** | Control permissions, devices, secrets and execution policies |
+
+---
+
+## Why cmdOS
+
+### AI that acts
+
+Traditional AI generates text. cmdOS is designed to coordinate real execution.
+
+### Control before autonomy
+
+Sensitive actions are visible, scoped and permissioned before they run.
+
+### Local-first by design
+
+Private tasks should execute locally whenever the required capability is available.
+
+### Observable execution
+
+The user can inspect what is happening, which agent is acting, what data is used and what remains blocked.
+
+### Verification, not assumption
+
+An attempted action is not treated as success. cmdOS collects evidence and validates the result.
+
+### Human and agent collaboration
+
+People and agents can share conversations, decisions, files, workflows and execution context.
+
+---
+
+## Trusted Execution
+
+<img src="./assets/trusted-execution.svg" width="100%" alt="cmdOS trusted execution lifecycle" />
+
+Every meaningful workflow follows the same trust model:
+
+1. **Understand** — capture the goal, context, constraints and definition of success.
+2. **Orchestrate** — select the appropriate models, agents, tools and fallback paths.
+3. **Authorize** — expose high-impact actions and request explicit permission.
+4. **Execute** — run scoped operations through trusted runtimes.
+5. **Verify** — confirm the required outcome with evidence.
+
+### Execution receipt
+
+```json
+{
+  "goal": "Send the approved weekly report to leadership",
+  "status": "verified",
+  "executed_by": "communication-agent",
+  "approved_by": "user",
+  "evidence": [
+    "approval-receipt",
+    "document-hash",
+    "mail-provider-delivery-id"
+  ]
+}
+```
+
+### Permission request
+
+```text
+Permission required
+
+Action:
+Send “Weekly Product Report” to leadership@example.com
+
+Agent:
+Communication Agent
+
+Data leaving device:
+1 approved PDF
+
+Scope:
+One-time send
+
+[Reject] [Review details] [Approve]
+```
+
+---
+
+## Architecture
+
+<img src="./assets/architecture-premium.svg" width="100%" alt="cmdOS architecture" />
+
+### Experience layer
+
+Captures intent through desktop, mobile, web, command, chat and voice interfaces.
+
+### Intent and orchestration layer
+
+Interprets goals, builds dynamic plans, routes models, delegates work and manages recovery.
+
+### Permission and security layer
+
+Evaluates identity, policies, approval requirements, data boundaries and secrets.
+
+### Agent runtime and mesh
+
+Coordinates specialized agents across local devices, browsers, terminals, cloud services and trusted peers.
+
+### Execution and verification layer
+
+Performs actions, records evidence, validates outcomes and returns a trusted result.
+
+### Logical flow
+
+```mermaid
+flowchart LR
+    U[User Intent] --> I[Intent Engine]
+    I --> P[Planning Engine]
+    P --> G[Permission Gate]
+    G --> R[Agent Runtime]
+    R --> T[Apps · APIs · Devices]
+    T --> V[Verification Engine]
+    V --> O[Trusted Outcome]
+    V -. recovery .-> P
+```
+
+---
+
+## Product Experience
+
+### Command workspace
+
+<img src="./assets/desktop-command-center.svg" width="100%" alt="cmdOS desktop command center" />
+
+The desktop workspace combines intent, planning, approvals, active agents, execution progress and verified output in one operational surface.
+
+### Mobile companion
+
+<img src="./assets/mobile-agent-companion.svg" width="100%" alt="cmdOS mobile companion" />
+
+The mobile experience focuses on supervision:
+
+- approve or reject sensitive actions;
+- inspect active workflows;
+- receive verified completion alerts;
+- continue conversations with agents;
+- control trusted devices;
+- revoke permissions immediately.
+
+### cmdOS Connect
+
+<img src="./assets/connect-workspace.svg" width="100%" alt="cmdOS Connect workspace" />
+
+Connect places humans and agents in the same context. A conversation can become an executable workflow without copying information into a separate automation product.
+
+### Workflow Studio
+
+<img src="./assets/workflow-builder.svg" width="100%" alt="cmdOS workflow builder" />
+
+Successful executions can be converted into reusable workflows containing:
+
+- intent definitions;
+- agent assignments;
+- tool calls;
+- permission gates;
+- conditions;
+- verification steps;
+- final result delivery.
+
+### Agent operations
+
+<img src="./assets/agent-dashboard.svg" width="100%" alt="cmdOS agent dashboard" />
+
+Each agent exposes its current task, capability set, permission scope, execution history, trust state, resource use and verification status.
+
+---
+
+## Product Preview
+
+<img src="./assets/product-preview.svg" width="100%" alt="cmdOS product preview" />
+
+The core interaction is deliberately simple:
+
+```text
+1. Describe the outcome
+2. Review the interpreted goal
+3. Inspect the execution plan
+4. Approve sensitive actions
+5. Watch agents execute
+6. Receive a verified result
+7. Save the workflow when useful
+```
+
+### Example intent
+
+```text
+“Prepare the launch report, identify blockers,
+email the team and schedule a review meeting tomorrow.”
+```
+
+### Example plan
+
+```yaml
+goal: prepare_and_distribute_launch_report
+
+constraints:
+  - use approved internal sources
+  - exclude customer-identifying information
+  - require approval before external delivery
+
+steps:
+  - collect_project_updates
+  - identify_blockers
+  - draft_report
+  - verify_sources
+  - request_delivery_approval
+  - send_report
+  - schedule_review
+  - confirm_delivery
+```
+
+---
+
+## Use Cases
+
+### Product and operations
+
+```text
+“Summarize this week’s updates, identify blockers,
+create an executive report and schedule the review.”
+```
+
+### Software development
+
+```text
+“Investigate the failed deployment, prepare a patch,
+run the tests and open a pull request for review.”
+```
+
+### Research
+
+```text
+“Compare the available approaches, preserve sources,
+produce a decision memo and flag uncertain claims.”
+```
+
+### Communication
+
+```text
+“Draft the announcement, collect approvals,
+publish it to the selected channels and verify delivery.”
+```
+
+### Multi-device execution
+
+```text
+“Render the project on my workstation and notify me
+on mobile when the verified output is available.”
+```
+
+---
+
+## cmdOS Connect
+
+cmdOS Connect is the communication layer for agent-native teams.
+
+### Human conversations
+
+- direct messages;
+- private and public spaces;
+- files and threads;
+- voice and video;
+- shared decisions;
+- execution history.
+
+### Agent participation
+
+Agents can:
+
+- join approved spaces;
+- respond to mentions;
+- summarize decisions;
+- create tasks;
+- execute authorized workflows;
+- provide evidence;
+- request human approval.
+
+### Conversation to execution
+
+```text
+Discussion
+   ↓
+Decision
+   ↓
+Agent assignment
+   ↓
+Permission
+   ↓
+Execution
+   ↓
+Verified update in the same conversation
+```
+
+---
+
+## Agent Runtime
+
+The runtime manages the lifecycle of specialized execution agents.
+
+### Agent responsibilities
+
+- receive a scoped task;
+- inspect available capabilities;
+- request missing permission;
+- perform tool calls;
+- report progress;
+- recover from expected failure;
+- produce evidence;
+- return a structured result.
+
+### Runtime targets
+
+| Target | Example capability |
+|---|---|
+| **Browser** | Navigate websites and operate web applications |
+| **Desktop** | Interact with local applications and files |
+| **Terminal** | Run commands, tests, builds and developer workflows |
+| **Mobile** | Perform approved device-level actions |
+| **Cloud** | Access remote APIs and infrastructure |
+| **Edge** | Execute near devices or private environments |
+
+### Agent state
+
+```text
+Idle
+  ↓
+Assigned
+  ↓
+Planning
+  ↓
+Waiting for permission
+  ↓
+Executing
+  ↓
+Verifying
+  ↓
+Completed
+```
+
+Possible terminal states:
+
+- completed;
+- partially completed;
+- blocked;
+- rejected;
+- cancelled;
+- verification failed;
+- rolled back.
 
 ---
 
 ## AI Router
 
-<div align="center">
-  <img src="./assets/router.svg" width="100%" alt="Animated AI routing layer" />
-</div>
+No single model should handle every task.
 
-The AI Router is intended to select the most appropriate model for each task.
+The AI Router selects models according to:
 
-Routing factors may include:
-
-- model capability;
+- task type;
+- required reasoning depth;
 - latency;
 - cost;
-- privacy requirements;
-- tool support;
+- privacy;
 - context length;
-- availability;
-- local hardware;
-- user preference;
-- organization policy.
-
-### Target provider categories
-
-- OpenAI models
-- Anthropic Claude
-- Google Gemini
-- Kimi
-- GLM
-- local LLMs
-- specialized task models
-
-cmdOS should remain provider-flexible rather than depending on a single model vendor.
-
----
-
-# cmdOS Connect
-
-<div align="center">
-  <img src="./assets/connect.svg" width="100%" alt="Animated cmdOS Connect communication layer" />
-</div>
-
-**cmdOS Connect** is the integrated communication layer for people, teams, agents, and devices.
-
-It is not limited to Agent-to-Agent messaging.
-
-It is intended to support:
-
-```text
-Human ↔ Human
-Human ↔ AI Agent
-AI Agent ↔ AI Agent
-Team ↔ AI Agents
-Device ↔ Device
-```
-
----
-
-## Human-to-Human Messaging
-
-### Direct messages
-
-- one-to-one private chat;
-- optional username-based identity;
-- optional device or public-key identity;
-- no mandatory phone number;
-- encrypted conversations;
-- read receipts that can be disabled;
-- typing indicators that can be disabled;
-- online status that can be hidden;
-- message requests;
-- block and report controls.
-
-### Group chat
-
-- private groups;
-- public channels;
-- team workspaces;
-- project rooms;
-- topic-based channels;
-- temporary rooms;
-- local-only rooms;
-- invite-only rooms;
-- password-protected rooms;
-- member roles and permissions.
-
-### Message features
-
-- reply;
-- quote reply;
-- reactions;
-- mentions using `@username`;
-- message editing;
-- delete for self;
-- delete for all participants where allowed;
-- pinned messages;
-- favorites;
-- bookmarks;
-- message search;
-- message forwarding;
-- draft messages;
-- scheduled messages;
-- disappearing messages;
-- expiration policies;
-- thread-based discussion;
-- polls;
-- announcements.
-
-### Media and file sharing
-
-- images;
-- videos;
-- voice messages;
-- documents;
-- folders;
-- code files;
-- archives;
-- prompts;
-- workflows;
-- execution reports;
-- agent outputs;
-- verified result packages.
-
-Planned transfer controls include:
-
-- encryption in transit;
-- integrity verification;
-- resumable transfer;
-- recipient approval;
-- file type restrictions;
-- size restrictions;
-- automatic expiration;
-- malware scanning hooks;
-- local-only sharing options.
-
-### Calls and collaboration
-
-Planned capabilities:
-
-- voice calls;
-- video calls;
-- screen sharing;
-- live collaboration rooms;
-- remote assistance sessions;
-- AI-generated meeting notes;
-- live translation;
-- conversation summaries;
-- action-item extraction.
-
----
-
-## AI Inside Conversations
-
-AI agents can be invited into a conversation as active collaborators.
-
-### Example
-
-```text
-Thomas:
-@research-agent summarize today's discussion
-and turn the decisions into a project plan.
-
-Research Agent:
-I found 6 decisions and 11 action items.
-The draft plan is ready.
-
-Thomas:
-Share it with the project room.
-
-cmdOS:
-Permission required:
-Share "Project Plan v1" with 8 members?
-
-Thomas:
-Approve.
-
-cmdOS:
-Shared successfully with 8/8 members.
-```
-
-### Agent actions inside chat
-
-Agents may be able to:
-
-- summarize discussions;
-- translate messages;
-- extract action items;
-- create tasks;
-- prepare reports;
-- analyze files;
-- compare documents;
-- generate meeting notes;
-- schedule approved events;
-- send approved emails;
-- prepare code changes;
-- run workflows;
-- verify execution results;
-- notify participants when work completes.
-
-All sensitive actions should remain permission-controlled.
-
----
-
-## Human-to-Agent Communication
-
-Users can communicate directly with specialized agents.
-
-Examples:
-
-```text
-@browser-agent verify the latest deployment
-```
-
-```text
-@file-agent organize these documents by project
-```
-
-```text
-@security-agent review the workflow before execution
-```
-
-```text
-@desktop-agent open the approved report and export it as PDF
-```
-
----
-
-## Agent-to-Agent Communication
-
-Agents may communicate using structured task envelopes rather than untrusted free-form messages.
-
-Possible data exchanged:
-
-- task definition;
-- required capability;
-- execution constraints;
-- permission scope;
-- selected tools;
-- intermediate state;
-- verification criteria;
-- signed result;
-- failure reason;
-- recovery instructions.
-
----
-
-# Secure Agent Mesh
-
-<div align="center">
-  <img src="./assets/mesh.svg" width="100%" alt="Animated secure agent mesh network" />
-</div>
-
-The Secure Agent Mesh is the networking layer that connects trusted users, agents, and devices.
-
-It is intended to support both connected and partially offline environments.
-
-## Target transports
-
-Depending on operating-system and hardware support:
-
-- Internet
-- LAN
-- peer-to-peer connections
-- Wi-Fi Direct
-- Bluetooth proximity communication
-- trusted relay nodes
-- store-and-forward delivery
-- self-hosted rendezvous services
-
-> Bluetooth, Wi-Fi Direct, background networking, and multi-hop behavior depend on platform APIs, device permissions, radio support, and operating-system restrictions.
-
----
-
-## Offline Communication
-
-Nearby devices may exchange supported data without relying on continuous internet access.
-
-Potential offline payloads:
-
-- encrypted messages;
-- task requests;
-- signed execution results;
-- approved files;
-- workflow definitions;
-- agent capability announcements;
-- device availability;
-- relay envelopes.
-
-Offline mode should use constrained permissions and clear delivery status.
-
----
-
-## Multi-Hop Relay
-
-Encrypted envelopes may be forwarded through trusted nodes.
-
-```text
-Phone A
-   ↓
-Laptop B
-   ↓
-Desktop C
-   ↓
-Target User or Agent
-```
-
-A relay node should not need access to message contents.
-
-Planned relay properties:
-
-- encrypted payload;
-- authenticated sender;
-- authenticated recipient;
-- expiration time;
-- replay protection;
-- hop limit;
-- delivery receipt;
-- duplicate suppression;
-- integrity validation.
-
----
-
-## Device and User Identity
-
-cmdOS may support multiple identity modes.
-
-### Identity options
-
-- local device identity;
-- username identity;
-- public-key identity;
-- paired trusted device;
-- team-managed identity;
-- temporary session identity;
-- anonymous local room identity.
-
-### Pairing methods
-
-Potential pairing methods include:
-
-- QR code;
-- short authentication code;
-- proximity confirmation;
-- trusted workspace invitation;
-- signed device invitation;
-- hardware-backed key confirmation.
-
----
-
-## Capability Discovery
-
-Trusted devices may publish limited, user-approved capability information.
-
-```text
-Thomas-PC
-• RTX GPU available
-• Local model ready
-• Browser Agent available
-• File transfer allowed
-• Remote execution requires approval
-```
-
-cmdOS may use this information to route tasks intelligently.
-
----
-
-# Distributed Execution
-
-<div align="center">
-  <img src="./assets/distributed.svg" width="100%" alt="Animated distributed execution system" />
-</div>
-
-Distributed Execution allows approved work to run across trusted devices.
-
-Examples:
-
-- run a local LLM on a stronger desktop;
-- send a render job to a GPU workstation;
-- execute a build on a development server;
-- process private files on a home server;
-- verify a website from another device;
-- continue an approved workflow after one node disconnects;
-- delegate a mobile-specific action to a paired phone.
-
-## Distributed workflow
+- tool support;
+- reliability;
+- user policy.
 
 ```text
 Intent
   ↓
-Planner
+Task classification
   ↓
-Capability Discovery
+Privacy and policy evaluation
   ↓
-Device Selection
+Model selection
   ↓
-Permission Check
+Execution
   ↓
-Encrypted Task Envelope
+Quality evaluation
   ↓
-Remote Agent Execution
-  ↓
-Verification
-  ↓
-Signed Result
+Fallback or completion
 ```
 
-## Resource sharing
+### Routing strategy
 
-Planned resource types:
-
-- CPU;
-- GPU;
-- RAM;
-- local models;
-- storage;
-- browser sessions;
-- development environments;
-- specialized software;
-- device sensors;
-- private network access.
-
-Resource sharing must remain:
-
-- opt-in;
-- policy-controlled;
-- time-limited;
-- visible;
-- revocable;
-- auditable.
+| Workload | Preferred route |
+|---|---|
+| Sensitive local task | Local model |
+| Fast classification | Lightweight model |
+| Deep planning | Strong reasoning model |
+| Coding | Code-specialized model |
+| Vision | Multimodal model |
+| High reliability | Ensemble or verifier route |
 
 ---
 
-# Local-First by Design
+## Secure Agent Mesh
 
-cmdOS is intended to keep the user's device as the primary trust boundary.
+The Secure Agent Mesh enables approved agents and devices to collaborate without exposing unrestricted control.
 
-## Local-first principles
+### Mesh principles
 
-- local execution whenever practical;
-- local storage by default;
-- cloud services remain optional;
-- minimum necessary data disclosure;
-- user-controlled retention;
-- explicit permission for external transmission;
+- explicit device trust;
+- agent identity;
+- capability negotiation;
+- scoped delegation;
+- encrypted transport;
+- signed results;
+- revocation;
+- auditability.
+
+### Distributed execution example
+
+```text
+Mobile intent
+   ↓
+Desktop planner
+   ↓
+Workstation render agent
+   ↓
+Verifier agent
+   ↓
+Signed result
+   ↓
+Mobile notification
+```
+
+---
+
+## Security Model
+
+cmdOS follows a permission-first, zero-trust execution model.
+
+### Planned controls
+
+- scoped permissions;
+- one-time approvals;
+- capability isolation;
+- sandboxed execution;
+- policy evaluation;
 - encrypted secrets;
-- removable execution history;
-- no advertising identity layer;
-- no silent agent execution.
+- signed agents and plugins;
+- trusted device registry;
+- execution limits;
+- emergency stop;
+- immutable audit events;
+- result verification.
 
-## Optional infrastructure
+### Data principles
 
-Some features may still require optional infrastructure for:
+- collect the minimum required data;
+- keep private execution local when possible;
+- separate credentials from model context;
+- expose data movement before approval;
+- make permissions revocable;
+- avoid treating model output as trusted by default.
 
-- model APIs;
-- device rendezvous;
-- team administration;
-- push notifications;
-- encrypted backup;
-- remote access;
-- software updates;
-- abuse prevention.
-
-Each dependency should be clearly disclosed and configurable.
-
----
-
-# Privacy Model
-
-## Privacy goals
-
-- no mandatory phone number;
-- no required advertising profile;
-- no sale of personal data;
-- no hidden cross-service tracking;
-- no default public identity;
-- no unnecessary message indexing;
-- no permanent cloud retention by default;
-- no silent data export;
-- no unauthorized AI training on private content.
-
-## User controls
-
-Planned controls include:
-
-- per-conversation retention;
-- disappearing messages;
-- local-only mode;
-- export and delete;
-- device unlinking;
-- revoke all sessions;
-- disable read receipts;
-- hide online status;
-- disable AI participation;
-- disable conversation memory;
-- block external model providers;
-- force local-model routing;
-- restrict file access;
-- restrict agent permissions.
+> Security controls described here represent the intended architecture and must be independently validated before production deployment.
 
 ---
 
-# Security Model
+## Developer Platform
 
-<div align="center">
-  <img src="./assets/security.svg" width="100%" alt="Animated cmdOS security model" />
-</div>
+<img src="./assets/developer-platform.svg" width="100%" alt="cmdOS developer platform" />
 
-cmdOS follows a zero-trust execution philosophy:
+cmdOS is intended to support an ecosystem of agents, tools, connectors and reusable workflows.
 
-```text
-Every user
-Every device
-Every agent
-Every plugin
-Every tool
-Every task
-Every network request
+### Agent SDK
 
-must be authenticated, authorized, scoped, and auditable.
+Defines planning, execution, verification, recovery and lifecycle contracts.
+
+### Tool SDK
+
+Provides permissioned interfaces to applications, APIs, files, devices and services.
+
+### Workflow SDK
+
+Packages repeatable execution systems with explicit inputs, controls and expected outcomes.
+
+### Example agent manifest
+
+```yaml
+agent:
+  name: release-verifier
+  version: 0.1.0
+
+capabilities:
+  - inspect_build
+  - run_tests
+  - verify_release
+
+permissions:
+  - repository:read
+  - deployment:approve
+
+outputs:
+  - verification_report
+  - evidence_bundle
 ```
 
-## Planned security controls
+### Example tool contract
 
-- capability-based permissions;
-- sandboxed agent execution;
-- isolated secrets;
-- per-tool authorization;
-- signed plugins;
-- task-level policies;
-- execution timeouts;
-- network allowlists;
-- rate limits;
-- resource limits;
-- human approval checkpoints;
-- immutable security events;
-- emergency revoke;
-- device unlinking;
-- session termination;
-- signed execution results.
-
-## Threats considered
-
-- prompt injection;
-- malicious plugins;
-- compromised devices;
-- unauthorized relays;
-- replay attacks;
-- task tampering;
-- privilege escalation;
-- data exfiltration;
-- unsafe autonomous actions;
-- hallucinated completion;
-- identity spoofing;
-- malicious file transfer;
-- poisoned workflow definitions;
-- insecure model providers.
-
-## Cryptographic direction
-
-The communication protocol should target:
-
-- end-to-end encrypted payloads;
-- authenticated peers;
-- forward secrecy where practical;
-- replay protection;
-- key rotation;
-- encrypted local storage;
-- signed task envelopes;
-- file integrity checks;
-- secure recovery and revocation.
-
-> No production cryptographic claim should be made until the protocol has been documented, implemented, tested, and independently reviewed.
-
----
-
-# Permission System
-
-The Permission System is the boundary between planning and action.
-
-## Permission scopes
-
-Possible scopes:
-
-```text
-read
-write
-create
-modify
-delete
-send
-publish
-execute
-purchase
-share
-connect
-control-device
-access-secret
-use-network
-```
-
-## Approval modes
-
-- always ask;
-- ask once per task;
-- ask once per session;
-- allow only within a workspace;
-- allow only for selected files;
-- allow only for selected recipients;
-- deny by default;
-- organization-managed policy.
-
-## Example approval
-
-```text
-Agent request:
-Send "Q3 Financial Report.pdf" to 12 workspace members.
-
-Requested permissions:
-• Read selected file
-• Encrypt file
-• Send to workspace
-• Create delivery receipt
-
-[Approve once] [Always allow in this workspace] [Deny]
+```typescript
+export interface CmdOSTool<Input, Output> {
+  name: string;
+  permissions: string[];
+  validate(input: Input): Promise<void>;
+  execute(input: Input, context: ExecutionContext): Promise<Output>;
+  verify(output: Output, context: VerificationContext): Promise<Evidence[]>;
+}
 ```
 
 ---
 
-# Verification Engine
+## How cmdOS Is Different
 
-The Verification Engine is intended to determine whether a task truly succeeded.
+<img src="./assets/comparison.svg" width="100%" alt="cmdOS comparison" />
 
-## Verification methods
-
-- target-state inspection;
-- output validation;
-- file existence and checksum;
-- delivery receipt;
-- API confirmation;
-- screenshot comparison;
-- structured assertion;
-- unit or integration tests;
-- human confirmation;
-- signed remote result.
-
-## Example
-
-```text
-Task:
-Deploy the latest approved build.
-
-Verification:
-✓ Build completed
-✓ Tests passed
-✓ Deployment endpoint responded
-✓ Version hash matches approved commit
-✓ Screenshot captured
-✓ Rollback point created
-```
+| Capability | Chat AI | Automation platforms | cmdOS |
+|---|:---:|:---:|:---:|
+| Understand open-ended intent | ✅ | Limited | ✅ |
+| Build a dynamic plan | Limited | ❌ | ✅ |
+| Ask for contextual approval | Limited | Limited | ✅ |
+| Execute across apps and devices | Limited | ✅ | ✅ |
+| Recover when a step fails | Limited | Limited | ✅ |
+| Verify the final outcome | ❌ | Limited | ✅ |
+| Coordinate humans and agents | Limited | Limited | ✅ |
+| Support local-first execution | Limited | Limited | Planned |
 
 ---
 
-# Architecture
+## Design Principles
 
-```text
-┌──────────────────────────────────────────────────────────────┐
-│                         USER LAYER                           │
-│  Command UI · Chat · Desktop · Mobile · Web · Voice          │
-├──────────────────────────────────────────────────────────────┤
-│                     COMMUNICATION LAYER                      │
-│  Direct Messages · Groups · Rooms · Files · Calls · AI       │
-├──────────────────────────────────────────────────────────────┤
-│                        INTENT LAYER                          │
-│  Understanding · Context · Constraints · Risk                │
-├──────────────────────────────────────────────────────────────┤
-│                    ORCHESTRATION LAYER                       │
-│  Planner · Router · Workflow · Recovery · Scheduling         │
-├──────────────────────────────────────────────────────────────┤
-│                     PERMISSION LAYER                         │
-│  Policies · Approval · Secrets · Audit · Identity            │
-├──────────────────────────────────────────────────────────────┤
-│                       AGENT RUNTIME                          │
-│  Browser · Desktop · Terminal · Mobile · Cloud · Files       │
-├──────────────────────────────────────────────────────────────┤
-│                   SECURE AGENT MESH                          │
-│  Internet · LAN · P2P · Wi-Fi Direct · Bluetooth · Relay    │
-├──────────────────────────────────────────────────────────────┤
-│                    EXECUTION TARGETS                         │
-│  Apps · Files · Devices · APIs · Services · Infrastructure   │
-├──────────────────────────────────────────────────────────────┤
-│                  VERIFICATION & LEARNING                     │
-│  Evidence · Validation · Result · Local Preferences          │
-└──────────────────────────────────────────────────────────────┘
-```
+### Intent first
+
+Users define the outcome instead of assembling low-level triggers and actions.
+
+### Permission before power
+
+High-impact actions remain visible and controlled.
+
+### Evidence over confidence
+
+The system proves outcomes instead of presenting unverified claims as completion.
+
+### Local when practical
+
+Execution remains close to private data and trusted devices.
+
+### Composable architecture
+
+Models, agents, tools and workflows can evolve independently.
+
+### Calm product design
+
+The interface should make complex execution understandable rather than visually overwhelming.
 
 ---
 
-# Product Modes
+## Roadmap
 
-## Personal Mode
+<img src="./assets/roadmap-premium.svg" width="100%" alt="cmdOS roadmap" />
 
-One user coordinates local agents across personal devices.
+### 01 · Foundation
 
-## Team Mode
+- canonical product architecture;
+- execution lifecycle;
+- permission model;
+- design system;
+- public documentation.
 
-A trusted team manages:
+### 02 · Local Runtime
 
-- users;
-- rooms;
-- agents;
-- devices;
-- workflows;
-- permissions;
-- logs;
-- organization policy.
+- desktop command workspace;
+- local agents;
+- browser and terminal tools;
+- local model integration;
+- execution timeline.
 
-## Offline Mode
+### 03 · cmdOS Connect
 
-Supported agents and conversations continue locally or through nearby trusted nodes without continuous cloud access.
+- human and agent workspaces;
+- mentions and delegated tasks;
+- shared execution context;
+- mobile approvals.
 
-## Emergency Mode
+### 04 · Secure Agent Mesh
 
-A constrained mode designed for unreliable connectivity:
+- trusted devices;
+- agent identity;
+- encrypted transport;
+- capability negotiation;
+- signed results.
 
-- reduced permissions;
-- local communication;
-- delivery receipts;
-- short-lived identities;
-- restricted file transfer;
-- no cloud dependency where possible.
+### 05 · Distributed Execution
 
-## Developer Mode
+- cross-device scheduling;
+- remote capabilities;
+- workload routing;
+- recovery and retry;
+- multi-agent verification.
 
-Developers can build:
+### 06 · Ecosystem
 
-- agents;
-- tools;
-- plugins;
-- workflows;
-- transport adapters;
-- policy modules;
-- model connectors;
-- verification providers.
+- Agent SDK;
+- Tool SDK;
+- Workflow SDK;
+- marketplace and distribution;
+- enterprise policy controls.
 
----
-
-# Platform Targets
-
-Planned targets:
-
-- Windows
-- macOS
-- Linux
-- Android
-- iOS
-- Web
-- self-hosted server
-- local home server
-- enterprise infrastructure
-
-Platform capability may differ due to operating-system restrictions.
+> Roadmap items describe product direction and are not commitments to a specific release date.
 
 ---
 
-# Plugin Ecosystem
+## Project Status
 
-Plugins extend cmdOS with tools and integrations.
+cmdOS is currently in the product architecture and early development stage.
 
-## Plugin categories
-
-- browser;
-- desktop;
-- terminal;
-- files;
-- communication;
-- cloud;
-- development;
-- productivity;
-- finance;
-- data;
-- media;
-- smart devices;
-- enterprise systems.
-
-## Plugin security requirements
-
-Every plugin should declare:
-
-- requested permissions;
-- network access;
-- file access;
-- secrets access;
-- supported actions;
-- data retention behavior;
-- remote endpoints;
-- verification methods;
-- version and publisher identity.
+| Area | Status |
+|---|---|
+| Brand and positioning | Active |
+| Product architecture | In development |
+| Public website | Available |
+| Desktop runtime | Planned |
+| Mobile companion | Planned |
+| cmdOS Connect | Planned |
+| Secure Agent Mesh | Research |
+| Developer SDK | Planned |
 
 ---
 
-# Suggested Repository Structure
+## Repository Structure
 
 ```text
 cmdOS/
@@ -1028,249 +715,80 @@ cmdOS/
 │   ├── desktop/
 │   ├── mobile/
 │   ├── web/
-│   └── server/
-├── core/
-│   ├── intent/
-│   ├── planner/
-│   ├── permissions/
-│   ├── runtime/
-│   ├── router/
-│   ├── verification/
-│   └── memory/
-├── connect/
-│   ├── messaging/
-│   ├── rooms/
-│   ├── calls/
-│   ├── files/
-│   ├── presence/
-│   └── moderation/
-├── network/
-│   ├── identity/
-│   ├── encryption/
-│   ├── discovery/
-│   ├── transport/
-│   ├── relay/
-│   └── sync/
-├── agents/
-│   ├── browser/
-│   ├── desktop/
-│   ├── terminal/
-│   ├── mobile/
-│   ├── files/
-│   └── cloud/
-├── plugins/
-├── workflows/
+│   └── connect/
 ├── packages/
-├── sdk/
+│   ├── agent-runtime/
+│   ├── ai-router/
+│   ├── permission-engine/
+│   ├── verification-engine/
+│   ├── workflow-sdk/
+│   ├── tool-sdk/
+│   └── ui/
+├── services/
+│   ├── orchestration/
+│   ├── identity/
+│   ├── mesh/
+│   └── audit/
 ├── docs/
 ├── examples/
-├── tests/
-├── assets/
 └── README.md
 ```
 
----
-
-# Roadmap
-
-## Phase 01 — Foundation
-
-- [ ] Canonical architecture specification
-- [ ] Threat model
-- [ ] Permission model
-- [ ] Agent runtime contract
-- [ ] Execution trace format
-- [ ] Plugin manifest specification
-- [ ] Identity model
-- [ ] Communication protocol specification
-
-## Phase 02 — Local Execution
-
-- [ ] Desktop command interface
-- [ ] Terminal Agent
-- [ ] Browser Agent
-- [ ] File Agent
-- [ ] Local workflow engine
-- [ ] Permission Gate
-- [ ] Verification Engine
-- [ ] Local model routing
-
-## Phase 03 — cmdOS Connect
-
-- [ ] Direct messages
-- [ ] Group chat
-- [ ] Team workspaces
-- [ ] Public and private channels
-- [ ] Mentions
-- [ ] Replies and reactions
-- [ ] Pinned and favorite messages
-- [ ] Message search
-- [ ] Password-protected rooms
-- [ ] Disappearing messages
-- [ ] Encrypted file transfer
-- [ ] Voice messages
-- [ ] AI inside conversations
-- [ ] Moderation and abuse controls
-
-## Phase 04 — Secure Agent Mesh
-
-- [ ] Cryptographic device identity
-- [ ] Trusted-device pairing
-- [ ] End-to-end encrypted messages
-- [ ] LAN discovery
-- [ ] P2P transport
-- [ ] Wi-Fi Direct prototype
-- [ ] Bluetooth proximity prototype
-- [ ] Multi-hop encrypted relay
-- [ ] Store-and-forward delivery
-- [ ] Agent capability discovery
-- [ ] Device revoke and key rotation
-
-## Phase 05 — Distributed Execution
-
-- [ ] Signed task envelopes
-- [ ] Remote permission checks
-- [ ] Remote Agent Runtime
-- [ ] Resource-aware scheduling
-- [ ] Signed execution results
-- [ ] Multi-device recovery
-- [ ] Remote cancellation
-- [ ] Execution limits
-- [ ] Distributed verification
-
-## Phase 06 — Collaboration
-
-- [ ] Voice calls
-- [ ] Video calls
-- [ ] Screen sharing
-- [ ] Live translation
-- [ ] Meeting summaries
-- [ ] Collaborative workflows
-- [ ] Shared agents
-- [ ] Team policy management
-
-## Phase 07 — Ecosystem
-
-- [ ] Developer SDK
-- [ ] Plugin SDK
-- [ ] Agent SDK
-- [ ] Workflow SDK
-- [ ] Transport SDK
-- [ ] Plugin registry
-- [ ] Team administration
-- [ ] Self-hosted deployment
-- [ ] External security audit
-- [ ] Stable public release
+This structure represents the intended platform organization rather than a claim that every component is currently implemented.
 
 ---
 
-# Animation Assets
+## Frequently Asked Questions
 
-This repository includes GitHub-compatible SVG animations.
+<details>
+<summary><strong>Is cmdOS a traditional operating system?</strong></summary>
 
-```text
-assets/
-├── hero.svg
-├── execution-flow.svg
-├── connect.svg
-├── router.svg
-├── mesh.svg
-├── distributed.svg
-└── security.svg
-```
+Not in the kernel sense. cmdOS is an AI-native execution layer designed to coordinate models, agents, tools, applications, devices, permissions and verified outcomes.
 
-The animations use SVG and SMIL rather than JavaScript because GitHub README files do not execute client-side scripts.
+</details>
 
----
+<details>
+<summary><strong>Is cmdOS only for crypto?</strong></summary>
 
-# Documentation Plan
+No. cmdOS is designed as a general-purpose execution platform for productivity, development, research, operations, communication, devices and digital services.
 
-```text
-docs/
-├── 01-vision.md
-├── 02-product-principles.md
-├── 03-architecture.md
-├── 04-security-model.md
-├── 05-threat-model.md
-├── 06-permission-system.md
-├── 07-agent-runtime.md
-├── 08-cmdos-connect.md
-├── 09-secure-agent-mesh.md
-├── 10-cryptographic-protocol.md
-├── 11-distributed-execution.md
-├── 12-plugin-system.md
-├── 13-sdk.md
-├── 14-roadmap.md
-└── 15-contributing.md
-```
+</details>
+
+<details>
+<summary><strong>Does cmdOS replace existing applications?</strong></summary>
+
+No. It is designed to operate across existing applications and services through a unified intent, permission, execution and verification layer.
+
+</details>
+
+<details>
+<summary><strong>Can cmdOS work locally?</strong></summary>
+
+Local-first execution is a core design principle. Local models, agents and storage should be used whenever practical, with cloud services remaining optional for workloads that require them.
+
+</details>
+
+<details>
+<summary><strong>Are all features shown here available?</strong></summary>
+
+No. This README communicates the product vision, architecture and intended experience. The project status and roadmap separate current work from planned capabilities.
+
+</details>
 
 ---
 
-# Project Status
-
-cmdOS is under active design and development.
-
-Some capabilities described in this README are product goals or roadmap items and are not yet available in production.
-
-This distinction is intentional.
-
-Feature claims should be updated only when supported by:
-
-- working code;
-- automated tests;
-- releases;
-- public demonstrations;
-- security review;
-- platform validation.
-
----
-
-# Contributing
-
-Contribution guidelines will be finalized after the core architecture and security boundaries are stable.
-
-Until then:
-
-1. Open an issue describing the proposal.
-2. Explain the expected user benefit.
-3. Document security and privacy impact.
-4. Avoid unaudited cryptographic implementations.
-5. Keep platform limitations explicit.
-6. Include tests for execution features.
-7. Include verification logic where possible.
-8. Do not bypass permission boundaries.
-
----
-
-# Security Disclosure
-
-Do not publish exploitable vulnerabilities in public issues.
-
-Before public testing, the repository should include:
-
-- `SECURITY.md`;
-- a private reporting email;
-- disclosure timelines;
-- severity definitions;
-- supported versions;
-- response expectations.
-
----
-
-# License
-
-The project license has not yet been finalized.
-
-Add a `LICENSE` file before accepting external contributions or distributing production builds.
-
----
+## Community
 
 <div align="center">
 
-<img src="./assets/footer.svg" width="100%" alt="cmdOS footer animation" />
+### Building the execution layer for an agent-native world.
 
-### Not another chatbot.
+[Website](https://cmdos.xyz/) · [X](https://x.com/cmdOS_xyz) · [Telegram](https://t.me/cmdOS_xyz) · [Email](mailto:hello@cmdos.xyz)
 
-### The secure operating layer for people, AI agents, applications, and devices.
+<br />
+
+<img src="./assets/hero-studio.svg" width="100%" alt="cmdOS footer" />
+
+<sub>cmdOS · The AI Execution Operating System</sub>
 
 </div>

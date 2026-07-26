@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="380" viewBox="0 0 1400 380">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#F8FAFC"/>
+    <stop offset="1" stop-color="#EEF2FF"/>
+  </linearGradient>
+  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#7C3AED"/>
+    <stop offset="0.5" stop-color="#3B82F6"/>
+    <stop offset="1" stop-color="#06B6D4"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#64748B" flood-opacity=".20"/>
+  </filter>
+  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="8" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<rect width="1400" height="380" rx="36" fill="url(#bg)"/>
+
+<text x="700" y="45" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="24" font-weight="700" fill="#111827">Zero-trust execution</text>
+<g filter="url(#shadow)">
+<rect x="80" y="165" width="240" height="120" rx="28" fill="#FFFFFF"/>
+<rect x="390" y="165" width="240" height="120" rx="28" fill="#FFFFFF"/>
+<rect x="700" y="165" width="240" height="120" rx="28" fill="#FFFFFF"/>
+<rect x="1010" y="165" width="240" height="120" rx="28" fill="#FFFFFF"/>
+</g>
+<g font-family="Inter,Arial,sans-serif" text-anchor="middle">
+<text x="200" y="220" font-size="19" font-weight="700" fill="#111827">Authenticate</text>
+<text x="510" y="220" font-size="19" font-weight="700" fill="#111827">Authorize</text>
+<text x="820" y="220" font-size="19" font-weight="700" fill="#111827">Execute</text>
+<text x="1130" y="220" font-size="19" font-weight="700" fill="#111827">Audit</text>
+<text x="200" y="248" font-size="14" fill="#64748B">identity</text>
+<text x="510" y="248" font-size="14" fill="#64748B">permission</text>
+<text x="820" y="248" font-size="14" fill="#64748B">sandbox</text>
+<text x="1130" y="248" font-size="14" fill="#64748B">evidence</text>
+</g>
+<path d="M320 225H390M630 225H700M940 225H1010" stroke="#CBD5E1" stroke-width="3"/>
+<circle cy="225" r="8" fill="#7C3AED" filter="url(#glow)"><animate attributeName="cx" values="320;1010" dur="3.7s" repeatCount="indefinite"/></circle>
+
+</svg>

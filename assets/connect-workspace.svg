@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="650" viewBox="0 0 1400 650">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#F8FAFC"/>
+    <stop offset="0.52" stop-color="#F5F3FF"/>
+    <stop offset="1" stop-color="#ECFEFF"/>
+  </linearGradient>
+  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#7C3AED"/>
+    <stop offset="0.5" stop-color="#3B82F6"/>
+    <stop offset="1" stop-color="#06B6D4"/>
+  </linearGradient>
+  <linearGradient id="accent2" x1="0" y1="1" x2="1" y2="0">
+    <stop offset="0" stop-color="#A78BFA"/>
+    <stop offset="1" stop-color="#22D3EE"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#64748B" flood-opacity=".18"/>
+  </filter>
+  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="7" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<rect width="1400" height="650" rx="36" fill="url(#bg)"/>
+
+<text x="700" y="46" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="25" font-weight="800" fill="#111827">cmdOS Connect Workspace</text>
+<g filter="url(#shadow)">
+  <rect x="100" y="85" width="1200" height="500" rx="34" fill="#FFFFFF"/>
+</g>
+<rect x="100" y="85" width="250" height="500" rx="34" fill="#F8FAFC"/>
+<rect x="100" y="85" width="1200" height="58" rx="34" fill="#F8FAFC"/>
+<g font-family="Inter,Arial,sans-serif">
+  <text x="135" y="122" font-size="18" font-weight="800" fill="#111827">cmdOS Connect</text>
+  <text x="135" y="188" font-size="13" font-weight="800" fill="#94A3B8">CHANNELS</text>
+  <rect x="125" y="210" width="200" height="42" rx="12" fill="#EDE9FE"/>
+  <text x="150" y="237" font-size="15" font-weight="700" fill="#6D28D9"># product-launch</text>
+  <text x="150" y="285" font-size="15" fill="#475569"># engineering</text>
+  <text x="150" y="330" font-size="15" fill="#475569"># design</text>
+  <text x="135" y="390" font-size="13" font-weight="800" fill="#94A3B8">DIRECT</text>
+  <text x="150" y="430" font-size="15" fill="#475569">Thomas</text>
+  <text x="150" y="475" font-size="15" fill="#475569">Release Agent</text>
+
+  <text x="390" y="122" font-size="18" font-weight="800" fill="#111827"># product-launch</text>
+  <text x="390" y="180" font-size="14" font-weight="800" fill="#7C3AED">THOMAS</text>
+  <text x="390" y="208" font-size="15" fill="#334155">@release-agent check launch readiness and summarize blockers.</text>
+
+  <rect x="390" y="245" width="820" height="120" rx="22" fill="#F5F3FF"/>
+  <text x="420" y="280" font-size="14" font-weight="800" fill="#3B82F6">RELEASE AGENT</text>
+  <text x="420" y="312" font-size="15" fill="#334155">I found 2 blockers and 6 completed checks.</text>
+  <text x="420" y="340" font-size="15" fill="#334155">I prepared a remediation plan and assigned owners.</text>
+
+  <text x="390" y="420" font-size="14" font-weight="800" fill="#0891B2">CMDOS</text>
+  <text x="390" y="450" font-size="15" fill="#334155">Approval required before sharing the final report with leadership.</text>
+
+  <rect x="390" y="495" width="820" height="60" rx="18" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <text x="420" y="532" font-size="15" fill="#94A3B8">Message the team or mention an agent...</text>
+</g>
+<circle r="7" fill="#7C3AED" filter="url(#glow)">
+  <animateMotion dur="5s" repeatCount="indefinite" path="M365 225 C500 140, 900 140, 1215 225"/>
+</circle>
+
+</svg>

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="430" viewBox="0 0 1400 430">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#F8FAFC"/>
+    <stop offset="1" stop-color="#EEF2FF"/>
+  </linearGradient>
+  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#7C3AED"/>
+    <stop offset="0.5" stop-color="#3B82F6"/>
+    <stop offset="1" stop-color="#06B6D4"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#64748B" flood-opacity=".20"/>
+  </filter>
+  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="8" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<rect width="1400" height="430" rx="36" fill="url(#bg)"/>
+
+<text x="700" y="45" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="24" font-weight="700" fill="#111827">cmdOS Connect</text>
+<g stroke="#CBD5E1" stroke-width="3">
+<path d="M700 205L270 105M700 205L1130 105M700 205L270 315M700 205L1130 315"/>
+</g>
+<g filter="url(#shadow)" font-family="Inter,Arial,sans-serif">
+<rect x="575" y="145" width="250" height="120" rx="30" fill="url(#accent)"/>
+<rect x="160" y="60" width="220" height="90" rx="24" fill="#FFFFFF"/>
+<rect x="1020" y="60" width="220" height="90" rx="24" fill="#FFFFFF"/>
+<rect x="160" y="270" width="220" height="90" rx="24" fill="#FFFFFF"/>
+<rect x="1020" y="270" width="220" height="90" rx="24" fill="#FFFFFF"/>
+</g>
+<g font-family="Inter,Arial,sans-serif" text-anchor="middle">
+<text x="700" y="215" font-size="26" font-weight="700" fill="#FFFFFF">cmdOS Connect</text>
+<text x="270" y="115" font-size="19" font-weight="700" fill="#111827">Human</text>
+<text x="1130" y="115" font-size="19" font-weight="700" fill="#111827">Team</text>
+<text x="270" y="325" font-size="19" font-weight="700" fill="#111827">AI Agent</text>
+<text x="1130" y="325" font-size="19" font-weight="700" fill="#111827">Device</text>
+</g>
+<circle r="8" fill="#7C3AED" filter="url(#glow)"><animateMotion dur="3.8s" repeatCount="indefinite" path="M700 205L270 105L1130 105L700 205"/></circle>
+<circle r="8" fill="#06B6D4" filter="url(#glow)"><animateMotion dur="4.2s" begin=".8s" repeatCount="indefinite" path="M700 205L1130 315L270 315L700 205"/></circle>
+
+</svg>
