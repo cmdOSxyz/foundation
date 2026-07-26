@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="760" viewBox="0 0 1440 760">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#05070b"/>
+    <stop offset=".5" stop-color="#0b1020"/>
+    <stop offset="1" stop-color="#07151b"/>
+  </linearGradient>
+  <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#171c2a" stop-opacity=".96"/>
+    <stop offset="1" stop-color="#0d1320" stop-opacity=".94"/>
+  </linearGradient>
+  <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#8b5cf6"/>
+    <stop offset=".5" stop-color="#38bdf8"/>
+    <stop offset="1" stop-color="#22d3ee"/>
+  </linearGradient>
+  <radialGradient id="orb">
+    <stop offset="0" stop-color="#7c3aed" stop-opacity=".42"/>
+    <stop offset=".58" stop-color="#38bdf8" stop-opacity=".12"/>
+    <stop offset="1" stop-color="#0b1020" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%">
+    <feDropShadow dx="0" dy="28" stdDeviation="24" flood-color="#000000" flood-opacity=".58"/>
+  </filter>
+  <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+    <feGaussianBlur stdDeviation="10" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<rect width="1440" height="760" rx="36" fill="url(#bg)"/>
+
+<text x="720" y="62" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="30" font-weight="400" fill="#ffffff">product experience</text>
+<text x="720" y="98" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="300" fill="#94a3b8">describe the outcome, review the plan, approve the action, verify the result</text>
+
+<g transform="translate(110 140)" filter="url(#shadow)">
+  <g transform="rotate(-2 610 260)">
+    <rect width="1220" height="520" rx="34" fill="url(#panel)" stroke="#ffffff" stroke-opacity=".10"/>
+    <rect x="0" y="0" width="1220" height="54" rx="34" fill="#ffffff" opacity=".04"/>
+    <circle cx="36" cy="27" r="7" fill="#f87171"/><circle cx="60" cy="27" r="7" fill="#fbbf24"/><circle cx="84" cy="27" r="7" fill="#34d399"/>
+    <rect x="26" y="82" width="216" height="410" rx="24" fill="#ffffff" opacity=".04"/>
+    <rect x="266" y="82" width="622" height="410" rx="24" fill="#ffffff" opacity=".025" stroke="#ffffff" stroke-opacity=".07"/>
+    <rect x="912" y="82" width="282" height="410" rx="24" fill="#ffffff" opacity=".04"/>
+
+    <g font-family="Inter,Arial,sans-serif">
+      <text x="54" y="122" font-size="18" font-weight="500" fill="#ffffff">cmdOS</text>
+      <text x="54" y="170" font-size="12" font-weight="500" fill="#64748b">workspace</text>
+      <rect x="46" y="190" width="176" height="42" rx="13" fill="#8b5cf6" opacity=".18"/>
+      <text x="70" y="217" font-size="14" font-weight="400" fill="#c4b5fd">new execution</text>
+      <text x="70" y="266" font-size="14" font-weight="300" fill="#94a3b8">recent runs</text>
+      <text x="70" y="312" font-size="14" font-weight="300" fill="#94a3b8">workflows</text>
+      <text x="70" y="358" font-size="14" font-weight="300" fill="#94a3b8">agents</text>
+      <text x="70" y="404" font-size="14" font-weight="300" fill="#94a3b8">connect</text>
+
+      <text x="300" y="126" font-size="12" font-weight="500" fill="#64748b">intent</text>
+      <text x="300" y="168" font-size="26" font-weight="400" fill="#ffffff">what should cmdOS do?</text>
+      <rect x="300" y="200" width="554" height="92" rx="20" fill="#ffffff" opacity=".04"/>
+      <text x="326" y="238" font-size="15" font-weight="300" fill="#cbd5e1">prepare the launch report, email the team,</text>
+      <text x="326" y="268" font-size="15" font-weight="300" fill="#cbd5e1">and schedule a review meeting tomorrow.</text>
+
+      <text x="300" y="340" font-size="12" font-weight="500" fill="#64748b">execution plan</text>
+      <rect x="300" y="364" width="554" height="92" rx="20" fill="#8b5cf6" opacity=".10" stroke="#8b5cf6" stroke-opacity=".22"/>
+      <circle cx="330" cy="410" r="8" fill="#8b5cf6"/>
+      <text x="354" y="416" font-size="15" font-weight="400" fill="#ffffff">3 agents · 5 actions · 1 approval</text>
+
+      <text x="946" y="126" font-size="12" font-weight="500" fill="#64748b">active agents</text>
+      <circle cx="960" cy="180" r="11" fill="#8b5cf6"/><text x="986" y="186" font-size="14" font-weight="400" fill="#ffffff">planner</text>
+      <circle cx="960" cy="232" r="11" fill="#38bdf8"/><text x="986" y="238" font-size="14" font-weight="400" fill="#ffffff">mail agent</text>
+      <circle cx="960" cy="284" r="11" fill="#22d3ee"/><text x="986" y="290" font-size="14" font-weight="400" fill="#ffffff">calendar agent</text>
+      <rect x="944" y="392" width="214" height="56" rx="16" fill="url(#brand)"/>
+      <text x="1051" y="427" text-anchor="middle" font-size="15" font-weight="600" fill="#061018">approve and run</text>
+    </g>
+  </g>
+</g>
+
+</svg>

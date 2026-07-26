@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="520" viewBox="0 0 1440 520">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#05070b"/>
+    <stop offset=".5" stop-color="#0b1020"/>
+    <stop offset="1" stop-color="#07151b"/>
+  </linearGradient>
+  <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#171c2a" stop-opacity=".96"/>
+    <stop offset="1" stop-color="#0d1320" stop-opacity=".94"/>
+  </linearGradient>
+  <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#8b5cf6"/>
+    <stop offset=".5" stop-color="#38bdf8"/>
+    <stop offset="1" stop-color="#22d3ee"/>
+  </linearGradient>
+  <radialGradient id="orb">
+    <stop offset="0" stop-color="#7c3aed" stop-opacity=".42"/>
+    <stop offset=".58" stop-color="#38bdf8" stop-opacity=".12"/>
+    <stop offset="1" stop-color="#0b1020" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%">
+    <feDropShadow dx="0" dy="28" stdDeviation="24" flood-color="#000000" flood-opacity=".58"/>
+  </filter>
+  <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+    <feGaussianBlur stdDeviation="10" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<rect width="1440" height="520" rx="36" fill="url(#bg)"/>
+
+<circle cx="720" cy="150" r="260" fill="url(#orb)"/>
+<text x="720" y="180" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="64" font-weight="500" letter-spacing="-2" fill="#ffffff">cmdOS</text>
+<text x="720" y="235" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="24" font-weight="300" fill="#cbd5e1">the ai execution operating system</text>
+<text x="720" y="310" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="300" fill="#94a3b8">intent becomes execution. execution becomes proof.</text>
+<rect x="572" y="365" width="296" height="58" rx="18" fill="url(#brand)"/>
+<text x="720" y="401" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="600" fill="#061018">cmdos.xyz</text>
+
+</svg>

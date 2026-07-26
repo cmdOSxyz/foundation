@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="760" viewBox="0 0 1440 760">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#05070b"/>
+    <stop offset=".5" stop-color="#0b1020"/>
+    <stop offset="1" stop-color="#07151b"/>
+  </linearGradient>
+  <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#171c2a" stop-opacity=".96"/>
+    <stop offset="1" stop-color="#0d1320" stop-opacity=".94"/>
+  </linearGradient>
+  <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#8b5cf6"/>
+    <stop offset=".5" stop-color="#38bdf8"/>
+    <stop offset="1" stop-color="#22d3ee"/>
+  </linearGradient>
+  <radialGradient id="orb">
+    <stop offset="0" stop-color="#7c3aed" stop-opacity=".42"/>
+    <stop offset=".58" stop-color="#38bdf8" stop-opacity=".12"/>
+    <stop offset="1" stop-color="#0b1020" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%">
+    <feDropShadow dx="0" dy="28" stdDeviation="24" flood-color="#000000" flood-opacity=".58"/>
+  </filter>
+  <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+    <feGaussianBlur stdDeviation="10" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<rect width="1440" height="760" rx="36" fill="url(#bg)"/>
+
+<circle cx="1100" cy="120" r="420" fill="url(#orb)"/>
+<circle cx="240" cy="650" r="340" fill="#22d3ee" opacity=".05"/>
+<g opacity=".07" stroke="#94a3b8">
+  <path d="M0 120H1440M0 240H1440M0 360H1440M0 480H1440M0 600H1440"/>
+  <path d="M120 0V760M300 0V760M480 0V760M660 0V760M840 0V760M1020 0V760M1200 0V760M1380 0V760"/>
+</g>
+
+<g font-family="Inter,Arial,sans-serif">
+  <rect x="78" y="72" width="232" height="38" rx="19" fill="#ffffff" opacity=".06" stroke="#ffffff" stroke-opacity=".12"/>
+  <circle cx="102" cy="91" r="5" fill="#34d399"/>
+  <text x="118" y="97" font-size="13" font-weight="500" fill="#cbd5e1">ai-native execution system</text>
+
+  <text x="78" y="212" font-size="82" font-weight="600" letter-spacing="-4" fill="#ffffff">cmdOS</text>
+  <text x="78" y="290" font-size="42" font-weight="400" letter-spacing="-1.6" fill="url(#brand)">the ai execution operating system</text>
+  <text x="78" y="350" font-size="20" font-weight="300" fill="#cbd5e1">turn human intent into secure, observable and verified execution</text>
+  <text x="78" y="382" font-size="20" font-weight="300" fill="#94a3b8">across applications, devices and digital environments.</text>
+
+  <rect x="78" y="430" width="198" height="54" rx="17" fill="url(#brand)"/>
+  <text x="177" y="464" text-anchor="middle" font-size="15" font-weight="600" fill="#061018">explore the vision</text>
+  <rect x="292" y="430" width="188" height="54" rx="17" fill="#ffffff" opacity=".06" stroke="#ffffff" stroke-opacity=".12"/>
+  <text x="386" y="464" text-anchor="middle" font-size="15" font-weight="500" fill="#ffffff">view architecture</text>
+
+  <text x="78" y="560" font-size="12" font-weight="500" fill="#64748b">intent</text>
+  <text x="178" y="560" font-size="12" font-weight="500" fill="#64748b">plan</text>
+  <text x="258" y="560" font-size="12" font-weight="500" fill="#64748b">permission</text>
+  <text x="374" y="560" font-size="12" font-weight="500" fill="#64748b">execution</text>
+  <text x="485" y="560" font-size="12" font-weight="500" fill="#64748b">verification</text>
+</g>
+
+<g transform="translate(835 95)" filter="url(#shadow)">
+  <g transform="rotate(-4 250 250)">
+    <rect x="0" y="0" width="500" height="520" rx="34" fill="url(#panel)" stroke="#ffffff" stroke-opacity=".10"/>
+    <rect x="24" y="24" width="452" height="54" rx="16" fill="#ffffff" opacity=".05"/>
+    <circle cx="50" cy="51" r="8" fill="#8b5cf6"/>
+    <text x="72" y="57" font-family="Inter,Arial,sans-serif" font-size="14" font-weight="400" fill="#f8fafc">prepare the launch and notify the team</text>
+
+    <rect x="24" y="106" width="210" height="112" rx="22" fill="#8b5cf6" opacity=".12" stroke="#8b5cf6" stroke-opacity=".35"/>
+    <text x="48" y="141" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="500" fill="#c4b5fd">planner</text>
+    <text x="48" y="176" font-family="Inter,Arial,sans-serif" font-size="17" font-weight="400" fill="#ffffff">build execution plan</text>
+
+    <rect x="258" y="106" width="218" height="112" rx="22" fill="#38bdf8" opacity=".11" stroke="#38bdf8" stroke-opacity=".35"/>
+    <text x="282" y="141" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="500" fill="#93c5fd">permission</text>
+    <text x="282" y="176" font-family="Inter,Arial,sans-serif" font-size="17" font-weight="400" fill="#ffffff">approve external send</text>
+
+    <rect x="24" y="244" width="210" height="112" rx="22" fill="#22d3ee" opacity=".10" stroke="#22d3ee" stroke-opacity=".35"/>
+    <text x="48" y="279" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="500" fill="#67e8f9">agent runtime</text>
+    <text x="48" y="314" font-family="Inter,Arial,sans-serif" font-size="17" font-weight="400" fill="#ffffff">execute across tools</text>
+
+    <rect x="258" y="244" width="218" height="112" rx="22" fill="#34d399" opacity=".10" stroke="#34d399" stroke-opacity=".35"/>
+    <text x="282" y="279" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="500" fill="#6ee7b7">verifier</text>
+    <text x="282" y="314" font-family="Inter,Arial,sans-serif" font-size="17" font-weight="400" fill="#ffffff">confirm the outcome</text>
+
+    <rect x="24" y="382" width="452" height="88" rx="20" fill="#ffffff" opacity=".04"/>
+    <text x="48" y="416" font-family="Inter,Arial,sans-serif" font-size="12" fill="#94a3b8">execution status</text>
+    <text x="48" y="450" font-family="Inter,Arial,sans-serif" font-size="17" font-weight="400" fill="#ffffff">4 agents · 7 actions · 2 approvals</text>
+  </g>
+</g>
+<circle r="7" fill="#ffffff" filter="url(#glow)">
+  <animateMotion dur="5.5s" repeatCount="indefinite" path="M918 470 C1030 570, 1190 570, 1300 470"/>
+</circle>
+
+</svg>

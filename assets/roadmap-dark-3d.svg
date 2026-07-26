@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="680" viewBox="0 0 1440 680">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#05070b"/>
+    <stop offset=".5" stop-color="#0b1020"/>
+    <stop offset="1" stop-color="#07151b"/>
+  </linearGradient>
+  <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#171c2a" stop-opacity=".96"/>
+    <stop offset="1" stop-color="#0d1320" stop-opacity=".94"/>
+  </linearGradient>
+  <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#8b5cf6"/>
+    <stop offset=".5" stop-color="#38bdf8"/>
+    <stop offset="1" stop-color="#22d3ee"/>
+  </linearGradient>
+  <radialGradient id="orb">
+    <stop offset="0" stop-color="#7c3aed" stop-opacity=".42"/>
+    <stop offset=".58" stop-color="#38bdf8" stop-opacity=".12"/>
+    <stop offset="1" stop-color="#0b1020" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%">
+    <feDropShadow dx="0" dy="28" stdDeviation="24" flood-color="#000000" flood-opacity=".58"/>
+  </filter>
+  <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+    <feGaussianBlur stdDeviation="10" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<rect width="1440" height="680" rx="36" fill="url(#bg)"/>
+
+<text x="720" y="62" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="30" font-weight="400" fill="#ffffff">roadmap</text>
+<text x="720" y="98" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="300" fill="#94a3b8">from local execution to a trusted agent ecosystem</text>
+
+<path d="M150 380 C330 180, 490 560, 680 360 C860 170, 1040 560, 1270 330" fill="none" stroke="#334155" stroke-width="5" stroke-linecap="round"/>
+<g font-family="Inter,Arial,sans-serif" filter="url(#shadow)">
+  <circle cx="170" cy="355" r="58" fill="url(#panel)" stroke="#8b5cf6" stroke-opacity=".35"/>
+  <text x="170" y="348" text-anchor="middle" font-size="16" fill="#c4b5fd">01</text>
+  <text x="170" y="375" text-anchor="middle" font-size="13" fill="#ffffff">foundation</text>
+
+  <circle cx="390" cy="250" r="58" fill="url(#panel)" stroke="#818cf8" stroke-opacity=".35"/>
+  <text x="390" y="243" text-anchor="middle" font-size="16" fill="#a5b4fc">02</text>
+  <text x="390" y="270" text-anchor="middle" font-size="13" fill="#ffffff">local runtime</text>
+
+  <circle cx="610" cy="470" r="58" fill="url(#panel)" stroke="#60a5fa" stroke-opacity=".35"/>
+  <text x="610" y="463" text-anchor="middle" font-size="16" fill="#93c5fd">03</text>
+  <text x="610" y="490" text-anchor="middle" font-size="13" fill="#ffffff">connect</text>
+
+  <circle cx="830" cy="245" r="58" fill="url(#panel)" stroke="#38bdf8" stroke-opacity=".35"/>
+  <text x="830" y="238" text-anchor="middle" font-size="16" fill="#7dd3fc">04</text>
+  <text x="830" y="265" text-anchor="middle" font-size="13" fill="#ffffff">secure mesh</text>
+
+  <circle cx="1050" cy="465" r="58" fill="url(#panel)" stroke="#22d3ee" stroke-opacity=".35"/>
+  <text x="1050" y="458" text-anchor="middle" font-size="16" fill="#67e8f9">05</text>
+  <text x="1050" y="485" text-anchor="middle" font-size="13" fill="#ffffff">distributed</text>
+
+  <circle cx="1250" cy="330" r="62" fill="url(#brand)"/>
+  <text x="1250" y="323" text-anchor="middle" font-size="16" fill="#e0f2fe">06</text>
+  <text x="1250" y="350" text-anchor="middle" font-size="13" fill="#061018">ecosystem</text>
+</g>
+<circle r="8" fill="#ffffff" filter="url(#glow)">
+  <animateMotion dur="7s" repeatCount="indefinite" path="M150 380 C330 180,490 560,680 360 C860 170,1040 560,1270 330"/>
+</circle>
+
+</svg>

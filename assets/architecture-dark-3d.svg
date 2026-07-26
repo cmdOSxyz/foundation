@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="760" viewBox="0 0 1440 760">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#05070b"/>
+    <stop offset=".5" stop-color="#0b1020"/>
+    <stop offset="1" stop-color="#07151b"/>
+  </linearGradient>
+  <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#171c2a" stop-opacity=".96"/>
+    <stop offset="1" stop-color="#0d1320" stop-opacity=".94"/>
+  </linearGradient>
+  <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#8b5cf6"/>
+    <stop offset=".5" stop-color="#38bdf8"/>
+    <stop offset="1" stop-color="#22d3ee"/>
+  </linearGradient>
+  <radialGradient id="orb">
+    <stop offset="0" stop-color="#7c3aed" stop-opacity=".42"/>
+    <stop offset=".58" stop-color="#38bdf8" stop-opacity=".12"/>
+    <stop offset="1" stop-color="#0b1020" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%">
+    <feDropShadow dx="0" dy="28" stdDeviation="24" flood-color="#000000" flood-opacity=".58"/>
+  </filter>
+  <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+    <feGaussianBlur stdDeviation="10" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<rect width="1440" height="760" rx="36" fill="url(#bg)"/>
+
+<text x="720" y="62" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="30" font-weight="400" fill="#ffffff">architecture</text>
+<text x="720" y="98" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="300" fill="#94a3b8">a permissioned execution stack for human intent, agents and real-world tools</text>
+
+<g transform="translate(120 145)" filter="url(#shadow)" font-family="Inter,Arial,sans-serif">
+  <g transform="translate(0 0)">
+    <rect width="1200" height="92" rx="24" fill="url(#panel)" stroke="#ffffff" stroke-opacity=".10"/>
+    <text x="32" y="38" font-size="13" font-weight="500" fill="#c4b5fd">01</text>
+    <text x="90" y="40" font-size="19" font-weight="400" fill="#ffffff">experience layer</text>
+    <text x="360" y="40" font-size="15" font-weight="300" fill="#94a3b8">desktop · mobile · web · chat · voice · command ui</text>
+  </g>
+  <g transform="translate(0 112)">
+    <rect width="1200" height="92" rx="24" fill="url(#panel)" stroke="#ffffff" stroke-opacity=".10"/>
+    <text x="32" y="38" font-size="13" font-weight="500" fill="#a5b4fc">02</text>
+    <text x="90" y="40" font-size="19" font-weight="400" fill="#ffffff">intent and orchestration</text>
+    <text x="360" y="40" font-size="15" font-weight="300" fill="#94a3b8">understanding · planning · routing · recovery</text>
+  </g>
+  <g transform="translate(0 224)">
+    <rect width="1200" height="92" rx="24" fill="url(#panel)" stroke="#ffffff" stroke-opacity=".10"/>
+    <text x="32" y="38" font-size="13" font-weight="500" fill="#93c5fd">03</text>
+    <text x="90" y="40" font-size="19" font-weight="400" fill="#ffffff">permission and security</text>
+    <text x="360" y="40" font-size="15" font-weight="300" fill="#94a3b8">identity · approval · policy · secrets · audit</text>
+  </g>
+  <g transform="translate(0 336)">
+    <rect width="1200" height="92" rx="24" fill="url(#panel)" stroke="#ffffff" stroke-opacity=".10"/>
+    <text x="32" y="38" font-size="13" font-weight="500" fill="#67e8f9">04</text>
+    <text x="90" y="40" font-size="19" font-weight="400" fill="#ffffff">agent runtime and mesh</text>
+    <text x="360" y="40" font-size="15" font-weight="300" fill="#94a3b8">browser · desktop · terminal · mobile · cloud · edge</text>
+  </g>
+  <g transform="translate(0 448)">
+    <rect width="1200" height="92" rx="24" fill="url(#panel)" stroke="#ffffff" stroke-opacity=".10"/>
+    <text x="32" y="38" font-size="13" font-weight="500" fill="#6ee7b7">05</text>
+    <text x="90" y="40" font-size="19" font-weight="400" fill="#ffffff">execution and verification</text>
+    <text x="360" y="40" font-size="15" font-weight="300" fill="#94a3b8">apps · files · apis · devices · evidence · results</text>
+  </g>
+</g>
+<circle cx="88" r="7" fill="#8b5cf6" filter="url(#glow)">
+  <animate attributeName="cy" values="190;635;190" dur="6s" repeatCount="indefinite"/>
+</circle>
+
+</svg>

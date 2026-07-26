@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="760" viewBox="0 0 1440 760">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#05070b"/>
+    <stop offset=".5" stop-color="#0b1020"/>
+    <stop offset="1" stop-color="#07151b"/>
+  </linearGradient>
+  <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#171c2a" stop-opacity=".96"/>
+    <stop offset="1" stop-color="#0d1320" stop-opacity=".94"/>
+  </linearGradient>
+  <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#8b5cf6"/>
+    <stop offset=".5" stop-color="#38bdf8"/>
+    <stop offset="1" stop-color="#22d3ee"/>
+  </linearGradient>
+  <radialGradient id="orb">
+    <stop offset="0" stop-color="#7c3aed" stop-opacity=".42"/>
+    <stop offset=".58" stop-color="#38bdf8" stop-opacity=".12"/>
+    <stop offset="1" stop-color="#0b1020" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%">
+    <feDropShadow dx="0" dy="28" stdDeviation="24" flood-color="#000000" flood-opacity=".58"/>
+  </filter>
+  <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+    <feGaussianBlur stdDeviation="10" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<rect width="1440" height="760" rx="36" fill="url(#bg)"/>
+
+<text x="720" y="62" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="30" font-weight="400" fill="#ffffff">workflow studio</text>
+<text x="720" y="98" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="300" fill="#94a3b8">compose reusable execution systems from intent, agents, permissions and verification</text>
+
+<g font-family="Inter,Arial,sans-serif" filter="url(#shadow)">
+  <rect x="110" y="140" width="1220" height="500" rx="34" fill="url(#panel)" stroke="#ffffff" stroke-opacity=".10"/>
+  <rect x="138" y="170" width="210" height="440" rx="24" fill="#ffffff" opacity=".04"/>
+  <text x="166" y="212" font-size="15" font-weight="400" fill="#ffffff">blocks</text>
+  <rect x="158" y="250" width="170" height="44" rx="13" fill="#8b5cf6" opacity=".16"/><text x="243" y="278" text-anchor="middle" font-size="13" fill="#c4b5fd">intent</text>
+  <rect x="158" y="314" width="170" height="44" rx="13" fill="#38bdf8" opacity=".14"/><text x="243" y="342" text-anchor="middle" font-size="13" fill="#93c5fd">agent</text>
+  <rect x="158" y="378" width="170" height="44" rx="13" fill="#22d3ee" opacity=".12"/><text x="243" y="406" text-anchor="middle" font-size="13" fill="#67e8f9">permission</text>
+  <rect x="158" y="442" width="170" height="44" rx="13" fill="#34d399" opacity=".12"/><text x="243" y="470" text-anchor="middle" font-size="13" fill="#6ee7b7">verify</text>
+
+  <rect x="430" y="220" width="210" height="100" rx="24" fill="#ffffff" opacity=".05" stroke="#8b5cf6" stroke-opacity=".28"/>
+  <text x="535" y="258" text-anchor="middle" font-size="12" fill="#c4b5fd">intent</text><text x="535" y="292" text-anchor="middle" font-size="16" fill="#ffffff">launch report</text>
+
+  <rect x="710" y="220" width="210" height="100" rx="24" fill="#ffffff" opacity=".05" stroke="#38bdf8" stroke-opacity=".28"/>
+  <text x="815" y="258" text-anchor="middle" font-size="12" fill="#93c5fd">agent</text><text x="815" y="292" text-anchor="middle" font-size="16" fill="#ffffff">collect updates</text>
+
+  <rect x="990" y="220" width="210" height="100" rx="24" fill="#ffffff" opacity=".05" stroke="#22d3ee" stroke-opacity=".28"/>
+  <text x="1095" y="258" text-anchor="middle" font-size="12" fill="#67e8f9">permission</text><text x="1095" y="292" text-anchor="middle" font-size="16" fill="#ffffff">external send</text>
+
+  <rect x="570" y="430" width="210" height="100" rx="24" fill="#ffffff" opacity=".05" stroke="#34d399" stroke-opacity=".28"/>
+  <text x="675" y="468" text-anchor="middle" font-size="12" fill="#6ee7b7">verify</text><text x="675" y="502" text-anchor="middle" font-size="16" fill="#ffffff">validate result</text>
+
+  <rect x="850" y="430" width="210" height="100" rx="24" fill="url(#brand)"/>
+  <text x="955" y="468" text-anchor="middle" font-size="12" fill="#dbeafe">result</text><text x="955" y="502" text-anchor="middle" font-size="16" fill="#061018">deliver outcome</text>
+</g>
+
+<g stroke="url(#brand)" stroke-width="3" fill="none" opacity=".72">
+  <path d="M640 270H710"/>
+  <path d="M920 270H990"/>
+  <path d="M1095 320 C1095 380,955 380,955 430"/>
+  <path d="M850 480H780"/>
+</g>
+<circle r="7" fill="#ffffff" filter="url(#glow)">
+  <animateMotion dur="5s" repeatCount="indefinite" path="M640 270H710H920H990 C1095 270,1095 380,955 430H850"/>
+</circle>
+
+</svg>
