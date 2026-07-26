@@ -1,110 +1,42 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="680" viewBox="0 0 1440 680">
-
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="380" viewBox="0 0 1400 380">
 <defs>
   <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#05070b"/>
-    <stop offset=".55" stop-color="#0a0e18"/>
-    <stop offset="1" stop-color="#07141a"/>
+    <stop offset="0" stop-color="#F8FAFC"/>
+    <stop offset="1" stop-color="#EEF2FF"/>
   </linearGradient>
-  <linearGradient id="surface" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#171c28"/>
-    <stop offset="1" stop-color="#0d111a"/>
+  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#7C3AED"/>
+    <stop offset="0.5" stop-color="#3B82F6"/>
+    <stop offset="1" stop-color="#06B6D4"/>
   </linearGradient>
-  <linearGradient id="surface2" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#202736"/>
-    <stop offset="1" stop-color="#111722"/>
-  </linearGradient>
-  <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#9f7aea"/>
-    <stop offset=".5" stop-color="#5da8ff"/>
-    <stop offset="1" stop-color="#2dd4bf"/>
-  </linearGradient>
-  <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#f8fafc"/>
-    <stop offset=".25" stop-color="#64748b"/>
-    <stop offset=".52" stop-color="#ffffff"/>
-    <stop offset=".78" stop-color="#334155"/>
-    <stop offset="1" stop-color="#cbd5e1"/>
-  </linearGradient>
-  <radialGradient id="orb">
-    <stop offset="0" stop-color="#7c3aed" stop-opacity=".28"/>
-    <stop offset=".55" stop-color="#38bdf8" stop-opacity=".10"/>
-    <stop offset="1" stop-color="#05070b" stop-opacity="0"/>
-  </radialGradient>
-  <filter id="shadow" x="-80%" y="-80%" width="260%" height="260%">
-    <feDropShadow dx="0" dy="24" stdDeviation="20" flood-color="#000000" flood-opacity=".62"/>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#64748B" flood-opacity=".20"/>
   </filter>
-  <filter id="smallShadow" x="-50%" y="-50%" width="200%" height="200%">
-    <feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#000000" flood-opacity=".48"/>
-  </filter>
-  <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
-    <feGaussianBlur stdDeviation="7" result="blur"/>
-    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="8" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
   </filter>
 </defs>
-<rect width="1440" height="680" rx="34" fill="url(#bg)"/>
+<rect width="1400" height="380" rx="36" fill="url(#bg)"/>
 
-<text x="72" y="62" font-family="Inter,Arial,sans-serif" font-size="29" font-weight="350" fill="#ffffff">security model</text>
-<text x="72" y="94" font-family="Inter,Arial,sans-serif" font-size="15" font-weight="300" fill="#8f9bad">permission-first execution with clear data boundaries and evidence</text>
-<line x1="72" y1="118" x2="1368" y2="118" stroke="#ffffff" stroke-opacity=".08"/>
+<text x="700" y="45" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="24" font-weight="700" fill="#111827">Zero-trust execution</text>
+<g filter="url(#shadow)">
+<rect x="80" y="165" width="240" height="120" rx="28" fill="#FFFFFF"/>
+<rect x="390" y="165" width="240" height="120" rx="28" fill="#FFFFFF"/>
+<rect x="700" y="165" width="240" height="120" rx="28" fill="#FFFFFF"/>
+<rect x="1010" y="165" width="240" height="120" rx="28" fill="#FFFFFF"/>
+</g>
+<g font-family="Inter,Arial,sans-serif" text-anchor="middle">
+<text x="200" y="220" font-size="19" font-weight="700" fill="#111827">Authenticate</text>
+<text x="510" y="220" font-size="19" font-weight="700" fill="#111827">Authorize</text>
+<text x="820" y="220" font-size="19" font-weight="700" fill="#111827">Execute</text>
+<text x="1130" y="220" font-size="19" font-weight="700" fill="#111827">Audit</text>
+<text x="200" y="248" font-size="14" fill="#64748B">identity</text>
+<text x="510" y="248" font-size="14" fill="#64748B">permission</text>
+<text x="820" y="248" font-size="14" fill="#64748B">sandbox</text>
+<text x="1130" y="248" font-size="14" fill="#64748B">evidence</text>
+</g>
+<path d="M320 225H390M630 225H700M940 225H1010" stroke="#CBD5E1" stroke-width="3"/>
+<circle cy="225" r="8" fill="#7C3AED" filter="url(#glow)"><animate attributeName="cx" values="320;1010" dur="3.7s" repeatCount="indefinite"/></circle>
 
-<g transform="translate(80 150) rotate(-3 190.0 235.0)" filter="url(#shadow)">
-  <rect x="14" y="20" width="380" height="470" rx="24" fill="#020305" opacity=".78"/>
-  <rect x="7.0" y="7.0" width="380" height="470" rx="24" fill="#0b0f17" stroke="#9f7aea" stroke-opacity=".16"/>
-  <rect width="380" height="470" rx="24" fill="url(#surface)" stroke="#ffffff" stroke-opacity=".09"/>
-  <path d="M24 30 H356" stroke="#ffffff" stroke-opacity=".12" stroke-width="2"/>
-  <text x="26" y="58" font-family="Inter,Arial,sans-serif" font-size="11" font-weight="500" fill="#9f7aea">before execution</text>
-  <text x="26" y="91" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="350" fill="#ffffff">identity and policy</text>
-
-  <text x="26" y="122" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">user identity</text>
-  <text x="354" y="122" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">verified</text>
-  <text x="26" y="153" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">agent identity</text>
-  <text x="354" y="153" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">signed</text>
-  <text x="26" y="184" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">policy</text>
-  <text x="354" y="184" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">matched</text>
-  <text x="26" y="215" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">data scope</text>
-  <text x="354" y="215" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">minimal</text>
-  <text x="26" y="246" font-family="Inter,Arial,sans-serif" font-size="11" fill="#778397">policy confidence</text>
-  <rect x="26" y="256" width="328" height="8" rx="4" fill="#ffffff" opacity=".05"/>
-  <rect x="26" y="256" width="301" height="8" rx="4" fill="#9f7aea" opacity=".75"/></g>
-<g transform="translate(530 120) rotate(0 190.0 260.0)" filter="url(#shadow)">
-  <rect x="14" y="20" width="380" height="520" rx="24" fill="#020305" opacity=".78"/>
-  <rect x="7.0" y="7.0" width="380" height="520" rx="24" fill="#0b0f17" stroke="#5da8ff" stroke-opacity=".16"/>
-  <rect width="380" height="520" rx="24" fill="url(#surface)" stroke="#ffffff" stroke-opacity=".09"/>
-  <path d="M24 30 H356" stroke="#ffffff" stroke-opacity=".12" stroke-width="2"/>
-  <text x="26" y="58" font-family="Inter,Arial,sans-serif" font-size="11" font-weight="500" fill="#5da8ff">human control</text>
-  <text x="26" y="91" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="350" fill="#ffffff">permission gate</text>
-
-  <text x="26" y="122" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">action</text>
-  <text x="354" y="122" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">send approved report</text>
-  <text x="26" y="153" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">recipient</text>
-  <text x="354" y="153" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">leadership</text>
-  <text x="26" y="184" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">data leaving</text>
-  <text x="354" y="184" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">1 pdf</text>
-  <text x="26" y="215" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">scope</text>
-  <text x="354" y="215" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">one-time</text>
-  <rect x="26" y="230" width="192" height="28" rx="14" fill="#5da8ff" opacity=".12" stroke="#5da8ff" stroke-opacity=".18"/>
-  <text x="122.0" y="249" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="11" fill="#5da8ff">review · reject · approve</text>
-  <text x="26" y="284" font-family="Inter,Arial,sans-serif" font-size="11" fill="#778397">risk review</text>
-  <rect x="26" y="294" width="328" height="8" rx="4" fill="#ffffff" opacity=".05"/>
-  <rect x="26" y="294" width="249" height="8" rx="4" fill="#5da8ff" opacity=".75"/></g>
-<g transform="translate(980 150) rotate(3 190.0 235.0)" filter="url(#shadow)">
-  <rect x="14" y="20" width="380" height="470" rx="24" fill="#020305" opacity=".78"/>
-  <rect x="7.0" y="7.0" width="380" height="470" rx="24" fill="#0b0f17" stroke="#34d399" stroke-opacity=".16"/>
-  <rect width="380" height="470" rx="24" fill="url(#surface)" stroke="#ffffff" stroke-opacity=".09"/>
-  <path d="M24 30 H356" stroke="#ffffff" stroke-opacity=".12" stroke-width="2"/>
-  <text x="26" y="58" font-family="Inter,Arial,sans-serif" font-size="11" font-weight="500" fill="#34d399">after execution</text>
-  <text x="26" y="91" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="350" fill="#ffffff">audit and evidence</text>
-
-  <text x="26" y="122" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">receipt</text>
-  <text x="354" y="122" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">created</text>
-  <text x="26" y="153" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">hash</text>
-  <text x="354" y="153" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">stored</text>
-  <text x="26" y="184" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">delivery</text>
-  <text x="354" y="184" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">confirmed</text>
-  <text x="26" y="215" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">verifier</text>
-  <text x="354" y="215" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">passed</text>
-  <text x="26" y="246" font-family="Inter,Arial,sans-serif" font-size="11" fill="#778397">evidence coverage</text>
-  <rect x="26" y="256" width="328" height="8" rx="4" fill="#ffffff" opacity=".05"/>
-  <rect x="26" y="256" width="314" height="8" rx="4" fill="#34d399" opacity=".75"/></g>
 </svg>

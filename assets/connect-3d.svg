@@ -1,108 +1,43 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="700" viewBox="0 0 1440 700">
-
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="430" viewBox="0 0 1400 430">
 <defs>
   <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#05070b"/>
-    <stop offset=".55" stop-color="#0a0e18"/>
-    <stop offset="1" stop-color="#07141a"/>
+    <stop offset="0" stop-color="#F8FAFC"/>
+    <stop offset="1" stop-color="#EEF2FF"/>
   </linearGradient>
-  <linearGradient id="surface" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#171c28"/>
-    <stop offset="1" stop-color="#0d111a"/>
+  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#7C3AED"/>
+    <stop offset="0.5" stop-color="#3B82F6"/>
+    <stop offset="1" stop-color="#06B6D4"/>
   </linearGradient>
-  <linearGradient id="surface2" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#202736"/>
-    <stop offset="1" stop-color="#111722"/>
-  </linearGradient>
-  <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#9f7aea"/>
-    <stop offset=".5" stop-color="#5da8ff"/>
-    <stop offset="1" stop-color="#2dd4bf"/>
-  </linearGradient>
-  <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#f8fafc"/>
-    <stop offset=".25" stop-color="#64748b"/>
-    <stop offset=".52" stop-color="#ffffff"/>
-    <stop offset=".78" stop-color="#334155"/>
-    <stop offset="1" stop-color="#cbd5e1"/>
-  </linearGradient>
-  <radialGradient id="orb">
-    <stop offset="0" stop-color="#7c3aed" stop-opacity=".28"/>
-    <stop offset=".55" stop-color="#38bdf8" stop-opacity=".10"/>
-    <stop offset="1" stop-color="#05070b" stop-opacity="0"/>
-  </radialGradient>
-  <filter id="shadow" x="-80%" y="-80%" width="260%" height="260%">
-    <feDropShadow dx="0" dy="24" stdDeviation="20" flood-color="#000000" flood-opacity=".62"/>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#64748B" flood-opacity=".20"/>
   </filter>
-  <filter id="smallShadow" x="-50%" y="-50%" width="200%" height="200%">
-    <feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#000000" flood-opacity=".48"/>
-  </filter>
-  <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
-    <feGaussianBlur stdDeviation="7" result="blur"/>
-    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="8" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
   </filter>
 </defs>
-<rect width="1440" height="700" rx="34" fill="url(#bg)"/>
+<rect width="1400" height="430" rx="36" fill="url(#bg)"/>
 
-<text x="72" y="62" font-family="Inter,Arial,sans-serif" font-size="29" font-weight="350" fill="#ffffff">cmdOS connect</text>
-<text x="72" y="94" font-family="Inter,Arial,sans-serif" font-size="15" font-weight="300" fill="#8f9bad">human conversations and agent execution in the same operational context</text>
-<line x1="72" y1="118" x2="1368" y2="118" stroke="#ffffff" stroke-opacity=".08"/>
+<text x="700" y="45" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="24" font-weight="700" fill="#111827">cmdOS Connect</text>
+<g stroke="#CBD5E1" stroke-width="3">
+<path d="M700 205L270 105M700 205L1130 105M700 205L270 315M700 205L1130 315"/>
+</g>
+<g filter="url(#shadow)" font-family="Inter,Arial,sans-serif">
+<rect x="575" y="145" width="250" height="120" rx="30" fill="url(#accent)"/>
+<rect x="160" y="60" width="220" height="90" rx="24" fill="#FFFFFF"/>
+<rect x="1020" y="60" width="220" height="90" rx="24" fill="#FFFFFF"/>
+<rect x="160" y="270" width="220" height="90" rx="24" fill="#FFFFFF"/>
+<rect x="1020" y="270" width="220" height="90" rx="24" fill="#FFFFFF"/>
+</g>
+<g font-family="Inter,Arial,sans-serif" text-anchor="middle">
+<text x="700" y="215" font-size="26" font-weight="700" fill="#FFFFFF">cmdOS Connect</text>
+<text x="270" y="115" font-size="19" font-weight="700" fill="#111827">Human</text>
+<text x="1130" y="115" font-size="19" font-weight="700" fill="#111827">Team</text>
+<text x="270" y="325" font-size="19" font-weight="700" fill="#111827">AI Agent</text>
+<text x="1130" y="325" font-size="19" font-weight="700" fill="#111827">Device</text>
+</g>
+<circle r="8" fill="#7C3AED" filter="url(#glow)"><animateMotion dur="3.8s" repeatCount="indefinite" path="M700 205L270 105L1130 105L700 205"/></circle>
+<circle r="8" fill="#06B6D4" filter="url(#glow)"><animateMotion dur="4.2s" begin=".8s" repeatCount="indefinite" path="M700 205L1130 315L270 315L700 205"/></circle>
 
-<g transform="translate(70 145) rotate(-2 150.0 250.0)" filter="url(#shadow)">
-  <rect x="14" y="20" width="300" height="500" rx="24" fill="#020305" opacity=".78"/>
-  <rect x="7.0" y="7.0" width="300" height="500" rx="24" fill="#0b0f17" stroke="#9f7aea" stroke-opacity=".16"/>
-  <rect width="300" height="500" rx="24" fill="url(#surface)" stroke="#ffffff" stroke-opacity=".09"/>
-  <path d="M24 30 H276" stroke="#ffffff" stroke-opacity=".12" stroke-width="2"/>
-  <text x="26" y="58" font-family="Inter,Arial,sans-serif" font-size="11" font-weight="500" fill="#9f7aea">navigation</text>
-  <text x="26" y="91" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="350" fill="#ffffff">spaces</text>
-
-  <rect x="26" y="106" width="138" height="28" rx="14" fill="#9f7aea" opacity=".12" stroke="#9f7aea" stroke-opacity=".18"/>
-  <text x="95.0" y="125" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="11" fill="#9f7aea"># product-launch</text>
-  <text x="26" y="160" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397"># engineering</text>
-  <text x="274" y="160" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">24</text>
-  <text x="26" y="191" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397"># design</text>
-  <text x="274" y="191" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">12</text>
-  <text x="26" y="222" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">direct</text>
-  <text x="274" y="222" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">8</text>
-  <text x="26" y="253" font-family="Inter,Arial,sans-serif" font-size="11" fill="#778397">activity</text>
-  <rect x="26" y="263" width="248" height="8" rx="4" fill="#ffffff" opacity=".05"/>
-  <rect x="26" y="263" width="176" height="8" rx="4" fill="#9f7aea" opacity=".75"/></g>
-<g transform="translate(390 128) rotate(1 345.0 260.0)" filter="url(#shadow)">
-  <rect x="14" y="20" width="690" height="520" rx="24" fill="#020305" opacity=".78"/>
-  <rect x="7.0" y="7.0" width="690" height="520" rx="24" fill="#0b0f17" stroke="#5da8ff" stroke-opacity=".16"/>
-  <rect width="690" height="520" rx="24" fill="url(#surface)" stroke="#ffffff" stroke-opacity=".09"/>
-  <path d="M24 30 H666" stroke="#ffffff" stroke-opacity=".12" stroke-width="2"/>
-  <text x="26" y="58" font-family="Inter,Arial,sans-serif" font-size="11" font-weight="500" fill="#5da8ff">conversation</text>
-  <text x="26" y="91" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="350" fill="#ffffff"># product-launch</text>
-
-  <text x="26" y="122" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">thomas</text>
-  <text x="664" y="122" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">check launch readiness</text>
-  <text x="26" y="153" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">release agent</text>
-  <text x="664" y="153" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">2 blockers found</text>
-  <rect x="26" y="168" width="144" height="28" rx="14" fill="#5da8ff" opacity=".12" stroke="#5da8ff" stroke-opacity=".18"/>
-  <text x="98.0" y="187" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="11" fill="#5da8ff">approval required</text>
-  <text x="26" y="222" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">cmdOS</text>
-  <text x="664" y="222" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">report prepared</text>
-  <text x="26" y="253" font-family="Inter,Arial,sans-serif" font-size="11" fill="#778397">thread progress</text>
-  <rect x="26" y="263" width="638" height="8" rx="4" fill="#ffffff" opacity=".05"/>
-  <rect x="26" y="263" width="516" height="8" rx="4" fill="#5da8ff" opacity=".75"/></g>
-<g transform="translate(1100 155) rotate(3 140.0 225.0)" filter="url(#shadow)">
-  <rect x="14" y="20" width="280" height="450" rx="24" fill="#020305" opacity=".78"/>
-  <rect x="7.0" y="7.0" width="280" height="450" rx="24" fill="#0b0f17" stroke="#2dd4bf" stroke-opacity=".16"/>
-  <rect width="280" height="450" rx="24" fill="url(#surface)" stroke="#ffffff" stroke-opacity=".09"/>
-  <path d="M24 30 H256" stroke="#ffffff" stroke-opacity=".12" stroke-width="2"/>
-  <text x="26" y="58" font-family="Inter,Arial,sans-serif" font-size="11" font-weight="500" fill="#2dd4bf">live</text>
-  <text x="26" y="91" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="350" fill="#ffffff">agent activity</text>
-
-  <text x="26" y="122" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">summaries</text>
-  <text x="254" y="122" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">3</text>
-  <text x="26" y="153" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">tasks</text>
-  <text x="254" y="153" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">7</text>
-  <text x="26" y="184" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">approvals</text>
-  <text x="254" y="184" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">1</text>
-  <text x="26" y="215" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">verified</text>
-  <text x="254" y="215" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">5</text>
-  <text x="26" y="246" font-family="Inter,Arial,sans-serif" font-size="11" fill="#778397">completion</text>
-  <rect x="26" y="256" width="228" height="8" rx="4" fill="#ffffff" opacity=".05"/>
-  <rect x="26" y="256" width="191" height="8" rx="4" fill="#2dd4bf" opacity=".75"/></g>
 </svg>
