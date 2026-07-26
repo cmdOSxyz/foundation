@@ -1,100 +1,121 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1440" height="700" viewBox="0 0 1440 700">
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="700" viewBox="0 0 1440 700">
 
 <defs>
   <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#030407"/>
-    <stop offset=".48" stop-color="#090d17"/>
-    <stop offset="1" stop-color="#041116"/>
+    <stop offset="0" stop-color="#05070b"/>
+    <stop offset=".55" stop-color="#0a0e18"/>
+    <stop offset="1" stop-color="#07141a"/>
+  </linearGradient>
+  <linearGradient id="surface" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#171c28"/>
+    <stop offset="1" stop-color="#0d111a"/>
+  </linearGradient>
+  <linearGradient id="surface2" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#202736"/>
+    <stop offset="1" stop-color="#111722"/>
   </linearGradient>
   <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#a78bfa"/>
-    <stop offset=".48" stop-color="#60a5fa"/>
-    <stop offset="1" stop-color="#22d3ee"/>
-  </linearGradient>
-  <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#ffffff" stop-opacity=".14"/>
-    <stop offset=".52" stop-color="#ffffff" stop-opacity=".055"/>
-    <stop offset="1" stop-color="#ffffff" stop-opacity=".02"/>
+    <stop offset="0" stop-color="#9f7aea"/>
+    <stop offset=".5" stop-color="#5da8ff"/>
+    <stop offset="1" stop-color="#2dd4bf"/>
   </linearGradient>
   <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
     <stop offset="0" stop-color="#f8fafc"/>
     <stop offset=".25" stop-color="#64748b"/>
-    <stop offset=".48" stop-color="#ffffff"/>
-    <stop offset=".72" stop-color="#334155"/>
+    <stop offset=".52" stop-color="#ffffff"/>
+    <stop offset=".78" stop-color="#334155"/>
     <stop offset="1" stop-color="#cbd5e1"/>
   </linearGradient>
   <radialGradient id="orb">
-    <stop offset="0" stop-color="#8b5cf6" stop-opacity=".42"/>
-    <stop offset=".55" stop-color="#38bdf8" stop-opacity=".13"/>
-    <stop offset="1" stop-color="#030407" stop-opacity="0"/>
+    <stop offset="0" stop-color="#7c3aed" stop-opacity=".28"/>
+    <stop offset=".55" stop-color="#38bdf8" stop-opacity=".10"/>
+    <stop offset="1" stop-color="#05070b" stop-opacity="0"/>
   </radialGradient>
-  <filter id="deepShadow" x="-80%" y="-80%" width="260%" height="260%">
-    <feGaussianBlur in="SourceAlpha" stdDeviation="22" result="blur"/>
-    <feOffset dx="0" dy="28" result="offset"/>
-    <feColorMatrix in="offset" type="matrix"
-      values="0 0 0 0 0
-              0 0 0 0 0
-              0 0 0 0 0
-              0 0 0 .68 0" result="shadow"/>
-    <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
+  <filter id="shadow" x="-80%" y="-80%" width="260%" height="260%">
+    <feDropShadow dx="0" dy="24" stdDeviation="20" flood-color="#000000" flood-opacity=".62"/>
+  </filter>
+  <filter id="smallShadow" x="-50%" y="-50%" width="200%" height="200%">
+    <feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#000000" flood-opacity=".48"/>
   </filter>
   <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
-    <feGaussianBlur stdDeviation="9" result="b"/>
-    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    <feGaussianBlur stdDeviation="7" result="blur"/>
+    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
   </filter>
 </defs>
-<rect width="1440" height="700" rx="38" fill="url(#bg)"/>
+<rect width="1440" height="700" rx="34" fill="url(#bg)"/>
 
-<circle cx="1180" cy="110" r="330" fill="url(#orb)"/>
-<text x="720" y="62" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="30" font-weight="300" fill="#ffffff">architecture</text>
-<text x="720" y="98" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="300" fill="#94a3b8">each layer is isolated, permissioned and designed for verifiable execution</text>
+<text x="72" y="62" font-family="Inter,Arial,sans-serif" font-size="29" font-weight="350" fill="#ffffff">architecture</text>
+<text x="72" y="94" font-family="Inter,Arial,sans-serif" font-size="15" font-weight="300" fill="#8f9bad">five compact layers with explicit responsibility and trust boundaries</text>
+<line x1="72" y1="118" x2="1368" y2="118" stroke="#ffffff" stroke-opacity=".08"/>
 
-<g transform="translate(120 170) rotate(-3 250.0 60.0)" filter="url(#deepShadow)">
-  <rect x="12" y="18" width="500" height="120" rx="28" fill="#000000" opacity=".48"/>
-  <rect width="500" height="120" rx="28" fill="url(#glass)" stroke="#a78bfa" stroke-opacity=".34"/>
-  <path d="M28 34 H472" stroke="#ffffff" stroke-opacity=".16" stroke-width="2"/>
-  <text x="30" y="58" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="400" fill="#a78bfa">01 · experience layer</text>
-  <text x="30" y="102" font-family="Inter,Arial,sans-serif" font-size="20" font-weight="300" fill="#ffffff">desktop · mobile · web · voice</text>
-  <rect x="30" y="56" width="440" height="28" rx="14" fill="#a78bfa" opacity=".10"/>
-</g>
+<g transform="translate(78 155) rotate(-2 295.0 90.0)" filter="url(#shadow)">
+  <rect x="14" y="20" width="590" height="180" rx="24" fill="#020305" opacity=".78"/>
+  <rect x="7.0" y="7.0" width="590" height="180" rx="24" fill="#0b0f17" stroke="#9f7aea" stroke-opacity=".16"/>
+  <rect width="590" height="180" rx="24" fill="url(#surface)" stroke="#ffffff" stroke-opacity=".09"/>
+  <path d="M24 30 H566" stroke="#ffffff" stroke-opacity=".12" stroke-width="2"/>
+  <text x="26" y="58" font-family="Inter,Arial,sans-serif" font-size="11" font-weight="500" fill="#9f7aea">01</text>
+  <text x="26" y="91" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="350" fill="#ffffff">experience layer</text>
 
-<g transform="translate(760 150) rotate(4 280.0 65.0)" filter="url(#deepShadow)">
-  <rect x="12" y="18" width="560" height="130" rx="28" fill="#000000" opacity=".48"/>
-  <rect width="560" height="130" rx="28" fill="url(#glass)" stroke="#818cf8" stroke-opacity=".34"/>
-  <path d="M28 34 H532" stroke="#ffffff" stroke-opacity=".16" stroke-width="2"/>
-  <text x="30" y="58" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="400" fill="#818cf8">02 · intent and orchestration</text>
-  <text x="30" y="102" font-family="Inter,Arial,sans-serif" font-size="20" font-weight="300" fill="#ffffff">understand · plan · route · recover</text>
-  <rect x="30" y="66" width="500" height="28" rx="14" fill="#818cf8" opacity=".10"/>
-</g>
+  <text x="26" y="122" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">surfaces</text>
+  <text x="564" y="122" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">desktop · mobile · web</text>
+  <text x="26" y="153" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">input</text>
+  <text x="564" y="153" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">chat · voice · command</text>
+  <text x="26" y="184" font-family="Inter,Arial,sans-serif" font-size="11" fill="#778397">coverage</text>
+  <rect x="26" y="194" width="538" height="8" rx="4" fill="#ffffff" opacity=".05"/>
+  <rect x="26" y="194" width="462" height="8" rx="4" fill="#9f7aea" opacity=".75"/></g>
+<g transform="translate(748 145) rotate(2 307.0 95.0)" filter="url(#shadow)">
+  <rect x="14" y="20" width="614" height="190" rx="24" fill="#020305" opacity=".78"/>
+  <rect x="7.0" y="7.0" width="614" height="190" rx="24" fill="#0b0f17" stroke="#7c8cff" stroke-opacity=".16"/>
+  <rect width="614" height="190" rx="24" fill="url(#surface)" stroke="#ffffff" stroke-opacity=".09"/>
+  <path d="M24 30 H590" stroke="#ffffff" stroke-opacity=".12" stroke-width="2"/>
+  <text x="26" y="58" font-family="Inter,Arial,sans-serif" font-size="11" font-weight="500" fill="#7c8cff">02</text>
+  <text x="26" y="91" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="350" fill="#ffffff">intent and orchestration</text>
 
-<g transform="translate(185 345) rotate(3 250.0 65.0)" filter="url(#deepShadow)">
-  <rect x="12" y="18" width="500" height="130" rx="28" fill="#000000" opacity=".48"/>
-  <rect width="500" height="130" rx="28" fill="url(#glass)" stroke="#60a5fa" stroke-opacity=".34"/>
-  <path d="M28 34 H472" stroke="#ffffff" stroke-opacity=".16" stroke-width="2"/>
-  <text x="30" y="58" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="400" fill="#60a5fa">03 · permission and security</text>
-  <text x="30" y="102" font-family="Inter,Arial,sans-serif" font-size="20" font-weight="300" fill="#ffffff">identity · policies · secrets · audit</text>
-  <rect x="30" y="66" width="440" height="28" rx="14" fill="#60a5fa" opacity=".10"/>
-</g>
+  <text x="26" y="122" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">engines</text>
+  <text x="588" y="122" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">intent · plan · router</text>
+  <text x="26" y="153" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">recovery</text>
+  <text x="588" y="153" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">retry · fallback</text>
+  <text x="26" y="184" font-family="Inter,Arial,sans-serif" font-size="11" fill="#778397">context</text>
+  <rect x="26" y="194" width="562" height="8" rx="4" fill="#ffffff" opacity=".05"/>
+  <rect x="26" y="194" width="415" height="8" rx="4" fill="#7c8cff" opacity=".75"/></g>
+<g transform="translate(78 382) rotate(2 295.0 95.0)" filter="url(#shadow)">
+  <rect x="14" y="20" width="590" height="190" rx="24" fill="#020305" opacity=".78"/>
+  <rect x="7.0" y="7.0" width="590" height="190" rx="24" fill="#0b0f17" stroke="#5da8ff" stroke-opacity=".16"/>
+  <rect width="590" height="190" rx="24" fill="url(#surface)" stroke="#ffffff" stroke-opacity=".09"/>
+  <path d="M24 30 H566" stroke="#ffffff" stroke-opacity=".12" stroke-width="2"/>
+  <text x="26" y="58" font-family="Inter,Arial,sans-serif" font-size="11" font-weight="500" fill="#5da8ff">03</text>
+  <text x="26" y="91" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="350" fill="#ffffff">permission and security</text>
 
-<g transform="translate(760 350) rotate(-4 270.0 65.0)" filter="url(#deepShadow)">
-  <rect x="12" y="18" width="540" height="130" rx="28" fill="#000000" opacity=".48"/>
-  <rect width="540" height="130" rx="28" fill="url(#glass)" stroke="#22d3ee" stroke-opacity=".34"/>
-  <path d="M28 34 H512" stroke="#ffffff" stroke-opacity=".16" stroke-width="2"/>
-  <text x="30" y="58" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="400" fill="#22d3ee">04 · agent runtime and mesh</text>
-  <text x="30" y="102" font-family="Inter,Arial,sans-serif" font-size="20" font-weight="300" fill="#ffffff">browser · terminal · devices · cloud</text>
-  <rect x="30" y="66" width="480" height="28" rx="14" fill="#22d3ee" opacity=".10"/>
-</g>
+  <text x="26" y="122" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">controls</text>
+  <text x="564" y="122" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">identity · policy · approval</text>
+  <text x="26" y="153" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">secrets</text>
+  <text x="564" y="153" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">isolated</text>
+  <text x="26" y="184" font-family="Inter,Arial,sans-serif" font-size="11" fill="#778397">trust</text>
+  <rect x="26" y="194" width="538" height="8" rx="4" fill="#ffffff" opacity=".05"/>
+  <rect x="26" y="194" width="489" height="8" rx="4" fill="#5da8ff" opacity=".75"/></g>
+<g transform="translate(748 372) rotate(-2 307.0 100.0)" filter="url(#shadow)">
+  <rect x="14" y="20" width="614" height="200" rx="24" fill="#020305" opacity=".78"/>
+  <rect x="7.0" y="7.0" width="614" height="200" rx="24" fill="#0b0f17" stroke="#35c6df" stroke-opacity=".16"/>
+  <rect width="614" height="200" rx="24" fill="url(#surface)" stroke="#ffffff" stroke-opacity=".09"/>
+  <path d="M24 30 H590" stroke="#ffffff" stroke-opacity=".12" stroke-width="2"/>
+  <text x="26" y="58" font-family="Inter,Arial,sans-serif" font-size="11" font-weight="500" fill="#35c6df">04</text>
+  <text x="26" y="91" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="350" fill="#ffffff">agent runtime and mesh</text>
 
-<g transform="translate(420 535) rotate(0 300.0 55.0)" filter="url(#deepShadow)">
-  <rect x="12" y="18" width="600" height="110" rx="28" fill="#000000" opacity=".48"/>
-  <rect width="600" height="110" rx="28" fill="url(#glass)" stroke="#34d399" stroke-opacity=".34"/>
-  <path d="M28 34 H572" stroke="#ffffff" stroke-opacity=".16" stroke-width="2"/>
-  <text x="30" y="58" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="400" fill="#34d399">05 · execution and verification</text>
-  <text x="30" y="102" font-family="Inter,Arial,sans-serif" font-size="20" font-weight="300" fill="#ffffff">apps · evidence · trusted result</text>
-  <rect x="30" y="46" width="540" height="28" rx="14" fill="#34d399" opacity=".10"/>
-</g>
+  <text x="26" y="122" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">targets</text>
+  <text x="588" y="122" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">browser · terminal · cloud</text>
+  <text x="26" y="153" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">transport</text>
+  <text x="588" y="153" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">encrypted · signed</text>
+  <text x="26" y="184" font-family="Inter,Arial,sans-serif" font-size="11" fill="#778397">runtime</text>
+  <rect x="26" y="194" width="562" height="8" rx="4" fill="#ffffff" opacity=".05"/>
+  <rect x="26" y="194" width="443" height="8" rx="4" fill="#35c6df" opacity=".75"/></g>
+<g transform="translate(390 585) rotate(0 330.0 45.0)" filter="url(#shadow)">
+  <rect x="14" y="20" width="660" height="90" rx="24" fill="#020305" opacity=".78"/>
+  <rect x="7.0" y="7.0" width="660" height="90" rx="24" fill="#0b0f17" stroke="#34d399" stroke-opacity=".16"/>
+  <rect width="660" height="90" rx="24" fill="url(#surface)" stroke="#ffffff" stroke-opacity=".09"/>
+  <path d="M24 30 H636" stroke="#ffffff" stroke-opacity=".12" stroke-width="2"/>
+  <text x="26" y="58" font-family="Inter,Arial,sans-serif" font-size="11" font-weight="500" fill="#34d399">05</text>
+  <text x="26" y="91" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="350" fill="#ffffff">execution and verification</text>
 
-<circle r="7" fill="#ffffff" filter="url(#glow)">
-  <animateMotion dur="6s" repeatCount="indefinite" path="M150 610 C420 520, 900 520, 1290 610"/>
-</circle>
+  <text x="26" y="122" font-family="Inter,Arial,sans-serif" font-size="12" fill="#778397">output</text>
+  <text x="634" y="122" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" fill="#d8dee9">evidence · result · receipt</text></g>
 </svg>

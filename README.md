@@ -27,7 +27,7 @@ most ai products stop at the answer.
 
 cmdOS is designed for the next step: **execution**.
 
-a user describes the desired outcome without needing to know commands, apis, integrations or workflow syntax. cmdOS interprets that intent, creates a plan, requests permission where required, coordinates specialized agents, executes across tools and verifies the final result.
+a user describes the desired outcome without needing to understand commands, apis, integrations or workflow syntax. cmdOS interprets that intent, creates a plan, requests permission where required, coordinates specialized agents, executes across tools and verifies the final result.
 
 ```text
 user intent
@@ -80,7 +80,7 @@ flowchart LR
 
 <img src="./assets/product-3d.svg" width="100%" alt="cmdOS product experience" />
 
-the core interaction remains simple:
+the main workspace combines intent, planning, permission, agent state and verified results in one compact surface.
 
 ```text
 1. describe the outcome
@@ -92,18 +92,11 @@ the core interaction remains simple:
 7. save the workflow when useful
 ```
 
-### example intent
-
-```text
-“prepare the launch report, identify blockers,
-email the team and schedule a review meeting tomorrow.”
-```
-
-### product surfaces
+### core product surfaces
 
 | surface | purpose |
 |---|---|
-| **command workspace** | describe outcomes and inspect the generated plan |
+| **command workspace** | describe outcomes and inspect generated plans |
 | **execution timeline** | follow agents, approvals, retries, tool calls and results |
 | **cmdOS connect** | bring people and ai agents into the same operational context |
 | **workflow studio** | turn successful executions into reusable systems |
@@ -115,7 +108,7 @@ email the team and schedule a review meeting tomorrow.”
 
 <img src="./assets/connect-3d.svg" width="100%" alt="cmdOS connect" />
 
-cmdOS connect is the communication layer for agent-native teams.
+cmdOS connect keeps human conversations and agent execution in the same context.
 
 agents can:
 
@@ -127,52 +120,22 @@ agents can:
 - provide evidence;
 - request human approval.
 
-```text
-discussion
-   ↓
-decision
-   ↓
-agent assignment
-   ↓
-permission
-   ↓
-execution
-   ↓
-verified update in the same conversation
-```
-
 ---
 
 ## agent runtime
 
 <img src="./assets/runtime-3d.svg" width="100%" alt="cmdOS agent runtime" />
 
-the runtime manages specialized execution agents across trusted environments.
+the runtime manages specialized agents through clear capability, permission and health states.
 
 | target | example capability |
 |---|---|
-| **browser** | navigate websites and operate web applications |
+| **browser** | operate web applications |
 | **desktop** | interact with local applications and files |
 | **terminal** | run commands, tests, builds and developer workflows |
 | **mobile** | perform approved device-level actions |
 | **cloud** | access remote apis and infrastructure |
 | **edge** | execute near devices or private environments |
-
-```text
-idle
-  ↓
-assigned
-  ↓
-planning
-  ↓
-waiting for permission
-  ↓
-executing
-  ↓
-verifying
-  ↓
-completed
-```
 
 ---
 
@@ -180,19 +143,7 @@ completed
 
 <img src="./assets/router-3d.svg" width="100%" alt="cmdOS ai router" />
 
-no single model should handle every task.
-
-the router evaluates:
-
-- task type;
-- reasoning depth;
-- latency;
-- cost;
-- privacy;
-- context length;
-- tool support;
-- reliability;
-- user policy.
+the router evaluates task type, reasoning depth, latency, cost, privacy, context length, tool support, reliability and user policy.
 
 | workload | preferred route |
 |---|---|
@@ -209,7 +160,7 @@ the router evaluates:
 
 <img src="./assets/mesh-3d.svg" width="100%" alt="cmdOS secure agent mesh" />
 
-the secure agent mesh enables approved devices and agents to exchange capabilities and signed results.
+the secure agent mesh allows approved devices and agents to exchange scoped capabilities and signed results.
 
 ### mesh principles
 
@@ -221,20 +172,6 @@ the secure agent mesh enables approved devices and agents to exchange capabiliti
 - signed results;
 - revocation;
 - auditability.
-
-```text
-mobile intent
-   ↓
-desktop planner
-   ↓
-workstation execution agent
-   ↓
-verifier agent
-   ↓
-signed result
-   ↓
-mobile notification
-```
 
 ---
 
@@ -258,26 +195,6 @@ cmdOS follows a permission-first, zero-trust execution model.
 - emergency stop;
 - immutable audit events;
 - result verification.
-
-### permission request
-
-```text
-permission required
-
-action:
-send “weekly product report” to leadership@example.com
-
-agent:
-communication agent
-
-data leaving device:
-1 approved pdf
-
-scope:
-one-time send
-
-[reject] [review details] [approve]
-```
 
 ---
 
@@ -311,18 +228,6 @@ successful executions can become reusable workflows containing:
 
 cmdOS is intended to support an ecosystem of agents, tools, connectors and reusable workflows.
 
-### agent sdk
-
-defines planning, execution, verification, recovery and lifecycle contracts.
-
-### tool sdk
-
-provides permissioned interfaces to applications, apis, files, devices and services.
-
-### workflow sdk
-
-packages repeatable execution systems with explicit inputs, controls and expected outcomes.
-
 ```yaml
 agent:
   name: release-verifier
@@ -350,58 +255,33 @@ outputs:
 
 ### 01 · foundation
 
-- canonical product architecture;
-- execution lifecycle;
-- permission model;
-- design system;
-- public documentation.
+product architecture, execution lifecycle, permission model and public documentation.
 
 ### 02 · local runtime
 
-- desktop command workspace;
-- local agents;
-- browser and terminal tools;
-- local model integration;
-- execution timeline.
+desktop command workspace, local agents, browser and terminal tools.
 
 ### 03 · cmdOS connect
 
-- human and agent workspaces;
-- mentions and delegated tasks;
-- shared execution context;
-- mobile approvals.
+human and agent workspaces, delegated tasks and mobile approvals.
 
 ### 04 · secure agent mesh
 
-- trusted devices;
-- agent identity;
-- encrypted transport;
-- capability negotiation;
-- signed results.
+trusted devices, encrypted transport, identity and signed results.
 
 ### 05 · distributed execution
 
-- cross-device scheduling;
-- remote capabilities;
-- workload routing;
-- recovery and retry;
-- multi-agent verification.
+cross-device scheduling, remote capabilities and multi-agent verification.
 
 ### 06 · ecosystem
 
-- agent sdk;
-- tool sdk;
-- workflow sdk;
-- marketplace and distribution;
-- enterprise policy controls.
+agent sdk, tool sdk, workflow sdk and enterprise controls.
 
-> roadmap items describe product direction and are not commitments to a specific release date.
+> roadmap items describe product direction and are not release commitments.
 
 ---
 
 ## project status
-
-cmdOS is currently in the product architecture and early development stage.
 
 | area | status |
 |---|---|
