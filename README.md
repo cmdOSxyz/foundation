@@ -1,12 +1,12 @@
 <div align="center">
 
-<img src="./assets/hero.svg" width="100%" alt="cmdOS — The AI Execution Operating System" />
+<img src="./assets/hero.svg" width="100%" alt="cmdOS — The Operating System for AI Agents" />
 
 <br/>
 
 # cmdOS
 
-### The AI Execution Operating System
+### The Operating System for AI Agents
 
 **A secure operating layer where people and AI agents communicate, collaborate, and execute real-world work across applications, devices, local networks, and cloud infrastructure.**
 
@@ -17,7 +17,7 @@
 
 <br/>
 
-[Vision](#vision) · [Features](#core-capabilities) · [cmdOS Connect](#cmdos-connect) · [Architecture](#architecture) · [Roadmap](#roadmap) · [Security](#security-model)
+[Vision](#vision) · [What Runs Today](#what-runs-today) · [Features](#core-capabilities) · [cmdOS Connect](#cmdos-connect) · [Architecture](#architecture) · [Roadmap](#roadmap) · [Security](#security-model)
 
 </div>
 
@@ -1071,29 +1071,67 @@ cmdOS/
 
 ---
 
+# What Runs Today
+
+**On a developer machine, right now:**
+
+- A Rust kernel — object model, hash-chained ledger, reversible transaction
+  engine, policy gate, and a scheduler that runs plans in dependency order.
+- Two working capabilities: filesystem and shell, both risk-classified, both
+  reversible where reversal is honest.
+- The Shadow World Engine: fork the machine copy-on-write, let the agent finish
+  the work, then promote one outcome or discard it for free.
+- An agent that plans an intent and runs it through all of the above.
+- cmdShell, a Tauri desktop client driving the real kernel — not a mock.
+- Access control and a bring-your-own-key API router.
+
+Around 170 tests, CI green.
+
+**What does not exist yet:** the cloud Machine (per-user VM), the messaging and
+mesh layers described below, a real browser backend, and local model routing.
+The roadmap that follows is the intended shape of the product, not a description
+of the current build.
+
+---
+
 # Roadmap
 
-## Phase 01 — Foundation
+## Phase 01 — Foundation ✅
 
-- [ ] Canonical architecture specification
-- [ ] Threat model
-- [ ] Permission model
-- [ ] Agent runtime contract
-- [ ] Execution trace format
+- [x] Canonical architecture specification — 22 accepted RFCs in `docs/rfcs/`
+- [x] Permission model — `cmd-policy`, R0–R3 risk classes, mandates and budgets
+- [x] Agent runtime contract — `cmd-types` object model, `Resource` trait
+- [x] Execution trace format — `cmd-ledger`, hash-chained and verifiable
+- [x] Identity model — `cmd-auth`, credentials plus access keys with expiry
+- [ ] Threat model — informal only; not yet written down
 - [ ] Plugin manifest specification
-- [ ] Identity model
 - [ ] Communication protocol specification
 
-## Phase 02 — Local Execution
+## Phase 02 — Local Execution 🔵
 
-- [ ] Desktop command interface
-- [ ] Terminal Agent
-- [ ] Browser Agent
-- [ ] File Agent
-- [ ] Local workflow engine
-- [ ] Permission Gate
-- [ ] Verification Engine
-- [ ] Local model routing
+- [x] Desktop command interface — cmdShell (Tauri + React), driving the real kernel
+- [x] Permission Gate — every action passes `cmd-policy` before it runs
+- [x] Verification Engine — `cmd-transaction`: simulate, snapshot, execute, verify, undo
+- [x] File Agent — `cap-files`, reversible, matching the prototype's behaviour contracts
+- [x] Terminal Agent — `cap-terminal`, allowlisted, unknown commands gated as R3
+- [x] Local workflow engine — `cmd-kernel` runs plans in dependency order
+- [x] Shadow World Engine — RFC-0005, copy-on-write forks with promote or discard
+- [x] Tool surface — `aipc`, MCP-style catalog, every call kernel-mediated
+- [🔵] Browser Agent — `cap-browser` is written and risk-classified; it still needs a
+      real headless backend behind `BrowserBackend`
+- [🔵] Model routing — `cmd-router` routes the user's own API keys (BYOK) with
+      per-key limits and rotation. Local model routing (NIS) is not started.
+
+## Phase 02b — Product Surface 🔵
+
+The gap between a working kernel and something a person can use.
+
+- [x] Real data in every implemented screen — Files, Ledger, Shadow, Terminal
+- [🔵] Appearance system — System, Light and Dark with full parity (in progress)
+- [ ] Agent creation and management beyond the current stub
+- [ ] Key website — mints and revokes CMDOS access keys (spec written,
+      `docs/07-product/cmdos-key-server-spec.md`)
+- [ ] Packaged installer
 
 ## Phase 03 — cmdOS Connect
 
@@ -1210,7 +1248,7 @@ docs/
 
 cmdOS is under active design and development.
 
-Some capabilities described in this README are product goals or roadmap items and are not yet available in production.
+Some capabilities described in this README are product goals or roadmap items and are not yet available in production. For what actually runs at the moment, see [What Runs Today](#what-runs-today).
 
 This distinction is intentional.
 
