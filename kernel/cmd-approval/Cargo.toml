@@ -1,0 +1,13 @@
+[package]
+name = "cmd-approval"
+description = "Binds a human approval to an exact plan and an exact pre-state"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+cmd-types = { path = "../cmd-types" }
+serde.workspace = true
+serde_json.workspace = true
+chrono = { version = "0.4", features = ["serde"] }
+sha2 = "0.10"
