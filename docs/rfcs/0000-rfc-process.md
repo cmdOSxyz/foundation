@@ -45,3 +45,4 @@ Planned technical RFCs (continuing the existing sequence):
 - 0021 shell-core — ACCEPTED, testable bridge for cmdShell; fixed a path-case bug in RulePlanner (8 tests green)
 - 0022 cap-terminal — ACCEPTED, shell capability; unknown commands are R3 by default (13 tests green)
 - 0023 Approval Binding — ACCEPTED, approval bound to exact plan + pre-state digests (19 tests green)
+- 0024 cmdCapital — DRAFT, blocks all cmdCapital code; 5 decisions open (TEE operator, relayer trust, circuit-breaker oracle, high-water mark, governance token)

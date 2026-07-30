@@ -5,7 +5,9 @@
 > this document so the content lives in git rather than as a loose file outside the repo.
 >
 > This is a specification, **not an RFC**. Under the RFC-first rule, cmdCapital needs an
-> Accepted RFC in `docs/rfcs/` before any component code is written.
+> Accepted RFC in `docs/rfcs/` before any component code is written. See
+> [RFC-0024](../rfcs/0024-cmdcapital.md), which is Draft and lists five decisions this
+> specification leaves open.
 
 Project: **cmdCapital — Omnichain Ecosystem**
 
