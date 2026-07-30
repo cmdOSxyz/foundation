@@ -259,12 +259,27 @@ It answers two failures that the current market treats as unavoidable.
 | Fake track record | A screenshot of a PnL curve costs nothing to produce and nothing to fake. | Every order is signed inside a hardware enclave and the record is derived from venue fills, not reported by the agent. |
 | Counterparty risk | Following a strategy usually means handing someone the ability to move your funds. | A delegated agent holds a session key scoped to trading only. The right to withdraw never leaves the wallet owner. |
 
+The flagship agent ships under the commercial name **AuraCore**, with the message *"Your autonomous nexus"*.
+
 Four planned layers, in the order value passes through them:
 
 - **NexusKernel** — execution and hardware. The agent runs inside a TEE (Intel SGX or AMD SEV). The private key is generated inside the enclave and cannot be extracted. Every order carries a signature and a remote attestation proof.
 - **Metric Engine** — audit and data. A decentralized indexer reads fills from the venues themselves and derives ROI, maximum drawdown, Sharpe, and win rate. The result is written onchain rather than published by the agent.
 - **NexusShield** — user custody. Account Abstraction (ERC-4337) smart wallets, with email or social sign-in instead of a seed phrase. The agent receives a session key that permits trades and forbids withdrawals.
 - **NexusEscrow** — settlement. A contract splits the performance fee at the end of each cycle. Built last and gated behind human approval, because a settlement bug is the one class of bug that cannot be rolled back.
+
+Four surfaces sit on top of those layers:
+
+- **Super App** — Telegram mini-app and web dashboard. Ask in plain language, read position and risk state back.
+- **Marketplace** — reviewed agents on an onchain leaderboard, ranked on attested numbers rather than claims.
+- **Smart Wallet** — an ERC-4337 account with no seed phrase to lose, non-custodial by construction.
+- **Vaults** — passive allocation across top-ranked agents, rebalanced on a fixed cycle.
+
+The omnichain loop runs in three beats:
+
+- **Signal** — inside the enclave, the agent watches EVM, SVM, and MoveVM venues along with social flow, and decides.
+- **Synchronize** — the TEE signs the raw transactions, bridges through Wormhole or LayerZero, and a relayer applies them across delegated wallets together so followers do not absorb the slippage of going last.
+- **Yield** — performance fees split at the end of the cycle. The developer that built the agent is paid, and the treasury takes the remainder, part of which funds a buy-back and burn of the governance token.
 
 The user path and the control at each step:
 
@@ -287,6 +302,8 @@ settlement_gate:   R3, human approval required
 ```
 
 Nothing in cmdCapital is built yet. Every surface stays locked and names its missing dependency until the dependency exists. The leaderboard requires the TEE attestation pipeline, the venue indexer and metric derivation, and at least one reviewed agent with a settled cycle. No performance figure is published before then, not even as an example.
+
+Full specification: [`docs/01-vision/cmdcapital-spec.md`](docs/01-vision/cmdcapital-spec.md).
 
 # Available Today
 
