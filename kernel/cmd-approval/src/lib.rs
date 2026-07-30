@@ -54,6 +54,15 @@ use std::collections::{BTreeMap, HashMap};
 pub struct Digest32([u8; 32]);
 
 impl Digest32 {
+    /// Wrap 32 raw bytes.
+    ///
+    /// Exists so other kernel crates can commit to their own material without
+    /// defining a second digest type. A second type would mean two answers to
+    /// "what is a plan hash", and they would drift.
+    pub fn from_bytes(bytes: [u8; 32]) -> Self {
+        Digest32(bytes)
+    }
+
     /// Full hex, for receipts and comparison.
     pub fn hex(&self) -> String {
         self.0.iter().map(|b| format!("{b:02x}")).collect()

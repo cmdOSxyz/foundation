@@ -316,6 +316,8 @@ The repository currently includes:
 - `cmd-auth` with credentials and expiring access keys
 - `cmd-transaction` with simulation, snapshot, execution, verification, and honest undo semantics
 - `cmd-kernel` with dependency-ordered execution plans
+- `cmd-approval` binding an approval to an exact plan digest and an exact pre-state
+- `cmd-proof` with Proof Bundle v0: hash-chained evidence for one execution, verifiable without the original data
 - `aipc`, an MCP-style capability catalog with kernel-mediated calls
 - `cap-files`, a working reversible filesystem capability
 - `cap-terminal`, an allowlisted shell capability with R3 gating for unknown commands
@@ -325,14 +327,14 @@ The repository currently includes:
 - a bring-your-own-key API router with limits and key rotation
 - `cap-browser`, with capability and risk contracts ready for a real browser backend
 
-The project has around 170 tests. CI was green when this README was updated.
+The project has 204 tests, all green when this README was updated.
 
 ## In Development
 
 - complete threat model
 - Effect Manifest v0
-- approval binding to plan and pre-state hashes
-- Proof Bundle v0
+- signed Proof Bundles — v0 is tamper-evident but carries no signature, so it proves
+  consistency rather than origin
 - protected postcondition verifiers
 - idempotency and compensation fault-injection tests
 - real browser backend
@@ -471,10 +473,11 @@ Production security and cryptographic guarantees require documented protocols, a
 - [x] Snapshot, simulation, execution, verification, and honest undo
 - [x] Shadow World copy-on-write branches
 - [x] Hash-chained ledger
+- [x] Bind approval to exact plan and pre-state hashes
+- [x] Define Proof Bundle v0
 - [ ] Publish the threat model
 - [ ] Define Effect Manifest v0
-- [ ] Bind approval to exact plan and pre-state hashes
-- [ ] Define Proof Bundle v0
+- [ ] Sign Proof Bundles so they prove origin, not only consistency
 - [ ] Add protected postcondition verifiers
 - [ ] Complete the real browser backend
 - [ ] Ship the packaged desktop installer

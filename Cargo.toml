@@ -7,6 +7,7 @@ members = [
     "kernel/cmd-policy",
     "kernel/cmd-ledger",
     "kernel/cmd-approval",
+    "kernel/cmd-proof",
     "kernel/cmd-shadow",
     "services/semfs",
     "services/nis",

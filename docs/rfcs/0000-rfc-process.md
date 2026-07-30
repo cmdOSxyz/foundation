@@ -46,3 +46,4 @@ Planned technical RFCs (continuing the existing sequence):
 - 0022 cap-terminal — ACCEPTED, shell capability; unknown commands are R3 by default (13 tests green)
 - 0023 Approval Binding — ACCEPTED, approval bound to exact plan + pre-state digests (19 tests green)
 - 0024 cmdCapital — DRAFT, blocks all cmdCapital code; 5 decisions open (TEE operator, relayer trust, circuit-breaker oracle, high-water mark, governance token)
+- 0025 Proof Bundle v0 — ACCEPTED, hash-chained evidence in kernel/cmd-proof; tamper-evident, not yet signed (17 tests green)
