@@ -248,6 +248,46 @@ Initial task classes include:
 
 The settlement flow uses existing payment and escrow integrations while cmdOS verifies the required outcome.
 
+## cmdCapital (Planned)
+
+cmdCapital is the market the other five capabilities make possible: an onchain verification layer and marketplace for autonomous trading agents.
+
+It answers two failures that the current market treats as unavoidable.
+
+| Failure | Today | cmdCapital |
+| --- | --- | --- |
+| Fake track record | A screenshot of a PnL curve costs nothing to produce and nothing to fake. | Every order is signed inside a hardware enclave and the record is derived from venue fills, not reported by the agent. |
+| Counterparty risk | Following a strategy usually means handing someone the ability to move your funds. | A delegated agent holds a session key scoped to trading only. The right to withdraw never leaves the wallet owner. |
+
+Four planned layers, in the order value passes through them:
+
+- **NexusKernel** — execution and hardware. The agent runs inside a TEE (Intel SGX or AMD SEV). The private key is generated inside the enclave and cannot be extracted. Every order carries a signature and a remote attestation proof.
+- **Metric Engine** — audit and data. A decentralized indexer reads fills from the venues themselves and derives ROI, maximum drawdown, Sharpe, and win rate. The result is written onchain rather than published by the agent.
+- **NexusShield** — user custody. Account Abstraction (ERC-4337) smart wallets, with email or social sign-in instead of a seed phrase. The agent receives a session key that permits trades and forbids withdrawals.
+- **NexusEscrow** — settlement. A contract splits the performance fee at the end of each cycle. Built last and gated behind human approval, because a settlement bug is the one class of bug that cannot be rolled back.
+
+The user path and the control at each step:
+
+```text
+Fund      → a smart wallet is created; deposit from an exchange or an existing wallet
+Choose    → read attested performance in the marketplace, then decide the allocation
+Delegate  → grant a trade-only session key and set the drawdown cutoff
+Watch     → position, cash flow, and return stream back to the dashboard
+Settle    → stop at any time; the contract splits the fee and returns the rest
+```
+
+Policy constants from the specification. These are settings, not results:
+
+```yaml
+agent_permissions: trade only, withdrawal denied
+circuit_breaker:   agent suspended at the drawdown the owner sets
+performance_fee:   20% of realised profit, charged on profit only
+fee_split:         85% agent developer, 15% protocol treasury
+settlement_gate:   R3, human approval required
+```
+
+Nothing in cmdCapital is built yet. Every surface stays locked and names its missing dependency until the dependency exists. The leaderboard requires the TEE attestation pipeline, the venue indexer and metric derivation, and at least one reviewed agent with a settled cycle. No performance figure is published before then, not even as an example.
+
 # Available Today
 
 The repository currently includes:
@@ -294,6 +334,7 @@ The project has around 170 tests. CI was green when this README was updated.
 - independent verifier support
 - verified outcome settlement
 - open verifier CLI and conformance suite
+- attested agent track records and the cmdCapital marketplace
 
 # Integrations
 
@@ -311,6 +352,8 @@ Target integration categories include:
 - payment and escrow services
 - DEX solvers and bridges
 - prediction markets and perpetual venues
+- trusted execution environments and attestation services
+- account abstraction wallets and session-key delegation
 - identity, reputation, and verification standards
 
 Adapters remain replaceable so policy, evidence, and local user control do not depend on one provider.
@@ -472,13 +515,32 @@ Completion target:
 - [ ] receipt-grounded reputation adapters
 - [ ] open verifier CLI and conformance tests
 
+## Phase 6: cmdCapital
+
+- [ ] TEE execution environment and enclave key generation
+- [ ] remote attestation attached to every signed order
+- [ ] venue indexer and derived metrics written onchain
+- [ ] ERC-4337 smart wallets with trade-only session keys
+- [ ] drawdown circuit breaker independent of the agent
+- [ ] agent review process and the onchain leaderboard
+- [ ] performance-fee escrow behind an R3 human gate
+
+Completion target:
+
+- no enclave key is extractable and no order is accepted without a valid attestation
+- no delegated key can withdraw funds
+- every published metric is derived from venue data and never reported by the agent
+- the leaderboard stays locked until its named dependencies are live
+
 # Project Status
 
 cmdOS is under active development.
 
 The local kernel, policy system, transaction engine, Shadow World, ledger, desktop client, filesystem capability, terminal capability, and initial browser capability contract are implemented.
 
-The cross-framework firewall, Proof Bundle standard, cmdMandate, distributed verification, settlement layer, and production security guarantees are under development or planned.
+The cross-framework firewall, Proof Bundle standard, cmdMandate, distributed verification, settlement layer, cmdCapital, and production security guarantees are under development or planned.
+
+cmdCapital has no implementation in this repository. It is documented here as a design commitment so the dependency order stays visible: attested execution and derived metrics come before any marketplace surface, and settlement comes last.
 
 # Contributing
 
