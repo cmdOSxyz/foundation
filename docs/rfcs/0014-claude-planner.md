@@ -1,7 +1,11 @@
 # RFC-0014: Model-Backed Planning (Claude)
 
+> **SUPERSEDED (2026-08-04)** — the component this RFC specifies was removed with the
+> agent-OS positioning. See `docs/archive/README.md`. Recover the code with
+> `git checkout pre-cmdcapital-trim -- <path>`.
+
 Version: 1.0
-Status: Accepted
+Status: Superseded
 Category: Architecture (agent)
 Author: Lead Architect
 Depends on: RFC-0013 (Agent / Planner trait)

@@ -1,7 +1,11 @@
 # RFC-0006: cmdOS Machine & Agent Supervision Model
 
+> **SUPERSEDED (2026-08-04)** — the component this RFC specifies was removed with the
+> agent-OS positioning. See `docs/archive/README.md`. Recover the code with
+> `git checkout pre-cmdcapital-trim -- <path>`.
+
 Version: 1.0
-Status: Draft
+Status: Superseded
 Category: Architecture / Product
 Author: Lead Architect
 Depends on: Strategy v2, RFC-0004 (Object Model), RFC-0005 (Shadow World Engine)

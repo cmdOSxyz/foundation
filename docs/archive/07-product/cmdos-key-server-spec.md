@@ -1,3 +1,5 @@
+> **ARCHIVED** — Describes the agent-OS positioning retired on 2026-08-04 (see `docs/archive/README.md`). Retained for history.
+
 # cmdOS Key Server — Protocol Spec
 
 The contract between the cmdOS app (`RemoteVerifier`) and the cmdOS key website.

@@ -1,3 +1,5 @@
+> **ARCHIVED** — Describes the agent-OS positioning retired on 2026-08-04 (see `docs/archive/README.md`). Retained for history.
+
 # Product
 
 ## Overview
