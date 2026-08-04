@@ -2,28 +2,12 @@
 resolver = "2"
 members = [
     "kernel/cmd-types",
-    "kernel/cmd-kernel",
     "kernel/cmd-transaction",
     "kernel/cmd-policy",
     "kernel/cmd-ledger",
     "kernel/cmd-approval",
     "kernel/cmd-proof",
     "kernel/cmd-shadow",
-    "services/semfs",
-    "services/nis",
-    "services/aipc",
-    "services/claude-http",
-    "services/cmd-auth",
-    "services/cmd-router",
-    "services/shell-core",
-    "services/cmdpay",
-    "agent/alios",
-    "cli",
-    "capabilities/files",
-    "capabilities/browser",
-    "capabilities/terminal",
-    "capabilities/mail",
-    "capabilities/calendar",
 ]
 
 [workspace.package]

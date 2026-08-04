@@ -309,20 +309,18 @@ Full specification: [`docs/01-vision/cmdcapital-spec.md`](docs/01-vision/cmdcapi
 
 The repository currently includes:
 
-- a Rust kernel with a typed object model
-- `cmd-policy` with R0 to R3 risk classes, mandates, and budgets
 - `cmd-types` with the core object model and `Resource` trait
+- `cmd-policy` with R0 to R3 risk classes, mandates, and budgets
 - `cmd-ledger` with a hash-chained execution history
-- `cmd-auth` with credentials and expiring access keys
 - `cmd-transaction` with simulation, snapshot, execution, verification, and honest undo semantics
-- `cmd-kernel` with dependency-ordered execution plans
 - `cmd-approval` binding an approval to an exact plan digest and an exact pre-state
 - `cmd-proof` with Proof Bundle v0: hash-chained evidence for one execution, verifiable without the original data
-- `aipc`, an MCP-style capability catalog with kernel-mediated calls
-- `cap-files`, a working reversible filesystem capability
-- `cap-terminal`, an allowlisted shell capability with R3 gating for unknown commands
-- Shadow World copy-on-write forks with promote or discard
-- cmdShell, a Tauri desktop client connected to the real kernel
+- `cmd-shadow` with copy-on-write forks, promote or discard
+
+The agent-facing components — the intent scheduler, the services, the capability
+servers, the Alios agent, the CLI and the Tauri shell — were removed on 2026-08-04 with
+the operating-system positioning. See `docs/archive/README.md`; recover any of them with
+`git checkout pre-cmdcapital-trim -- <path>`.
 - real data in the implemented Files, Ledger, Shadow, and Terminal screens
 - a bring-your-own-key API router with limits and key rotation
 - `cap-browser`, with capability and risk contracts ready for a real browser backend
