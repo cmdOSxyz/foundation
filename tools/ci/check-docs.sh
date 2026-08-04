@@ -6,17 +6,35 @@
 set -euo pipefail
 fail=0
 
-# a) Duplicate document numbers (CC.S.NN or CC.NN) across docs/
-dups="$(grep -rhoE '^# [0-9]{2}(\.[0-9])?\.[0-9]{2}' docs/ 2>/dev/null \
-  | sort | uniq -d || true)"
+# a) Duplicate document numbers (CC.S.NN or CC.NN) within one directory.
+#    Uniqueness is per directory, not global: the parallel docs/05-architecture/<area>/
+#    subtrees each number their own documents 05.01..05.07 by design, so a global
+#    check reports every area as a collision. docs/archive/ is historical.
+dups=""
+while IFS= read -r dir; do
+  d="$(find "$dir" -maxdepth 1 -type f -exec \
+        grep -hoE '^# [0-9]{2}(\.[0-9])?\.[0-9]{2}' {} + 2>/dev/null \
+        | sort | uniq -d || true)"
+  if [ -n "$d" ]; then
+    dups="${dups}  ${dir}: $(echo "$d" | tr '\n' ' ')
+"
+  fi
+done < <(find docs -type d -not -path 'docs/archive*' | sort)
 if [ -n "$dups" ]; then
-  echo "ERROR: duplicate document numbers:"
-  echo "$dups"
+  echo "ERROR: duplicate document numbers within a directory:"
+  printf '%s' "$dups"
   fail=1
 fi
 
-# b) Deprecated aliases must not appear
+# b) Deprecated aliases must not appear.
+#    Three exclusions, all legitimate:
+#      - docs/archive/ holds historical records; rule 8 keeps them as written.
+#      - the canonical glossary and RFC-0001 are the documents that *declare* these
+#        aliases deprecated, so they necessarily contain them.
 if grep -rIl \
+     --exclude-dir=archive \
+     --exclude='04.00-canonical-glossary.md' \
+     --exclude='00.01-documentation-reconciliation.md' \
      -e 'Admin Desktop' \
      -e 'Admin Control Center' \
      -e 'Admin Runtime' \

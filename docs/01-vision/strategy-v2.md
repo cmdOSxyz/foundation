@@ -264,7 +264,7 @@ Additions: custom silicon optimization profiles, multi-device agent mesh (one so
 
 ## Stage 2 — Platform (late Horizon 1)
 
-- Capability Marketplace (security-scanned MCP servers, WASM-sandboxed)
+- Marketplace (security-scanned MCP servers, WASM-sandboxed)
 - Agent SDK: third-party agents inherit budgets, mandates, transactions for free
 - cmdPay monetization for developers
 

@@ -461,7 +461,7 @@ Developers should build extensions without understanding internal system complex
 
 # 15. SDK Marketplace Integration
 
-SDK connects directly with the Plugin Marketplace.
+SDK connects directly with the Marketplace.
 
 Flow:
 

@@ -2,10 +2,9 @@
 
 Thank you for helping keep cmdOS secure.
 
-**Scope of this file:** vulnerability reporting, supported versions, and disclosure
-policy. The security *architecture* and model are defined in
-`docs/05-architecture/6-security` (canonical). This file intentionally contains no
-architecture.
+**Scope:** vulnerability reporting, supported versions, and disclosure policy.
+Canonical source for the security architecture and model:
+`docs/05-architecture/6-security`. This file intentionally contains no architecture.
 
 ---
 

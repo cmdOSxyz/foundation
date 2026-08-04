@@ -133,7 +133,7 @@ Includes:
 
 - Plugin SDK
 - Plugin APIs
-- Plugin Marketplace
+- Marketplace
 
 ---
 
