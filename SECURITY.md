@@ -4,7 +4,7 @@ Thank you for helping keep cmdOS secure.
 
 **Scope:** vulnerability reporting, supported versions, and disclosure policy.
 Canonical source for the security architecture and model:
-`docs/05-architecture/6-security`. This file intentionally contains no architecture.
+`docs/archive/05-architecture/security`. This file intentionally contains no architecture.
 
 ---
 
@@ -42,7 +42,7 @@ Please do **not** disclose security vulnerabilities publicly.
 For the security architecture — identity, permissions, policy, sandboxing, monitoring,
 and audit — see the canonical specification:
 
-- `docs/05-architecture/6-security` — security architecture (canonical)
+- `docs/archive/05-architecture/security` — security architecture (canonical)
 - `docs/04-terminology/04.10-security-model.md` — security terminology
 - `docs/10-appendix/10.04-security-reference.md` — quick reference
 

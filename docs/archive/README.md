@@ -65,7 +65,33 @@ These are kept for optionality, not because they port directly to whatever comes
 The concepts transfer; the code is built around Intent / Agent / Capability / Mandate and
 would be a rewrite rather than a port in a different domain.
 
+### What was then removed
+
+Once the positioning was retired, the components that existed only to serve it were
+removed from the tree — 5,847 lines: `kernel/cmd-kernel` (the intent scheduler), all of
+`services/`, `agent/alios`, all of `capabilities/`, the `cli`, and the `shell/` shim.
+
+The architecture documentation that described them moved here as
+`docs/archive/05-architecture/` — 119 files, each carrying an ARCHIVED header.
+
+Nothing is lost. Every removed path is recoverable:
+
+```bash
+git checkout pre-cmdcapital-trim -- <path>
+```
+
+The tag is pushed to origin, so it survives this machine.
+
+### What was kept, and one thing deliberately not removed
+
+`cmd-types`, `cmd-transaction`, `cmd-policy`, `cmd-ledger`, `cmd-approval`, `cmd-proof`,
+`cmd-shadow`, the schemas and the prototype behavior contracts.
+
+`cmd-transaction` and `cmd-shadow` would not be used by a trading product — trading has
+no rollback and a live market cannot be forked. They are kept anyway because removing
+them is the highest-regret move available and no decision yet forces it.
+
 ### What was not done
 
-Nothing was deleted. No RFC was withdrawn. The kernel was not touched. This entry records
-a decision about positioning, not about code.
+No RFC was withdrawn. RFC-0024 (cmdCapital) remains a Draft that blocks its own
+implementation. The kernel crates that were kept were not modified.
